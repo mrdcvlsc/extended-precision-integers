@@ -62,14 +62,25 @@ namespace epi {
                 }
             }
 
+            constexpr number(number const& src) {
+                std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
+            }
+
+            constexpr number &operator=(number const& src) {
+                if (this != &src) {
+                    std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
+                }
+                return *this;
+            }
+
             friend std::ostream &operator<< <limb_t, cast_t, limb_n>( std::ostream&, const number<limb_t, cast_t, limb_n>& );
     
-            constexpr number operator+(number const& adder) const {
+            constexpr number operator+(number const& add) const {
                 number sum;
                 limb_t carry = 0;
 
                 for (size_t i = 0; i < limb_n; ++i) {
-                    cast_t index_sum = (cast_t) limbs[i] + adder.limbs[i] + carry;
+                    cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
                     sum.limbs[i] = index_sum;
                     carry = index_sum >> limb_number_base;
                 }
@@ -77,15 +88,67 @@ namespace epi {
                 return sum;
             }
 
-            constexpr number &operator+=(number const& adder) {
+            constexpr number &operator+=(number const& add) {
                 limb_t carry = 0;
 
                 for (size_t i = 0; i < limb_n; ++i) {
-                    cast_t index_sum = (cast_t) limbs[i] + adder.limbs[i] + carry;
+                    cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
                     limbs[i] = index_sum;
                     carry = index_sum >> limb_number_base;
                 }
 
+                return *this;
+            }
+
+            constexpr number operator-(number const& sub) const {
+                number diff;
+                limb_t carry = 0;
+
+                for (size_t i =0; i < limb_n; ++i) {
+                    cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
+                    diff.limbs[i] = index_diff;
+                    carry = (index_diff >> limb_number_base) & 0x1;
+                }
+
+                return diff;
+            }
+
+            constexpr number &operator-=(number const& sub) {
+                limb_t carry = 0;
+
+                for (size_t i =0; i < limb_n; ++i) {
+                    cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
+                    limbs[i] = index_diff;
+                    carry = (index_diff >> limb_number_base) & 0x1;
+                }
+
+                return *this;
+            }
+
+            constexpr number operator*(number const& mul) const {
+                number prod;
+                limb_t carry = 0;
+
+                for (size_t i = 0; i < limb_n; ++i) {
+                    cast_t index_prod = (cast_t) limbs[i] * mul.limbs[0] + carry;
+                    prod.limbs[i] = index_prod;
+                    carry = index_prod >> limb_number_base;
+                }
+
+                for (size_t i = 1; i < limb_n; ++i) {
+                    carry = 0;
+                    for (size_t j = 0; j < limb_n - i; ++j) {
+                        cast_t index_prod = (cast_t) limbs[j] * mul.limbs[i] + prod.limbs[i + j] + carry;
+                        prod.limbs[i + j] = index_prod;
+                        carry = (index_prod >> limb_number_base);
+                    }
+                }
+
+                return prod;
+            }
+
+            constexpr number &operator*=(number const& mul) {
+                *this = *this * mul;
                 return *this;
             }
     };
