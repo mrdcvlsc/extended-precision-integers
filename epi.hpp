@@ -1,6 +1,8 @@
 #ifndef EXTENDED_PRECISION_INTEGERS_HPP
 #define EXTENDED_PRECISION_INTEGERS_HPP
 
+#define _LITTLE_ENDIAN
+
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -25,11 +27,28 @@ namespace epi {
     class number {
         private:
             limb_t limbs[limb_n];
-        public:
 
             /// @brief Number base use to represent the integer.
-            constexpr static size_t limb_number_base = (sizeof(limb_t) * 8);
+            static constexpr size_t limb_number_base = (sizeof(limb_t) * 8);
+        
+            static constexpr int number_less = -1;
+            static constexpr int number_great = 1;
+            static constexpr int number_equal = 0;
 
+            static int compare(number const& l, number const& r) {
+                for (size_t i = 0; i < limb_n; ++i) {
+                    if (l.limbs[limb_n - 1 - i] < r.limbs[limb_n - 1 - i]) {
+                        return number_less;
+                    } else if (l.limbs[limb_n - 1 - i] > r.limbs[limb_n - 1 - i]) {
+                        return number_great;
+                    }
+                }
+
+                return number_equal;
+            }
+
+        public:
+            /// default constuctor.
             constexpr number() {
                 if constexpr (sizeof(limb_t) * 2 != sizeof(cast_t)) {
                     throw std::invalid_argument(
@@ -38,6 +57,7 @@ namespace epi {
                 }
             }
 
+            /// initializer list constructor.
             constexpr number(std::initializer_list<limb_t> num) : number() {
                 if (sizeof(limb_t) * limb_n < sizeof(limb_t) * num.size()) {
                     throw std::invalid_argument("initializer list has a bigger size than the defined number<> type");
@@ -53,28 +73,36 @@ namespace epi {
                 }
             }
 
+            /// integral constructor.
             template<typename T>
-            constexpr number(const T& num) {
+            constexpr number(const T& num) : number() {
+                #ifdef _LITTLE_ENDIAN
                 if constexpr (sizeof(T) <= sizeof(limb_t) * limb_n) {
                     std::memcpy(limbs, &num, sizeof(T));
                 } else {
                     throw std::invalid_argument("Argument has bigger size than the defined number<> type");
                 }
+                #else
+                    #error BIG ENDIAN SYSTEMS IS NOT SUPPORTED YET
+                #endif
             }
 
-            constexpr number(number const& src) {
+            /// copy constructor.
+            constexpr number(number const& src) : number() {
                 std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
             }
 
+            /// copy assignment.
             constexpr number &operator=(number const& src) {
                 if (this != &src) {
                     std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
                 }
                 return *this;
             }
-
+ 
             friend std::ostream &operator<< <limb_t, cast_t, limb_n>( std::ostream&, const number<limb_t, cast_t, limb_n>& );
     
+            // arithmetic operators : start
             constexpr number operator+(number const& add) const {
                 number sum;
                 limb_t carry = 0;
@@ -151,6 +179,34 @@ namespace epi {
                 *this = *this * mul;
                 return *this;
             }
+            // arithmetic operators : end
+
+            // relational operators : start
+            bool operator==(number const& op) const {
+                return !compare(limbs, op.limbs);
+            }
+
+            bool operator!=(number const& op) const {
+                return compare(limbs, op.limbs);
+            }
+
+            bool operator<(number const& op) const {
+                return compare(limbs, op.limbs) == number_less;
+            }
+
+            bool operator>(number const& op) const {
+                return compare(limbs, op.limbs) == number_great;
+            }
+
+            bool operator<=(number const& op) const {
+                return compare(limbs, op.limbs) <= number_equal;
+            }
+
+            bool operator>=(number const& op) const {
+                return compare(limbs, op.limbs) >= number_equal;
+            }
+
+            // relational operators : end
     };
 
     template <typename limb_t, typename cast_t, size_t limb_n>
