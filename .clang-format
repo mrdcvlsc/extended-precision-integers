@@ -1,6 +1,6 @@
 ---
 BasedOnStyle: Microsoft
-# IndentWidth: 4
+IndentWidth: 2
 
 Language: Cpp
 
