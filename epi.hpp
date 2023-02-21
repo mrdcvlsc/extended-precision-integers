@@ -24,27 +24,39 @@ namespace epi {
 
   template <typename limb_t, typename cast_t, size_t limb_n>
   class number {
+
     private:
 
     limb_t limbs[limb_n];
 
     /// @brief Number base use to represent the integer.
-    static constexpr size_t limb_number_base = (sizeof(limb_t) * 8);
+    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
+    static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
 
-    static constexpr int number_less = -1;
-    static constexpr int number_great = 1;
-    static constexpr int number_equal = 0;
+    /// @brief Total bytes of the number<> type.
+    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
 
-    static int compare(number const &l, number const &r) {
+    /// @brief Total bits of the number<> type.
+    static constexpr size_t BITS = BYTES * 8;
+
+    static constexpr int LESS = -1;
+    static constexpr int GREAT = 1;
+    static constexpr int EQUAL = 0;
+
+    static constexpr int compare(number const &l, number const &r) {
+      int comparison_result = EQUAL;
+
       for (size_t i = 0; i < limb_n; ++i) {
         if (l.limbs[limb_n - 1 - i] < r.limbs[limb_n - 1 - i]) {
-          return number_less;
+          comparison_result = LESS;
+          break;
         } else if (l.limbs[limb_n - 1 - i] > r.limbs[limb_n - 1 - i]) {
-          return number_great;
+          comparison_result = GREAT;
+          break;
         }
       }
 
-      return number_equal;
+      return comparison_result;
     }
 
     public:
@@ -111,7 +123,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
         sum.limbs[i] = index_sum;
-        carry = index_sum >> limb_number_base;
+        carry = index_sum >> LIMB_BASE;
       }
 
       return sum;
@@ -123,7 +135,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
         limbs[i] = index_sum;
-        carry = index_sum >> limb_number_base;
+        carry = index_sum >> LIMB_BASE;
       }
 
       return *this;
@@ -136,7 +148,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
         diff.limbs[i] = index_diff;
-        carry = (index_diff >> limb_number_base) & 0x1;
+        carry = (index_diff >> LIMB_BASE) & 0x1;
       }
 
       return diff;
@@ -148,7 +160,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
         limbs[i] = index_diff;
-        carry = (index_diff >> limb_number_base) & 0x1;
+        carry = (index_diff >> LIMB_BASE) & 0x1;
       }
 
       return *this;
@@ -161,7 +173,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_prod = (cast_t) limbs[i] * mul.limbs[0] + carry;
         prod.limbs[i] = index_prod;
-        carry = index_prod >> limb_number_base;
+        carry = index_prod >> LIMB_BASE;
       }
 
       for (size_t i = 1; i < limb_n; ++i) {
@@ -169,7 +181,7 @@ namespace epi {
         for (size_t j = 0; j < limb_n - i; ++j) {
           cast_t index_prod = (cast_t) limbs[j] * mul.limbs[i] + prod.limbs[i + j] + carry;
           prod.limbs[i + j] = index_prod;
-          carry = (index_prod >> limb_number_base);
+          carry = (index_prod >> LIMB_BASE);
         }
       }
 
@@ -183,32 +195,117 @@ namespace epi {
     // arithmetic operators : end
 
     // relational operators : start
-    bool operator==(number const &op) const {
+    constexpr bool operator==(number const &op) const {
       return !compare(limbs, op.limbs);
     }
 
-    bool operator!=(number const &op) const {
+    constexpr bool operator!=(number const &op) const {
       return compare(limbs, op.limbs);
     }
 
-    bool operator<(number const &op) const {
-      return compare(limbs, op.limbs) == number_less;
+    constexpr bool operator<(number const &op) const {
+      return compare(limbs, op.limbs) == LESS;
     }
 
-    bool operator>(number const &op) const {
-      return compare(limbs, op.limbs) == number_great;
+    constexpr bool operator>(number const &op) const {
+      return compare(limbs, op.limbs) == GREAT;
     }
 
-    bool operator<=(number const &op) const {
-      return compare(limbs, op.limbs) <= number_equal;
+    constexpr bool operator<=(number const &op) const {
+      return compare(limbs, op.limbs) <= EQUAL;
     }
 
-    bool operator>=(number const &op) const {
-      return compare(limbs, op.limbs) >= number_equal;
+    constexpr bool operator>=(number const &op) const {
+      return compare(limbs, op.limbs) >= EQUAL;
     }
 
     // relational operators : end
-  };
+
+    // shift operators : start
+
+    constexpr number &operator<=(size_t lshift) {
+      return (*this = *this << lshift);
+    }
+
+    constexpr number operator<<(size_t lshift) const {
+      number result = {0};
+
+      if (lshift >= BITS) {
+        lshift %= BITS;
+      }
+
+      size_t limb_shifts = lshift / LIMB_BITS;
+      size_t bit_shifts = lshift % LIMB_BITS;
+
+      if (limb_shifts) {
+        for (size_t i = limb_shifts; i < limb_n; ++i) {
+          result.limbs[i] = limbs[(i - limb_shifts) % limb_n];
+        }
+      } else {
+        result = *this;
+      }
+
+      if (bit_shifts) {
+        limb_t carries[limb_n - 1];
+
+        for (size_t i = 0; i < limb_n - 1; ++i) {
+          carries[i] = result.limbs[i] >> (LIMB_BITS - bit_shifts);
+        }
+
+        result.limbs[0] <<= bit_shifts;
+
+        for (size_t i = 1; i < limb_n; ++i) {
+          result.limbs[i] <<= bit_shifts;
+          result.limbs[i] |= carries[i - 1];
+        }
+      }
+
+      return result;
+    }
+
+    constexpr number &operator>=(size_t rshift) {
+      return (*this = *this >> rshift);
+    }
+
+    constexpr number operator>>(size_t rshift) const {
+      number result = {0};
+
+      if (rshift >= BITS) {
+        rshift %= BITS;
+      }
+
+      size_t limb_shifts = rshift / LIMB_BITS;
+      size_t bit_shifts = rshift % LIMB_BITS;
+
+      if (limb_shifts) {
+        for (size_t i = 0; i < limb_n - limb_shifts; ++i) {
+          result.limbs[i] = limbs[(i + limb_shifts) % limb_n];
+        }
+      } else {
+        result = *this;
+      }
+
+      if (bit_shifts) {
+        limb_t carries[limb_n - 1];
+
+        for (size_t i = 0; i < limb_n - 1; ++i) {
+          carries[i] = result.limbs[i + 1] << (LIMB_BITS - bit_shifts);
+        }
+
+        result.limbs[limb_n - 1] >>= bit_shifts;
+
+        for (size_t i = 0; i < limb_n - 1; ++i) {
+          result.limbs[i] >>= bit_shifts;
+          result.limbs[i] |= carries[i];
+        }
+      }
+
+      return result;
+    }
+
+    // shift operators : end
+
+  }; // number class : end
 
   template <typename limb_t, typename cast_t, size_t limb_n>
   std::ostream &operator<<(std::ostream &out, const number<limb_t, cast_t, limb_n> &num) {
