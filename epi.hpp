@@ -88,7 +88,7 @@ namespace epi {
 
     /// integral constructor.
     template <typename T>
-    constexpr number(const T &num) : number() {
+    constexpr number(T num) : number() {
 #ifdef _LITTLE_ENDIAN
       if constexpr (sizeof(T) <= sizeof(limb_t) * limb_n) {
         std::memcpy(limbs, &num, sizeof(T));
@@ -196,27 +196,27 @@ namespace epi {
 
     // relational operators : start
     constexpr bool operator==(number const &op) const {
-      return !compare(limbs, op.limbs);
+      return !compare(*this, op);
     }
 
     constexpr bool operator!=(number const &op) const {
-      return compare(limbs, op.limbs);
+      return compare(*this, op);
     }
 
     constexpr bool operator<(number const &op) const {
-      return compare(limbs, op.limbs) == LESS;
+      return compare(*this, op) == LESS;
     }
 
     constexpr bool operator>(number const &op) const {
-      return compare(limbs, op.limbs) == GREAT;
+      return compare(*this, op) == GREAT;
     }
 
     constexpr bool operator<=(number const &op) const {
-      return compare(limbs, op.limbs) <= EQUAL;
+      return compare(*this, op) <= EQUAL;
     }
 
     constexpr bool operator>=(number const &op) const {
-      return compare(limbs, op.limbs) >= EQUAL;
+      return compare(*this, op) >= EQUAL;
     }
 
     // relational operators : end

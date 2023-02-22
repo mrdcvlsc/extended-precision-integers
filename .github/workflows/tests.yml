@@ -7,44 +7,36 @@ on:
     branches: [ main ]
 
 jobs:
-  clang-linux:
+  clang:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2019, macos-latest]
     
     steps:
+    - uses: actions/checkout@v3
 
-    - name: install clang
-      run: sudo apt install clang
+    - name: Build
+      run: make test CXX=clang++
 
-    - uses: actions/checkout@v2
-
-    - name: compile tests
-      run: make test CC=clang++
-
-    - name: run tests
+    - name: Run
       run: make run_test
 
-  gcc-gnu-linux:
+  gcc:
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2019, macos-latest]
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: compile tests
-      run: make test CC=g++
+    - name: Build
+      run: make test CXX=g++
 
-    - name: run tests
-      run: make run_test
-
-  gcc-mingw-windows:
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: compile tests
-      run: make test CC=g++
-
-    - name: run tests
+    - name: Run
       run: make run_test

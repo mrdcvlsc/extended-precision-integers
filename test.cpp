@@ -11,6 +11,7 @@ typedef epi::number<uint16_t, uint32_t, 4> uint64_16t;
 typedef epi::number<uint32_t, uint64_t, 2> uint64_32t;
 
 static std::vector<size_t> test_results;
+static std::vector<size_t> failed_cases;
 static size_t test_number = 0;
 static int final_verdict = 0;
 
@@ -335,12 +336,196 @@ int main() {
   std::cout << "RELATIONAL OPERATORS : \n";
   {
     {
-      uint64_8t a = 0x0;
-      uint64_8t b = 0x1;
-      uint64_8t c = 0xff;
-      uint64_8t d = 0xffff;
-      uint64_8t e = 0xffffffff;
-      uint64_8t f = 0xffffffffffffffff;
+      uint64_8t a = (uint64_t) 0x0;
+      uint64_8t b = (uint64_t) 0x1;
+      uint64_8t c = (uint64_t) 0xff;
+      uint64_8t d = (uint64_t) 0xffff;
+      uint64_8t e = (uint64_t) 0xffffffff;
+      uint64_8t f = (uint64_t) 0xffffffffffffffff;
+
+      std::cout << "uint64_8t a = " << std::hex << a << "\n";
+      std::cout << "uint64_8t b = " << std::hex << b << "\n";
+      std::cout << "uint64_8t c = " << std::hex << c << "\n";
+      std::cout << "uint64_8t d = " << std::hex << d << "\n";
+      std::cout << "uint64_8t e = " << std::hex << e << "\n";
+      std::cout << "uint64_8t f = " << std::hex << f << "\n";
+
+      assert_eq(a, (uint64_t) 0x0, 8);
+      assert_eq(b, (uint64_t) 0x1, 8);
+      assert_eq(c, (uint64_t) 0xff, 8);
+      assert_eq(d, (uint64_t) 0xffff, 8);
+      assert_eq(e, (uint64_t) 0xffffffff, 8);
+      assert_eq(f, (uint64_t) 0xffffffffffffffff, 8);
+
+      assert_exp(a < b, true, "a < b, true");
+      assert_exp(a <= b, true, "a <= b, true");
+      assert_exp(b < c, true, "b < c, true");
+      assert_exp(b <= c, true, "b <= c, true");
+      assert_exp(c < d, true, "c < d, true");
+      assert_exp(c <= d, true, "c <= d, true");
+      assert_exp(d < e, true, "d < e, true");
+      assert_exp(d <= e, true, "d <= e, true");
+      assert_exp(e < f, true, "e < f, true");
+      assert_exp(e <= f, true, "e <= f, true");
+
+      assert_exp(a > b, false, "a > b, false");
+      assert_exp(a >= b, false, "a >= b, false");
+      assert_exp(b > c, false, "b > c, false");
+      assert_exp(b >= c, false, "b >= c, false");
+      assert_exp(c > d, false, "c > d, false");
+      assert_exp(c >= d, false, "c >= d, false");
+      assert_exp(d > e, false, "d > e, false");
+      assert_exp(d >= e, false, "d >= e, false");
+      assert_exp(e > f, false, "e > f, false");
+      assert_exp(e >= f, false, "e >= f, false");
+
+      assert_exp(b < a, false, "b < a, false");
+      assert_exp(b <= a, false, "b <= a, false");
+      assert_exp(c < b, false, "c < b, false");
+      assert_exp(c <= b, false, "c <= b, false");
+      assert_exp(d < c, false, "d < c, false");
+      assert_exp(d <= c, false, "d <= c, false");
+      assert_exp(e < d, false, "e < d, false");
+      assert_exp(e <= d, false, "e <= d, false");
+      assert_exp(f < e, false, "f < e, false");
+      assert_exp(f <= e, false, "f <= e, false");
+
+      assert_exp(b > a, true, "b > a, true");
+      assert_exp(b >= a, true, "b >= a, true");
+      assert_exp(c > b, true, "c > b, true");
+      assert_exp(c >= b, true, "c >= b, true");
+      assert_exp(d > c, true, "d > c, true");
+      assert_exp(d >= c, true, "d >= c, true");
+      assert_exp(e > d, true, "e > d, true");
+      assert_exp(e >= d, true, "e >= d, true");
+      assert_exp(f > e, true, "f > e, true");
+      assert_exp(f >= e, true, "f >= e, true");
+
+      assert_exp(a == a, true, "a == a, true");
+      assert_exp(b == b, true, "b == b, true");
+      assert_exp(c == c, true, "c == c, true");
+      assert_exp(d == d, true, "d == d, true");
+      assert_exp(e == e, true, "e == e, true");
+      assert_exp(f == f, true, "f == f, true");
+
+      assert_exp(a <= a, true, "a <= a, true");
+      assert_exp(b <= b, true, "b <= b, true");
+      assert_exp(c <= c, true, "c <= c, true");
+      assert_exp(d <= d, true, "d <= d, true");
+      assert_exp(e <= e, true, "e <= e, true");
+      assert_exp(f <= f, true, "f <= f, true");
+
+      assert_exp(a >= a, true, "a >= a, true");
+      assert_exp(b >= b, true, "b >= b, true");
+      assert_exp(c >= c, true, "c >= c, true");
+      assert_exp(d >= d, true, "d >= d, true");
+      assert_exp(e >= e, true, "e >= e, true");
+      assert_exp(f >= f, true, "f >= f, true");
+    }
+
+    {
+      uint64_16t a = (uint64_t) 0x0;
+      uint64_16t b = (uint64_t) 0x1;
+      uint64_16t c = (uint64_t) 0xff;
+      uint64_16t d = (uint64_t) 0xffff;
+      uint64_16t e = (uint64_t) 0xffffffff;
+      uint64_16t f = (uint64_t) 0xffffffffffffffff;
+
+      std::cout << "uint64_316t a = " << std::hex << a << "\n";
+      std::cout << "uint64_316t b = " << std::hex << b << "\n";
+      std::cout << "uint64_316t c = " << std::hex << c << "\n";
+      std::cout << "uint64_316t d = " << std::hex << d << "\n";
+      std::cout << "uint64_316t e = " << std::hex << e << "\n";
+      std::cout << "uint64_316t f = " << std::hex << f << "\n";
+
+      assert_eq(a, (uint64_t) 0x0, 8);
+      assert_eq(b, (uint64_t) 0x1, 8);
+      assert_eq(c, (uint64_t) 0xff, 8);
+      assert_eq(d, (uint64_t) 0xffff, 8);
+      assert_eq(e, (uint64_t) 0xffffffff, 8);
+      assert_eq(f, (uint64_t) 0xffffffffffffffff, 8);
+
+      assert_exp(a < b, true, "a < b, true");
+      assert_exp(a <= b, true, "a <= b, true");
+      assert_exp(b < c, true, "b < c, true");
+      assert_exp(b <= c, true, "b <= c, true");
+      assert_exp(c < d, true, "c < d, true");
+      assert_exp(c <= d, true, "c <= d, true");
+      assert_exp(d < e, true, "d < e, true");
+      assert_exp(d <= e, true, "d <= e, true");
+      assert_exp(e < f, true, "e < f, true");
+      assert_exp(e <= f, true, "e <= f, true");
+
+      assert_exp(a > b, false, "a > b, false");
+      assert_exp(a >= b, false, "a >= b, false");
+      assert_exp(b > c, false, "b > c, false");
+      assert_exp(b >= c, false, "b >= c, false");
+      assert_exp(c > d, false, "c > d, false");
+      assert_exp(c >= d, false, "c >= d, false");
+      assert_exp(d > e, false, "d > e, false");
+      assert_exp(d >= e, false, "d >= e, false");
+      assert_exp(e > f, false, "e > f, false");
+      assert_exp(e >= f, false, "e >= f, false");
+
+      assert_exp(b < a, false, "b < a, false");
+      assert_exp(b <= a, false, "b <= a, false");
+      assert_exp(c < b, false, "c < b, false");
+      assert_exp(c <= b, false, "c <= b, false");
+      assert_exp(d < c, false, "d < c, false");
+      assert_exp(d <= c, false, "d <= c, false");
+      assert_exp(e < d, false, "e < d, false");
+      assert_exp(e <= d, false, "e <= d, false");
+      assert_exp(f < e, false, "f < e, false");
+      assert_exp(f <= e, false, "f <= e, false");
+
+      assert_exp(b > a, true, "b > a, true");
+      assert_exp(b >= a, true, "b >= a, true");
+      assert_exp(c > b, true, "c > b, true");
+      assert_exp(c >= b, true, "c >= b, true");
+      assert_exp(d > c, true, "d > c, true");
+      assert_exp(d >= c, true, "d >= c, true");
+      assert_exp(e > d, true, "e > d, true");
+      assert_exp(e >= d, true, "e >= d, true");
+      assert_exp(f > e, true, "f > e, true");
+      assert_exp(f >= e, true, "f >= e, true");
+
+      assert_exp(a == a, true, "a == a, true");
+      assert_exp(b == b, true, "b == b, true");
+      assert_exp(c == c, true, "c == c, true");
+      assert_exp(d == d, true, "d == d, true");
+      assert_exp(e == e, true, "e == e, true");
+      assert_exp(f == f, true, "f == f, true");
+
+      assert_exp(a <= a, true, "a <= a, true");
+      assert_exp(b <= b, true, "b <= b, true");
+      assert_exp(c <= c, true, "c <= c, true");
+      assert_exp(d <= d, true, "d <= d, true");
+      assert_exp(e <= e, true, "e <= e, true");
+      assert_exp(f <= f, true, "f <= f, true");
+
+      assert_exp(a >= a, true, "a >= a, true");
+      assert_exp(b >= b, true, "b >= b, true");
+      assert_exp(c >= c, true, "c >= c, true");
+      assert_exp(d >= d, true, "d >= d, true");
+      assert_exp(e >= e, true, "e >= e, true");
+      assert_exp(f >= f, true, "f >= f, true");
+    }
+
+    {
+      uint64_32t a = (uint64_t) 0x0;
+      uint64_32t b = (uint64_t) 0x1;
+      uint64_32t c = (uint64_t) 0xff;
+      uint64_32t d = (uint64_t) 0xffff;
+      uint64_32t e = (uint64_t) 0xffffffff;
+      uint64_32t f = (uint64_t) 0xffffffffffffffff;
+
+      std::cout << "uint64_32t a = " << std::hex << a << "\n";
+      std::cout << "uint64_32t b = " << std::hex << b << "\n";
+      std::cout << "uint64_32t c = " << std::hex << c << "\n";
+      std::cout << "uint64_32t d = " << std::hex << d << "\n";
+      std::cout << "uint64_32t e = " << std::hex << e << "\n";
+      std::cout << "uint64_32t f = " << std::hex << f << "\n";
+
 
       assert_eq(a, (uint64_t) 0x0, 8);
       assert_eq(b, (uint64_t) 0x1, 8);
@@ -680,7 +865,14 @@ int main() {
     std::cout << "\nFINAL VERDICT : PASSED\n";
     return 0;
   } else {
-    std::cout << "\nFINAL VERDICT : FAILED\n";
+    std::cout << "\nFINAL VERDICT : FAILED\n\n";
+
+    std::cout << "Failed on test cases : ";
+
+    for (auto e: failed_cases) {
+      std::cout << std::dec << e << ", ";
+    }
+
     return 1;
   }
 }
@@ -696,10 +888,12 @@ void assert_eq(T1 a, T2 b, size_t numBytes, std::string test_name) {
 
   if (!result) {
     std::cout << "PASSED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
   } else {
     std::cout << "!!! FAILED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
+    
+    failed_cases.push_back(test_number);
   }
 
 #ifdef PRINT_RESULT
@@ -718,10 +912,12 @@ void assert_types(std::string test_name) {
 
   if (!result) {
     std::cout << "PASSED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
   } else {
     std::cout << "!!! FAILED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
+
+    failed_cases.push_back(test_number);
   }
 
 #ifdef PRINT_RESULT
@@ -739,10 +935,12 @@ void assert_exp(bool A, bool B, std::string test_name) {
 
   if (!result) {
     std::cout << "PASSED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
   } else {
     std::cout << "!!! FAILED : "
-              << "test " << test_number << " (" << test_name << ")";
+              << "test " << std::dec << test_number << " (" << test_name << ")";
+
+    failed_cases.push_back(test_number);
   }
 
 #ifdef PRINT_RESULT
