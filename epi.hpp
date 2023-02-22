@@ -236,29 +236,20 @@ namespace epi {
 
       size_t limb_shifts = lshift / LIMB_BITS;
       size_t bit_shifts = lshift % LIMB_BITS;
+      size_t i = 0;
 
-      if (limb_shifts) {
-        for (size_t i = limb_shifts; i < limb_n; ++i) {
-          result.limbs[i] = limbs[(i - limb_shifts) % limb_n];
-        }
-      } else {
-        result = *this;
+      cast_t shifted_index;
+
+      for (; i < limb_n - 1 - limb_shifts; ++i) {
+        memcpy(&shifted_index, limbs + i, sizeof(cast_t));
+        shifted_index <<= bit_shifts;
+        result.limbs[i + limb_shifts] |= shifted_index;
+        result.limbs[i + limb_shifts + 1] = (shifted_index >> LIMB_BITS);
       }
 
-      if (bit_shifts) {
-        limb_t carries[limb_n - 1];
-
-        for (size_t i = 0; i < limb_n - 1; ++i) {
-          carries[i] = result.limbs[i] >> (LIMB_BITS - bit_shifts);
-        }
-
-        result.limbs[0] <<= bit_shifts;
-
-        for (size_t i = 1; i < limb_n; ++i) {
-          result.limbs[i] <<= bit_shifts;
-          result.limbs[i] |= carries[i - 1];
-        }
-      }
+      shifted_index = limbs[i];
+      shifted_index <<= bit_shifts;
+      result.limbs[i + limb_shifts] |= shifted_index;
 
       return result;
     }
@@ -268,6 +259,32 @@ namespace epi {
     }
 
     constexpr number operator>>(size_t rshift) const {
+      // new : to be debugged
+      // number result = {0};
+
+      // if (rshift >= BITS) {
+      //   rshift %= BITS;
+      // }
+
+      // size_t limb_shifts = rshift / LIMB_BITS;
+      // size_t bit_shifts = rshift % LIMB_BITS;
+      // size_t i = 0;
+
+      // cast_t shifted_index;
+
+      // for (; i < limb_n - 1 - limb_shifts; ++i) {
+      //   memcpy(&shifted_index, &limbs[limb_n - 2 - i], sizeof(cast_t));
+      //   shifted_index >>= bit_shifts;
+      //   result.limbs[limb_n - 2 - i - limb_shifts] |= shifted_index;
+      //   result.limbs[limb_n - 1 - i - limb_shifts] = (shifted_index >> LIMB_BITS);
+      // }
+
+      // shifted_index = limbs[limb_n - 1 - limb_shifts];
+      // shifted_index >>= bit_shifts;
+      // result.limbs[0] |= shifted_index;
+
+      /// old
+
       number result = {0};
 
       if (rshift >= BITS) {
