@@ -1,0 +1,50 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  clang-linux:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+
+    - name: install clang
+      run: sudo apt install clang
+
+    - uses: actions/checkout@v2
+
+    - name: compile tests
+      run: make test CC=clang++
+
+    - name: run tests
+      run: make run_test
+
+  gcc-gnu-linux:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: compile tests
+      run: make test CC=g++
+
+    - name: run tests
+      run: make run_test
+
+  gcc-mingw-windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: compile tests
+      run: make test CC=g++
+
+    - name: run tests
+      run: make run_test
