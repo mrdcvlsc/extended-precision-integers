@@ -223,7 +223,7 @@ namespace epi {
 
     // shift operators : start
 
-    constexpr number &operator<=(size_t lshift) {
+    constexpr number &operator<<=(size_t lshift) {
       return (*this = *this << lshift);
     }
 
@@ -247,44 +247,18 @@ namespace epi {
         result.limbs[i + limb_shifts + 1] = (shifted_index >> LIMB_BITS);
       }
 
-      shifted_index = limbs[i];
-      shifted_index <<= bit_shifts;
-      result.limbs[i + limb_shifts] |= shifted_index;
+      limb_t last_shifted_limb = limbs[i];
+      last_shifted_limb <<= bit_shifts;
+      result.limbs[i + limb_shifts] |= last_shifted_limb;
 
       return result;
     }
 
-    constexpr number &operator>=(size_t rshift) {
+    constexpr number &operator>>=(size_t rshift) {
       return (*this = *this >> rshift);
     }
 
     constexpr number operator>>(size_t rshift) const {
-      // new : to be debugged
-      // number result = {0};
-
-      // if (rshift >= BITS) {
-      //   rshift %= BITS;
-      // }
-
-      // size_t limb_shifts = rshift / LIMB_BITS;
-      // size_t bit_shifts = rshift % LIMB_BITS;
-      // size_t i = 0;
-
-      // cast_t shifted_index;
-
-      // for (; i < limb_n - 1 - limb_shifts; ++i) {
-      //   memcpy(&shifted_index, &limbs[limb_n - 2 - i], sizeof(cast_t));
-      //   shifted_index >>= bit_shifts;
-      //   result.limbs[limb_n - 2 - i - limb_shifts] |= shifted_index;
-      //   result.limbs[limb_n - 1 - i - limb_shifts] = (shifted_index >> LIMB_BITS);
-      // }
-
-      // shifted_index = limbs[limb_n - 1 - limb_shifts];
-      // shifted_index >>= bit_shifts;
-      // result.limbs[0] |= shifted_index;
-
-      /// old
-
       number result = {0};
 
       if (rshift >= BITS) {
@@ -293,29 +267,20 @@ namespace epi {
 
       size_t limb_shifts = rshift / LIMB_BITS;
       size_t bit_shifts = rshift % LIMB_BITS;
+      size_t i = 0;
 
-      if (limb_shifts) {
-        for (size_t i = 0; i < limb_n - limb_shifts; ++i) {
-          result.limbs[i] = limbs[(i + limb_shifts) % limb_n];
-        }
-      } else {
-        result = *this;
+      cast_t shifted_index;
+
+      for (; i < limb_n - 1 - limb_shifts; ++i) {
+        memcpy(&shifted_index, &limbs[limb_n - 2 - i], sizeof(cast_t));
+        shifted_index >>= bit_shifts;
+        result.limbs[limb_n - 2 - i - limb_shifts] = shifted_index;
+        result.limbs[limb_n - 1 - i - limb_shifts] |= (shifted_index >> LIMB_BITS);
       }
 
-      if (bit_shifts) {
-        limb_t carries[limb_n - 1];
-
-        for (size_t i = 0; i < limb_n - 1; ++i) {
-          carries[i] = result.limbs[i + 1] << (LIMB_BITS - bit_shifts);
-        }
-
-        result.limbs[limb_n - 1] >>= bit_shifts;
-
-        for (size_t i = 0; i < limb_n - 1; ++i) {
-          result.limbs[i] >>= bit_shifts;
-          result.limbs[i] |= carries[i];
-        }
-      }
+      limb_t last_shifted_limb = limbs[limb_n - 1 - i];
+      last_shifted_limb >>= bit_shifts;
+      result.limbs[0] |= last_shifted_limb;
 
       return result;
     }

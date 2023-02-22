@@ -90,7 +90,7 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] << j, EPIs[i] << j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  << shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_8t << shift = " + std::to_string(j)
         );
       }
     }
@@ -99,7 +99,7 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  >> shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_8t >> shift = " + std::to_string(j)
         );
       }
     }
@@ -134,7 +134,7 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] << j, EPIs[i] << j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  << shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  | uint64_16t << shift = " + std::to_string(j)
         );
       }
     }
@@ -143,7 +143,7 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  >> shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  | uint64_16t >> shift = " + std::to_string(j)
         );
       }
     }
@@ -178,7 +178,7 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] << j, EPIs[i] << j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  << shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  | uint64_32t << shift = " + std::to_string(j)
         );
       }
     }
@@ -187,7 +187,145 @@ int main() {
       for (int j = -2; j < 66; ++j) {
         assert_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
-            "assert_eq : iter = " + std::to_string(i) + "  |  >> shift = " + std::to_string(j)
+            "assert_eq : iter = " + std::to_string(i) + "  | uint64_32t >> shift = " + std::to_string(j)
+        );
+      }
+    }
+  }
+
+  {
+    uint64_t PODs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    uint64_8t EPIs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    for (size_t i = 0; i < 8; ++i) {
+      assert_eq(PODs[i], EPIs[i], 8, "assert_eq : iter = " + std::to_string(i));
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_8t test = EPIs[i];
+        assert_eq(
+            PODs[i] << j, (test <<= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_8t <<= shift = " + std::to_string(j)
+        );
+      }
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_8t test = EPIs[i];
+        assert_eq(
+            PODs[i] >> j, (test >>= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_8t >>= shift = " + std::to_string(j)
+        );
+      }
+    }
+  }
+
+  {
+    uint64_t PODs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    uint64_16t EPIs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    for (size_t i = 0; i < 8; ++i) {
+      assert_eq(PODs[i], EPIs[i], 8, "assert_eq : iter = " + std::to_string(i));
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_16t test = EPIs[i];
+        assert_eq(
+            PODs[i] << j, (test <<= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_16t <<= shift = " + std::to_string(j)
+        );
+      }
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_16t test = EPIs[i];
+        assert_eq(
+            PODs[i] >> j, (test >>= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_16t >>= shift = " + std::to_string(j)
+        );
+      }
+    }
+  }
+
+  {
+    uint64_t PODs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    uint64_32t EPIs[8] = {
+        0xdeadbeefcafebabe,
+        0xffffffffffffffff,
+        0xffffffff00000000,
+        0xffffffffffffffff,
+        0xabcdef0123456789,
+        0x9876543210fedcba,
+        0b1010101010101010101010101010101010101010101010101010101010101010,
+        0b101010101010101010101010101010101010101010101010101010101010101};
+
+    for (size_t i = 0; i < 8; ++i) {
+      assert_eq(PODs[i], EPIs[i], 8, "assert_eq : iter = " + std::to_string(i));
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_32t test = EPIs[i];
+        assert_eq(
+            PODs[i] << j, (test <<= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_32t <<= shift = " + std::to_string(j)
+        );
+      }
+    }
+
+    for (size_t i = 0; i < 8; i++) {
+      for (int j = -2; j < 66; ++j) {
+        uint64_32t test = EPIs[i];
+        assert_eq(
+            PODs[i] >> j, (test >>= j), 8,
+            "assert_eq : iter = " + std::to_string(i) + "  |  uint64_32t >>= shift = " + std::to_string(j)
         );
       }
     }
