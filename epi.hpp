@@ -1,8 +1,6 @@
 #ifndef EXTENDED_PRECISION_INTEGERS_HPP
 #define EXTENDED_PRECISION_INTEGERS_HPP
 
-#define _LITTLE_ENDIAN
-
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -62,7 +60,7 @@ namespace epi {
     public:
 
     /// default constuctor.
-    constexpr number() {
+    constexpr number() : limbs() {
       if constexpr (sizeof(limb_t) * 2 != sizeof(cast_t)) {
         throw std::invalid_argument(
             "In 'number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
@@ -76,33 +74,39 @@ namespace epi {
         throw std::invalid_argument("initializer list has a bigger size than the defined number<> type");
       }
 
-      for (size_t i = 0; i < limb_n; i++) {
-        limbs[i] = 0;
-      }
-
       size_t i = limb_n - num.size();
+      size_t j = limb_n - i;
       for (auto num_limb: num) {
         limbs[limb_n - 1 - i++] = num_limb;
+      }
+
+      for (; j < limb_n; ++j) {
+        limbs[j] = 0;
       }
     }
 
     /// integral constructor.
     template <typename T>
-    constexpr number(T num) : number() {
-#ifdef _LITTLE_ENDIAN
-      if constexpr (sizeof(T) <= sizeof(limb_t) * limb_n) {
-        std::memcpy(limbs, &num, sizeof(T));
-      } else {
-        throw std::invalid_argument("Argument has bigger size than the defined number<> type");
+    constexpr number(T num) : number()  {
+      // TODO: add check in the future to only accept unsigned integral types
+
+      size_t partition = sizeof(T) / sizeof(limb_t);
+
+      size_t i = 0;
+      for (; i < partition; ++i) {
+        limbs[i] = num >> (i * sizeof(limb_t) * 8);
       }
-#else
-  #error BIG ENDIAN SYSTEMS IS NOT SUPPORTED YET
-#endif
+
+      for (; i < limb_n; ++i) {
+        limbs[i] = 0;
+      }
     }
 
     /// copy constructor.
     constexpr number(number const &src) : number() {
-      std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
+      for (size_t i = 0; i < limb_n; ++i) {
+        limbs[i] = src.limbs[i];
+      }
     }
 
     /// copy assignment.
@@ -238,10 +242,15 @@ namespace epi {
       size_t bit_shifts = lshift % LIMB_BITS;
       size_t i = 0;
 
-      cast_t shifted_index;
+      cast_t shifted_index = 0;
 
       for (; i < limb_n - 1 - limb_shifts; ++i) {
-        memcpy(&shifted_index, limbs + i, sizeof(cast_t));
+        // memcpy alternative
+        shifted_index = limbs[i + 1];
+        shifted_index <<= LIMB_BITS;
+        shifted_index |= limbs[i];
+
+        // apply shifts
         shifted_index <<= bit_shifts;
         result.limbs[i + limb_shifts] |= shifted_index;
         result.limbs[i + limb_shifts + 1] = (shifted_index >> LIMB_BITS);
@@ -269,10 +278,15 @@ namespace epi {
       size_t bit_shifts = rshift % LIMB_BITS;
       size_t i = 0;
 
-      cast_t shifted_index;
+      cast_t shifted_index = 0;
 
       for (; i < limb_n - 1 - limb_shifts; ++i) {
-        memcpy(&shifted_index, &limbs[limb_n - 2 - i], sizeof(cast_t));
+        // memcpy alternative
+        shifted_index = limbs[limb_n - 1 - i];
+        shifted_index <<= LIMB_BITS;
+        shifted_index |= limbs[limb_n - 2 - i];
+
+        // apply shifts
         shifted_index >>= bit_shifts;
         result.limbs[limb_n - 2 - i - limb_shifts] = shifted_index;
         result.limbs[limb_n - 1 - i - limb_shifts] |= (shifted_index >> LIMB_BITS);

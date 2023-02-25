@@ -1,6 +1,6 @@
 CXX=clang++
 CXX_STANDARD=-std=c++17
-FLAGS=-Wall -Wextra
+FLAGS=-Wall -Wextra -Wno-shift-count-negative -Wno-shift-count-overflow
 OS := $(shell uname)
 
 ifeq ($(OS), Linux)
