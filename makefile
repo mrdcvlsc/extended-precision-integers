@@ -1,6 +1,7 @@
 CXX=clang++
 CXX_STANDARD=-std=c++17
 FLAGS=-Wall -Wextra -Wno-shift-count-negative -Wno-shift-count-overflow
+DFLAGS=
 OS := $(shell uname)
 
 ifeq ($(OS), Linux)
@@ -26,7 +27,7 @@ test:
 	@echo compiling test program...
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
-	@$(CXX) $(CXX_STANDARD) test.cpp -o $(OUTPUT_NAME).$(EXTENSION) $(FLAGS)
+	$(CXX) $(CXX_STANDARD) test.cpp -o $(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:

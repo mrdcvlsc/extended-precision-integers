@@ -7,6 +7,10 @@ A C++ header file that provides extended precision data types, Types that have *
 
 To use just include the header file `#include "epi.hpp"`.
 
+**Notes:**
+- using the result of shifting bits greater than a `number<>`'s width is strongly discouraged.
+
+
 ## **TO-DO**
 
 - [ ] - Extended Unsigned Integers [WIP].

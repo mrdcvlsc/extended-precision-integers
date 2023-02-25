@@ -4,6 +4,12 @@ IndentWidth: 2
 
 Language: Cpp
 
+IndentWidth: 2
+UseTab: Never
+TabWidth: 2
+AlignConsecutiveDeclarations: true
+ContinuationIndentWidth: 2
+
 # LINES
 AllowShortEnumsOnASingleLine: true
 AlwaysBreakBeforeMultilineStrings: true

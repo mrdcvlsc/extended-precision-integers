@@ -63,7 +63,7 @@ namespace epi {
     constexpr number() : limbs() {
       if constexpr (sizeof(limb_t) * 2 != sizeof(cast_t)) {
         throw std::invalid_argument(
-            "In 'number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
+          "In 'number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
         );
       }
     }
@@ -87,7 +87,7 @@ namespace epi {
 
     /// integral constructor.
     template <typename T>
-    constexpr number(T num) : number()  {
+    constexpr number(T num) : number() {
       // TODO: add check in the future to only accept unsigned integral types
 
       size_t partition = sizeof(T) / sizeof(limb_t);
@@ -233,13 +233,14 @@ namespace epi {
 
     constexpr number operator<<(size_t lshift) const {
       number result = {0};
+      size_t lshift_internal = lshift;
 
-      if (lshift >= BITS) {
-        lshift %= BITS;
+      if (lshift_internal >= BITS) {
+        lshift_internal %= BITS;
       }
 
-      size_t limb_shifts = lshift / LIMB_BITS;
-      size_t bit_shifts = lshift % LIMB_BITS;
+      size_t limb_shifts = lshift_internal / LIMB_BITS;
+      size_t bit_shifts = lshift_internal % LIMB_BITS;
       size_t i = 0;
 
       cast_t shifted_index = 0;
@@ -269,13 +270,14 @@ namespace epi {
 
     constexpr number operator>>(size_t rshift) const {
       number result = {0};
+      size_t rshift_internal = rshift;
 
-      if (rshift >= BITS) {
-        rshift %= BITS;
+      if (rshift_internal >= BITS) {
+        rshift_internal %= BITS;
       }
 
-      size_t limb_shifts = rshift / LIMB_BITS;
-      size_t bit_shifts = rshift % LIMB_BITS;
+      size_t limb_shifts = rshift_internal / LIMB_BITS;
+      size_t bit_shifts = rshift_internal % LIMB_BITS;
       size_t i = 0;
 
       cast_t shifted_index = 0;
@@ -307,8 +309,8 @@ namespace epi {
   std::ostream &operator<<(std::ostream &out, const number<limb_t, cast_t, limb_n> &num) {
 
     if (out.flags() & std::ios_base::hex) {
-      auto prev_ios_width = out.width();
-      auto prev_ios_fill = out.fill();
+      auto             prev_ios_width = out.width();
+      auto             prev_ios_fill = out.fill();
       constexpr size_t padding = sizeof(limb_t) * 2;
 
       if constexpr (std::is_same<limb_t, char>::value || std::is_same<limb_t, unsigned char>::value) {
@@ -357,29 +359,29 @@ namespace epi {
 
 // predefined types
 #if defined(ENV_64BIT_EXTENDED)
-  typedef number<uint64_t, __uint128_t, 2> uint128_t;
-  typedef number<uint64_t, __uint128_t, 3> uint192_t;
-  typedef number<uint64_t, __uint128_t, 4> uint256_t;
-  typedef number<uint64_t, __uint128_t, 5> uint320_t;
-  typedef number<uint64_t, __uint128_t, 8> uint512_t;
+  typedef number<uint64_t, __uint128_t, 2>  uint128_t;
+  typedef number<uint64_t, __uint128_t, 3>  uint192_t;
+  typedef number<uint64_t, __uint128_t, 4>  uint256_t;
+  typedef number<uint64_t, __uint128_t, 5>  uint320_t;
+  typedef number<uint64_t, __uint128_t, 8>  uint512_t;
   typedef number<uint64_t, __uint128_t, 16> uint1024_t;
   typedef number<uint64_t, __uint128_t, 32> uint2048_t;
 #elif defined(ENV_64BIT)
-  typedef number<uint32_t, uint64_t, 4> uint128_t;
-  typedef number<uint32_t, uint64_t, 6> uint192_t;
-  typedef number<uint32_t, uint64_t, 8> uint256_t;
+  typedef number<uint32_t, uint64_t, 4>  uint128_t;
+  typedef number<uint32_t, uint64_t, 6>  uint192_t;
+  typedef number<uint32_t, uint64_t, 8>  uint256_t;
   typedef number<uint32_t, uint64_t, 10> uint320_t;
   typedef number<uint32_t, uint64_t, 16> uint512_t;
   typedef number<uint32_t, uint64_t, 32> uint1024_t;
   typedef number<uint32_t, uint64_t, 64> uint2048_t;
 #elif defined(ENV_32BIT)
-  typedef number<uint16_t, uint32_t, 4> uint64_t;
-  typedef number<uint16_t, uint32_t, 8> uint128_t;
-  typedef number<uint16_t, uint32_t, 12> uint192_t;
-  typedef number<uint16_t, uint32_t, 16> uint256_t;
-  typedef number<uint16_t, uint32_t, 20> uint320_t;
-  typedef number<uint16_t, uint32_t, 32> uint512_t;
-  typedef number<uint16_t, uint32_t, 64> uint1024_t;
+  typedef number<uint16_t, uint32_t, 4>   uint64_t;
+  typedef number<uint16_t, uint32_t, 8>   uint128_t;
+  typedef number<uint16_t, uint32_t, 12>  uint192_t;
+  typedef number<uint16_t, uint32_t, 16>  uint256_t;
+  typedef number<uint16_t, uint32_t, 20>  uint320_t;
+  typedef number<uint16_t, uint32_t, 32>  uint512_t;
+  typedef number<uint16_t, uint32_t, 64>  uint1024_t;
   typedef number<uint16_t, uint32_t, 128> uint2048_t;
 #endif
 
