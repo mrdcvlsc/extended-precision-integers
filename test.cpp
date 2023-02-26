@@ -112,195 +112,170 @@ int main() {
   std::cout << "----------------------------------------------\n";
   std::cout << "CONSTEXPR SHIFT OPERATORS : \n";
   {
+    const uint64_t CONSTEXPR_POD = 0xdeadbeefcafebabe;
+
+    // uint64_t r_pod_a = CONSTEXPR_POD >> -2, r_pod_b = CONSTEXPR_POD >> -1, r_pod_c = CONSTEXPR_POD >> 0,
+    //          r_pod_d = CONSTEXPR_POD >> 1, r_pod_e = CONSTEXPR_POD >> 2, r_pod_f = CONSTEXPR_POD >> 31,
+    //          r_pod_g = CONSTEXPR_POD >> 32, r_pod_h = CONSTEXPR_POD >> 33, r_pod_i = CONSTEXPR_POD >> 63,
+    //          r_pod_j = CONSTEXPR_POD >> 64, r_pod_k = CONSTEXPR_POD >> 65, r_pod_l = CONSTEXPR_POD >> 66;
+
+    // uint64_t l_pod_a = CONSTEXPR_POD << -2, l_pod_b = CONSTEXPR_POD << -1, l_pod_c = CONSTEXPR_POD << 0,
+    //          l_pod_d = CONSTEXPR_POD << 1, l_pod_e = CONSTEXPR_POD << 2, l_pod_f = CONSTEXPR_POD << 31,
+    //          l_pod_g = CONSTEXPR_POD << 32, l_pod_h = CONSTEXPR_POD << 33, l_pod_i = CONSTEXPR_POD << 63,
+    //          l_pod_j = CONSTEXPR_POD << 64, l_pod_k = CONSTEXPR_POD << 65, l_pod_l = CONSTEXPR_POD << 66;
+
+    uint64_t r_pod_c = CONSTEXPR_POD >> 0,
+             r_pod_d = CONSTEXPR_POD >> 1, r_pod_e = CONSTEXPR_POD >> 2, r_pod_f = CONSTEXPR_POD >> 31,
+             r_pod_g = CONSTEXPR_POD >> 32, r_pod_h = CONSTEXPR_POD >> 33, r_pod_i = CONSTEXPR_POD >> 63;
+
+    uint64_t l_pod_c = CONSTEXPR_POD << 0,
+             l_pod_d = CONSTEXPR_POD << 1, l_pod_e = CONSTEXPR_POD << 2, l_pod_f = CONSTEXPR_POD << 31,
+             l_pod_g = CONSTEXPR_POD << 32, l_pod_h = CONSTEXPR_POD << 33, l_pod_i = CONSTEXPR_POD << 63;
+
     // left shifts
     {
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2, pod_f = POD >> 31, pod_g = POD >> 32,
-               pod_h = POD >> 33, pod_i = POD >> 63;
+      constexpr uint64_8t EPI = 0xdeadbeefcafebabe;
 
-      // uint64_t pod_a = POD >> -2, pod_b = POD >> -1, pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2,
-      //          pod_f = POD >> 31, pod_g = POD >> 32, pod_h = POD >> 33, pod_i = POD >> 63, pod_j = POD >> 64,
-      //          pod_k = POD >> 65, pod_l = POD >> 66;
+      // constexpr uint64_8t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      //                     g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_8t EPI = 0xdeadbeefcafebabe, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      constexpr uint64_8t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
                           g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
-      // constexpr uint64_8t EPI = 0xdeadbeefcafebabe, a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1,
-      //                     e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64,
-      //                     k = EPI >> 65, l = EPI >> 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_8t >> -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_8t >> -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_8t >> 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_8t >> 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_8t >> 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_8t >> 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_8t >> 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_8t >> 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_8t >> 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_8t >> 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_8t >> 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_8t >> 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
+      // t.cmp_eq(r_pod_a, a, 8, "uint64_8t >> -2 : r_pod_a == a");
+      // t.cmp_eq(r_pod_b, b, 8, "uint64_8t >> -1 : r_pod_b == b");
+      t.cmp_eq(r_pod_c, c, 8, "uint64_8t >> 0 : r_pod_c == c");
+      t.cmp_eq(r_pod_d, d, 8, "uint64_8t >> 1 : r_pod_d == d");
+      t.cmp_eq(r_pod_e, e, 8, "uint64_8t >> 2 : r_pod_e == e");
+      t.cmp_eq(r_pod_f, f, 8, "uint64_8t >> 31 : r_pod_f == f");
+      t.cmp_eq(r_pod_g, g, 8, "uint64_8t >> 32 : r_pod_g == g");
+      t.cmp_eq(r_pod_h, h, 8, "uint64_8t >> 33 : r_pod_h == h");
+      t.cmp_eq(r_pod_i, i, 8, "uint64_8t >> 63 : r_pod_i == i");
+      // t.cmp_eq(r_pod_j, j, 8, "uint64_8t >> 64 : r_pod_j == j");
+      // t.cmp_eq(r_pod_k, k, 8, "uint64_8t >> 65 : r_pod_k == k");
+      // t.cmp_eq(r_pod_l, l, 8, "uint64_8t >> 66 : r_pod_l == l");
     }
 
     {
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2, pod_f = POD >> 31, pod_g = POD >> 32,
-               pod_h = POD >> 33, pod_i = POD >> 63;
+      constexpr uint64_16t EPI = 0xdeadbeefcafebabe;
 
-      // uint64_t pod_a = POD >> -2, pod_b = POD >> -1, pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2,
-      //          pod_f = POD >> 31, pod_g = POD >> 32, pod_h = POD >> 33, pod_i = POD >> 63, pod_j = POD >> 64,
-      //          pod_k = POD >> 65, pod_l = POD >> 66;
+      // constexpr uint64_16t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_16t EPI = 0xdeadbeefcafebabe, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      constexpr uint64_16t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
                            g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
-      // constexpr uint64_16t EPI = 0xdeadbeefcafebabe, a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1,
-      //                      e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64,
-      //                      k = EPI >> 65, l = EPI >> 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_16t >> -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_16t >> -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_16t >> 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_16t >> 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_16t >> 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_16t >> 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_16t >> 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_16t >> 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_16t >> 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_16t >> 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_16t >> 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_16t >> 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
+      // t.cmp_eq(r_pod_a, a, 8, "uint64_16t >> -2 : r_pod_a == a");
+      // t.cmp_eq(r_pod_b, b, 8, "uint64_16t >> -1 : r_pod_b == b");
+      t.cmp_eq(r_pod_c, c, 8, "uint64_16t >> 0 : r_pod_c == c");
+      t.cmp_eq(r_pod_d, d, 8, "uint64_16t >> 1 : r_pod_d == d");
+      t.cmp_eq(r_pod_e, e, 8, "uint64_16t >> 2 : r_pod_e == e");
+      t.cmp_eq(r_pod_f, f, 8, "uint64_16t >> 31 : r_pod_f == f");
+      t.cmp_eq(r_pod_g, g, 8, "uint64_16t >> 32 : r_pod_g == g");
+      t.cmp_eq(r_pod_h, h, 8, "uint64_16t >> 33 : r_pod_h == h");
+      t.cmp_eq(r_pod_i, i, 8, "uint64_16t >> 63 : r_pod_i == i");
+      // t.cmp_eq(r_pod_j, j, 8, "uint64_16t >> 64 : r_pod_j == j");
+      // t.cmp_eq(r_pod_k, k, 8, "uint64_16t >> 65 : r_pod_k == k");
+      // t.cmp_eq(r_pod_l, l, 8, "uint64_16t >> 66 : r_pod_l == l");
     }
 
     {
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2, pod_f = POD >> 31, pod_g = POD >> 32,
-               pod_h = POD >> 33, pod_i = POD >> 63;
+      constexpr uint64_32t EPI = 0xdeadbeefcafebabe;
 
-      // uint64_t pod_a = POD >> -2, pod_b = POD >> -1, pod_c = POD >> 0, pod_d = POD >> 1, pod_e = POD >> 2,
-      //          pod_f = POD >> 31, pod_g = POD >> 32, pod_h = POD >> 33, pod_i = POD >> 63, pod_j = POD >> 64,
-      //          pod_k = POD >> 65, pod_l = POD >> 66;
+      // constexpr uint64_32t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_32t EPI = 0xdeadbeefcafebabe, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      constexpr uint64_32t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
                            g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
-      // constexpr uint64_32t EPI = 0xdeadbeefcafebabe, a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1,
-      //                      e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64,
-      //                      k = EPI >> 65, l = EPI >> 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_32t >> -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_32t >> -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_32t >> 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_32t >> 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_32t >> 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_32t >> 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_32t >> 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_32t >> 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_32t >> 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_32t >> 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_32t >> 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_32t >> 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
+      // t.cmp_eq(r_pod_a, a, 8, "uint64_32t >> -2 : r_pod_a == a");
+      // t.cmp_eq(r_pod_b, b, 8, "uint64_32t >> -1 : r_pod_b == b");
+      t.cmp_eq(r_pod_c, c, 8, "uint64_32t >> 0 : r_pod_c == c");
+      t.cmp_eq(r_pod_d, d, 8, "uint64_32t >> 1 : r_pod_d == d");
+      t.cmp_eq(r_pod_e, e, 8, "uint64_32t >> 2 : r_pod_e == e");
+      t.cmp_eq(r_pod_f, f, 8, "uint64_32t >> 31 : r_pod_f == f");
+      t.cmp_eq(r_pod_g, g, 8, "uint64_32t >> 32 : r_pod_g == g");
+      t.cmp_eq(r_pod_h, h, 8, "uint64_32t >> 33 : r_pod_h == h");
+      t.cmp_eq(r_pod_i, i, 8, "uint64_32t >> 63 : r_pod_i == i");
+      // t.cmp_eq(r_pod_j, j, 8, "uint64_32t >> 64 : r_pod_j == j");
+      // t.cmp_eq(r_pod_k, k, 8, "uint64_32t >> 65 : r_pod_k == k");
+      // t.cmp_eq(r_pod_l, l, 8, "uint64_32t >> 66 : r_pod_l == l");
     }
 
     // right shifts
     {
-      // uint64_t POD = 0xdeadbeefcafebabe;
-      // uint64_t pod_a = POD << -2, pod_b = POD << -1, pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2,
-      //          pod_f = POD << 31, pod_g = POD << 32, pod_h = POD << 33, pod_i = POD << 63, pod_j = POD << 64,
-      //          pod_k = POD << 65, pod_l = POD << 66;
+      constexpr uint64_8t EPI = 0xdeadbeefcafebabe;
 
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2, pod_f = POD << 31, pod_g = POD << 32,
-               pod_h = POD << 33, pod_i = POD << 63;
+      // constexpr uint64_8t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      //                     g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_8t EPI = 0xdeadbeefcafebabe, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      constexpr uint64_8t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
                           g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
-      // constexpr uint64_8t EPI = 0xdeadbeefcafebabe, a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1,
-      //                     e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64,
-      //                     k = EPI << 65, l = EPI << 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_8t << -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_8t << -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_8t << 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_8t << 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_8t << 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_8t << 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_8t << 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_8t << 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_8t << 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_8t << 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_8t << 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_8t << 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
+      // t.cmp_eq(l_pod_a, a, 8, "uint64_8t << -2 : l_pod_a == a");
+      // t.cmp_eq(l_pod_b, b, 8, "uint64_8t << -1 : l_pod_b == b");
+      t.cmp_eq(l_pod_c, c, 8, "uint64_8t << 0 : l_pod_c == c");
+      t.cmp_eq(l_pod_d, d, 8, "uint64_8t << 1 : l_pod_d == d");
+      t.cmp_eq(l_pod_e, e, 8, "uint64_8t << 2 : l_pod_e == e");
+      t.cmp_eq(l_pod_f, f, 8, "uint64_8t << 31 : l_pod_f == f");
+      t.cmp_eq(l_pod_g, g, 8, "uint64_8t << 32 : l_pod_g == g");
+      t.cmp_eq(l_pod_h, h, 8, "uint64_8t << 33 : l_pod_h == h");
+      t.cmp_eq(l_pod_i, i, 8, "uint64_8t << 63 : l_pod_i == i");
+      // t.cmp_eq(l_pod_j, j, 8, "uint64_8t << 64 : l_pod_j == j");
+      // t.cmp_eq(l_pod_k, k, 8, "uint64_8t << 65 : l_pod_k == k");
+      // t.cmp_eq(l_pod_l, l, 8, "uint64_8t << 66 : l_pod_l == l");
     }
 
     {
-      // uint64_t POD = 0xdeadbeefcafebabe;
-      // uint64_t pod_a = POD << -2, pod_b = POD << -1, pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2,
-      //          pod_f = POD << 31, pod_g = POD << 32, pod_h = POD << 33, pod_i = POD << 63, pod_j = POD << 64,
-      //          pod_k = POD << 65, pod_l = POD << 66;
+      constexpr uint64_16t EPI = 0xdeadbeefcafebabe;
 
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2, pod_f = POD << 31, pod_g = POD << 32,
-               pod_h = POD << 33, pod_i = POD << 63;
+      // constexpr uint64_16t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_16t EPI = 0xdeadbeefcafebabe, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      constexpr uint64_16t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
                            g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
-      // constexpr uint64_16t EPI = 0xdeadbeefcafebabe, a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1,
-      //                      e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64,
-      //                      k = EPI << 65, l = EPI << 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_16t << -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_16t << -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_16t << 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_16t << 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_16t << 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_16t << 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_16t << 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_16t << 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_16t << 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_16t << 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_16t << 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_16t << 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
+      // t.cmp_eq(l_pod_a, a, 8, "uint64_16t << -2 : l_pod_a == a");
+      // t.cmp_eq(l_pod_b, b, 8, "uint64_16t << -1 : l_pod_b == b");
+      t.cmp_eq(l_pod_c, c, 8, "uint64_16t << 0 : l_pod_c == c");
+      t.cmp_eq(l_pod_d, d, 8, "uint64_16t << 1 : l_pod_d == d");
+      t.cmp_eq(l_pod_e, e, 8, "uint64_16t << 2 : l_pod_e == e");
+      t.cmp_eq(l_pod_f, f, 8, "uint64_16t << 31 : l_pod_f == f");
+      t.cmp_eq(l_pod_g, g, 8, "uint64_16t << 32 : l_pod_g == g");
+      t.cmp_eq(l_pod_h, h, 8, "uint64_16t << 33 : l_pod_h == h");
+      t.cmp_eq(l_pod_i, i, 8, "uint64_16t << 63 : l_pod_i == i");
+      // t.cmp_eq(l_pod_j, j, 8, "uint64_16t << 64 : l_pod_j == j");
+      // t.cmp_eq(l_pod_k, k, 8, "uint64_16t << 65 : l_pod_k == k");
+      // t.cmp_eq(l_pod_l, l, 8, "uint64_16t << 66 : l_pod_l == l");
     }
 
     {
-      // uint64_t POD = 0xdeadbeefcafebabe;
-      // uint64_t pod_a = POD << -2, pod_b = POD << -1, pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2,
-      //          pod_f = POD << 31, pod_g = POD << 32, pod_h = POD << 33, pod_i = POD << 63, pod_j = POD << 64,
-      //          pod_k = POD << 65, pod_l = POD << 66;
+      constexpr uint64_32t EPI = 0xdeadbeefcafebabe;
 
-      uint64_t POD = 0xdeadbeefcafebabe;
-      uint64_t pod_c = POD << 0, pod_d = POD << 1, pod_e = POD << 2, pod_f = POD << 31, pod_g = POD << 32,
-               pod_h = POD << 33, pod_i = POD << 63;
+      // constexpr uint64_32t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_32t EPI = 0xdeadbeefcafebabe, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      constexpr uint64_32t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
                            g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
-      // constexpr uint64_32t EPI = 0xdeadbeefcafebabe, a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1,
-      //                      e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64,
-      //                      k = EPI << 65, l = EPI << 66;
-
-      t.cmp_eq(POD, EPI, 8, "uint64_8t : POD == EPI");
-      // t.cmp_eq(pod_a, a, 8, "uint64_32t << -2 : pod_a == a");
-      // t.cmp_eq(pod_b, b, 8, "uint64_32t << -1 : pod_b == b");
-      t.cmp_eq(pod_c, c, 8, "uint64_32t << 0 : pod_c == c");
-      t.cmp_eq(pod_d, d, 8, "uint64_32t << 1 : pod_d == d");
-      t.cmp_eq(pod_e, e, 8, "uint64_32t << 2 : pod_e == e");
-      t.cmp_eq(pod_f, f, 8, "uint64_32t << 31 : pod_f == f");
-      t.cmp_eq(pod_g, g, 8, "uint64_32t << 32 : pod_g == g");
-      t.cmp_eq(pod_h, h, 8, "uint64_32t << 33 : pod_h == h");
-      t.cmp_eq(pod_i, i, 8, "uint64_32t << 63 : pod_i == i");
-      // t.cmp_eq(pod_j, j, 8, "uint64_32t << 64 : pod_j == j");
-      // t.cmp_eq(pod_k, k, 8, "uint64_32t << 65 : pod_k == k");
-      // t.cmp_eq(pod_l, l, 8, "uint64_32t << 66 : pod_l == l");
+      t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
+      // t.cmp_eq(l_pod_a, a, 8, "uint64_32t << -2 : l_pod_a == a");
+      // t.cmp_eq(l_pod_b, b, 8, "uint64_32t << -1 : l_pod_b == b");
+      t.cmp_eq(l_pod_c, c, 8, "uint64_32t << 0 : l_pod_c == c");
+      t.cmp_eq(l_pod_d, d, 8, "uint64_32t << 1 : l_pod_d == d");
+      t.cmp_eq(l_pod_e, e, 8, "uint64_32t << 2 : l_pod_e == e");
+      t.cmp_eq(l_pod_f, f, 8, "uint64_32t << 31 : l_pod_f == f");
+      t.cmp_eq(l_pod_g, g, 8, "uint64_32t << 32 : l_pod_g == g");
+      t.cmp_eq(l_pod_h, h, 8, "uint64_32t << 33 : l_pod_h == h");
+      t.cmp_eq(l_pod_i, i, 8, "uint64_32t << 63 : l_pod_i == i");
+      // t.cmp_eq(l_pod_j, j, 8, "uint64_32t << 64 : l_pod_j == j");
+      // t.cmp_eq(l_pod_k, k, 8, "uint64_32t << 65 : l_pod_k == k");
+      // t.cmp_eq(l_pod_l, l, 8, "uint64_32t << 66 : l_pod_l == l");
     }
   }
 
@@ -316,6 +291,7 @@ int main() {
       0x9876543210fedcba,
       0b1010101010101010101010101010101010101010101010101010101010101010,
       0b101010101010101010101010101010101010101010101010101010101010101};
+
     {
       constexpr uint64_8t EPIs[8] = {
         0xdeadbeefcafebabe,
@@ -332,7 +308,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] << j, EPIs[i] << j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  |  uint64_8t << shift = " + std::to_string(j)
@@ -341,7 +318,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  |  uint64_8t >> shift = " + std::to_string(j)
@@ -366,7 +344,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] << j, EPIs[i] << j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  | uint64_16t << shift = " + std::to_string(j)
@@ -375,7 +354,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  | uint64_16t >> shift = " + std::to_string(j)
@@ -400,7 +380,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] << j, EPIs[i] << j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  | uint64_32t << shift = " + std::to_string(j)
@@ -409,7 +390,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           t.cmp_eq(
             PODs[i] >> j, EPIs[i] >> j, 8,
             "t.cmp_eq : iter = " + std::to_string(i) + "  | uint64_32t >> shift = " + std::to_string(j)
@@ -434,7 +416,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_8t test = EPIs[i];
           t.cmp_eq(
             PODs[i] << j, (test <<= j), 8,
@@ -444,7 +427,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_8t test = EPIs[i];
           t.cmp_eq(
             PODs[i] >> j, (test >>= j), 8,
@@ -470,7 +454,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_16t test = EPIs[i];
           t.cmp_eq(
             PODs[i] << j, (test <<= j), 8,
@@ -480,7 +465,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_16t test = EPIs[i];
           t.cmp_eq(
             PODs[i] >> j, (test >>= j), 8,
@@ -506,7 +492,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_32t test = EPIs[i];
           t.cmp_eq(
             PODs[i] << j, (test <<= j), 8,
@@ -516,7 +503,8 @@ int main() {
       }
 
       for (size_t i = 0; i < 8; i++) {
-        for (int j = -2; j < 66; ++j) {
+        // for (int j = -2; j < 66; ++j) {
+        for (int j = 0; j < 63; ++j) {
           uint64_32t test = EPIs[i];
           t.cmp_eq(
             PODs[i] >> j, (test >>= j), 8,

@@ -10,12 +10,12 @@ To use just include the header file `#include "epi.hpp"`.
 **Notes:**
 - using the result of shifting bits greater than a `number<>`'s width is strongly discouraged.
 
-
 ## **TO-DO**
 
-- [ ] - Extended Unsigned Integers [WIP].
-- [ ] - Extended Signed Integers [N/A].
-- [ ] - Extended Floating Point [N/A].
+- [ ] - [Extended Unsigned Integers [WIP]](TODO/extended-unsigned-integers.md)
+- [ ] - [Extended Signed Integers [N/A]](TODO/extended-signed-integers.md)
+- [ ] - [Extended Floating Point [N/A]](TODO/extended-floating-point.md)
 
-## **Environment Requirements**
-- little Endian
+## **Requirements**
+- Little Endian System
+- C++17 or Above
