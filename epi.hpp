@@ -2,10 +2,8 @@
 #define EXTENDED_PRECISION_INTEGERS_HPP
 
 #include <iostream>
-#include <cstring>
 #include <iomanip>
-#include <memory>
-#include <sstream>
+#include <cstring>
 #include <type_traits>
 
 #include "config.hpp"

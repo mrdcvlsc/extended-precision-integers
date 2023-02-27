@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "epi.hpp"
 #include "small_test.hpp"
 
