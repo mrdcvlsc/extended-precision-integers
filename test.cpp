@@ -1,9 +1,6 @@
+#include <iostream>
 #include "epi.hpp"
 #include "small_test.hpp"
-#include <assert.h>
-#include <bitset>
-#include <iostream>
-#include <vector>
 
 typedef epi::whole_number<uint8_t, uint16_t, 8>  uint64_8t;
 typedef epi::whole_number<uint16_t, uint32_t, 4> uint64_16t;
@@ -124,13 +121,13 @@ int main() {
     //          l_pod_g = CONSTEXPR_POD << 32, l_pod_h = CONSTEXPR_POD << 33, l_pod_i = CONSTEXPR_POD << 63,
     //          l_pod_j = CONSTEXPR_POD << 64, l_pod_k = CONSTEXPR_POD << 65, l_pod_l = CONSTEXPR_POD << 66;
 
-    uint64_t r_pod_c = CONSTEXPR_POD >> 0,
-             r_pod_d = CONSTEXPR_POD >> 1, r_pod_e = CONSTEXPR_POD >> 2, r_pod_f = CONSTEXPR_POD >> 31,
-             r_pod_g = CONSTEXPR_POD >> 32, r_pod_h = CONSTEXPR_POD >> 33, r_pod_i = CONSTEXPR_POD >> 63;
+    uint64_t r_pod_c = CONSTEXPR_POD >> 0, r_pod_d = CONSTEXPR_POD >> 1, r_pod_e = CONSTEXPR_POD >> 2,
+             r_pod_f = CONSTEXPR_POD >> 31, r_pod_g = CONSTEXPR_POD >> 32, r_pod_h = CONSTEXPR_POD >> 33,
+             r_pod_i = CONSTEXPR_POD >> 63;
 
-    uint64_t l_pod_c = CONSTEXPR_POD << 0,
-             l_pod_d = CONSTEXPR_POD << 1, l_pod_e = CONSTEXPR_POD << 2, l_pod_f = CONSTEXPR_POD << 31,
-             l_pod_g = CONSTEXPR_POD << 32, l_pod_h = CONSTEXPR_POD << 33, l_pod_i = CONSTEXPR_POD << 63;
+    uint64_t l_pod_c = CONSTEXPR_POD << 0, l_pod_d = CONSTEXPR_POD << 1, l_pod_e = CONSTEXPR_POD << 2,
+             l_pod_f = CONSTEXPR_POD << 31, l_pod_g = CONSTEXPR_POD << 32, l_pod_h = CONSTEXPR_POD << 33,
+             l_pod_i = CONSTEXPR_POD << 63;
 
     // left shifts
     {
@@ -139,8 +136,8 @@ int main() {
       // constexpr uint64_8t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                     g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_8t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
-                          g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
+      constexpr uint64_8t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
+                          i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_8t >> -2 : r_pod_a == a");
@@ -163,8 +160,8 @@ int main() {
       // constexpr uint64_16t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_16t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
-                           g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
+      constexpr uint64_16t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
+                           i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_16t >> -2 : r_pod_a == a");
@@ -187,8 +184,8 @@ int main() {
       // constexpr uint64_32t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_32t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
-                           g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
+      constexpr uint64_32t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
+                           i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_32t >> -2 : r_pod_a == a");
@@ -212,8 +209,8 @@ int main() {
       // constexpr uint64_8t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                     g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_8t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
-                          g = EPI << 32, h = EPI << 33, i = EPI << 63;
+      constexpr uint64_8t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
+                          i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_8t << -2 : l_pod_a == a");
@@ -236,8 +233,8 @@ int main() {
       // constexpr uint64_16t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_16t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
-                           g = EPI << 32, h = EPI << 33, i = EPI << 63;
+      constexpr uint64_16t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
+                           i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_16t << -2 : l_pod_a == a");
@@ -260,8 +257,8 @@ int main() {
       // constexpr uint64_32t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_32t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
-                           g = EPI << 32, h = EPI << 33, i = EPI << 63;
+      constexpr uint64_32t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
+                           i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_32t << -2 : l_pod_a == a");

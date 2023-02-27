@@ -5,11 +5,7 @@
   #define _DISABLE_PRINT_SUBJECTS
 #endif
 
-#include <cmath>
-#include <cstring>
 #include <iostream>
-#include <memory>
-#include <string>
 #include <vector>
 
 namespace smlts {
