@@ -76,10 +76,6 @@ namespace epi {
       for (auto num_limb: num) {
         limbs[limb_n - 1 - i++] = num_limb;
       }
-
-      for (; j < limb_n; ++j) {
-        limbs[j] = 0;
-      }
     }
 
     /// integral constructor.
@@ -92,10 +88,6 @@ namespace epi {
       size_t i = 0;
       for (; i < partition; ++i) {
         limbs[i] = num >> (i * sizeof(limb_t) * 8);
-      }
-
-      for (; i < limb_n; ++i) {
-        limbs[i] = 0;
       }
     }
 
@@ -230,7 +222,7 @@ namespace epi {
     }
 
     constexpr whole_number operator<<(size_t lshift) const {
-      whole_number result = {0};
+      whole_number result;
 
       size_t lshift_internal = lshift % BITS;
       size_t limb_shifts = lshift_internal / LIMB_BITS;
@@ -263,7 +255,7 @@ namespace epi {
     }
 
     constexpr whole_number operator>>(size_t rshift) const {
-      whole_number result = {0};
+      whole_number result;
 
       size_t rshift_internal = rshift % BITS;
       size_t limb_shifts = rshift_internal / LIMB_BITS;
