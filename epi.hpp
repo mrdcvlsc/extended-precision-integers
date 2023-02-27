@@ -72,7 +72,6 @@ namespace epi {
       }
 
       size_t i = limb_n - num.size();
-      size_t j = limb_n - i;
       for (auto num_limb: num) {
         limbs[limb_n - 1 - i++] = num_limb;
       }
@@ -101,7 +100,9 @@ namespace epi {
     /// copy assignment.
     constexpr whole_number &operator=(whole_number const &src) {
       if (this != &src) {
-        std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
+        for (size_t i = 0; i < limb_n; ++i) {
+          limbs[i] = src.limbs[i];
+        }
       }
       return *this;
     }

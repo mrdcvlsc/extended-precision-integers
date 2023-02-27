@@ -9,6 +9,8 @@ To use just include the header file `#include "epi.hpp"`.
 
 **Notes:**
 - using the result of shifting bits greater than a `number<>`'s width is strongly discouraged.
+- When computing very large value of numbers with `constexpr` you might need to set the
+`-fconstexpr-steps=` to a large value.
 
 ## **TO-DO**
 
