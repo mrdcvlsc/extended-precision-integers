@@ -5,9 +5,9 @@
 #include <iostream>
 #include <vector>
 
-typedef epi::number<uint8_t, uint16_t, 8>  uint64_8t;
-typedef epi::number<uint16_t, uint32_t, 4> uint64_16t;
-typedef epi::number<uint32_t, uint64_t, 2> uint64_32t;
+typedef epi::whole_number<uint8_t, uint16_t, 8>  uint64_8t;
+typedef epi::whole_number<uint16_t, uint32_t, 4> uint64_16t;
+typedef epi::whole_number<uint32_t, uint64_t, 2> uint64_32t;
 
 int main() {
   smlts::test t;
@@ -15,7 +15,7 @@ int main() {
   std::cout << "----------------------------------------------\n";
   std::cout << "INTEGRAL CONSTRUCTOR : \n";
   {
-    epi::number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};
+    epi::whole_number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};
     t.cmp_ts<uint64_t, uint64_8t>();
     t.cmp_ts<uint64_t, uint64_16t>();
     t.cmp_ts<uint64_t, uint64_32t>();
@@ -63,7 +63,7 @@ int main() {
   std::cout << "----------------------------------------------\n";
   std::cout << "INITIALIZER LIST CONSTRUCTOR : \n";
   {
-    epi::number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};
+    epi::whole_number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};
     t.cmp_ts<uint64_t, uint64_8t>();
     t.cmp_ts<uint64_t, uint64_16t>();
     t.cmp_ts<uint64_t, uint64_32t>();

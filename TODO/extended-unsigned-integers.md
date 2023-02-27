@@ -36,7 +36,7 @@ when implementing with the `constexpr` specifier.
     - [ ] `operator++(int);`
     - [ ] `operator--(int);`
 
-- [ ] Relational Operators
+- [X] Relational Operators
     - [X] `bool operator<(own_type const&) const;`
     - [X] `bool operator>(own_type const&) const;`
     - [X] `bool operator==(own_type const&) const;`

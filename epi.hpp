@@ -15,33 +15,33 @@ namespace epi {
 
   // Forward declare both templates:
   template <typename limb_t, typename cast_t, size_t limb_n>
-  class number;
+  class whole_number;
 
   template <typename limb_t, typename cast_t, size_t limb_n>
-  std::ostream &operator<<(std::ostream &, const number<limb_t, cast_t, limb_n> &);
+  std::ostream &operator<<(std::ostream &, const whole_number<limb_t, cast_t, limb_n> &);
 
   template <typename limb_t, typename cast_t, size_t limb_n>
-  class number {
+  class whole_number {
 
     private:
 
     limb_t limbs[limb_n];
 
-    /// @brief Number base use to represent the integer.
+    /// @brief whole_Number base use to represent the integer.
     static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
     static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
 
-    /// @brief Total bytes of the number<> type.
+    /// @brief Total bytes of the whole_number<> type.
     static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
 
-    /// @brief Total bits of the number<> type.
+    /// @brief Total bits of the whole_number<> type.
     static constexpr size_t BITS = BYTES * 8;
 
     static constexpr int LESS = -1;
     static constexpr int GREAT = 1;
     static constexpr int EQUAL = 0;
 
-    static constexpr int compare(number const &l, number const &r) {
+    static constexpr int compare(whole_number const &l, whole_number const &r) {
       int comparison_result = EQUAL;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -60,18 +60,18 @@ namespace epi {
     public:
 
     /// default constuctor.
-    constexpr number() : limbs() {
+    constexpr whole_number() : limbs() {
       if constexpr (sizeof(limb_t) * 2 != sizeof(cast_t)) {
         throw std::invalid_argument(
-          "In 'number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
+          "In 'whole_number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
         );
       }
     }
 
     /// initializer list constructor.
-    constexpr number(std::initializer_list<limb_t> num) : number() {
+    constexpr whole_number(std::initializer_list<limb_t> num) : whole_number() {
       if (sizeof(limb_t) * limb_n < sizeof(limb_t) * num.size()) {
-        throw std::invalid_argument("initializer list has a bigger size than the defined number<> type");
+        throw std::invalid_argument("initializer list has a bigger size than the defined whole_number<> type");
       }
 
       size_t i = limb_n - num.size();
@@ -87,7 +87,7 @@ namespace epi {
 
     /// integral constructor.
     template <typename T>
-    constexpr number(T num) : number() {
+    constexpr whole_number(T num) : whole_number() {
       // TODO: add check in the future to only accept unsigned integral types
 
       size_t partition = sizeof(T) / sizeof(limb_t);
@@ -103,25 +103,25 @@ namespace epi {
     }
 
     /// copy constructor.
-    constexpr number(number const &src) : number() {
+    constexpr whole_number(whole_number const &src) : whole_number() {
       for (size_t i = 0; i < limb_n; ++i) {
         limbs[i] = src.limbs[i];
       }
     }
 
     /// copy assignment.
-    constexpr number &operator=(number const &src) {
+    constexpr whole_number &operator=(whole_number const &src) {
       if (this != &src) {
         std::memcpy(limbs, src.limbs, limb_n * sizeof(limb_t));
       }
       return *this;
     }
 
-    friend std::ostream &operator<< <limb_t, cast_t, limb_n>(std::ostream &, const number<limb_t, cast_t, limb_n> &);
+    friend std::ostream &operator<< <limb_t, cast_t, limb_n>(std::ostream &, const whole_number<limb_t, cast_t, limb_n> &);
 
     // arithmetic operators : start
-    constexpr number operator+(number const &add) const {
-      number sum;
+    constexpr whole_number operator+(whole_number const &add) const {
+      whole_number sum;
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -133,7 +133,7 @@ namespace epi {
       return sum;
     }
 
-    constexpr number &operator+=(number const &add) {
+    constexpr whole_number &operator+=(whole_number const &add) {
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -145,8 +145,8 @@ namespace epi {
       return *this;
     }
 
-    constexpr number operator-(number const &sub) const {
-      number diff;
+    constexpr whole_number operator-(whole_number const &sub) const {
+      whole_number diff;
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -158,7 +158,7 @@ namespace epi {
       return diff;
     }
 
-    constexpr number &operator-=(number const &sub) {
+    constexpr whole_number &operator-=(whole_number const &sub) {
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -170,8 +170,8 @@ namespace epi {
       return *this;
     }
 
-    constexpr number operator*(number const &mul) const {
-      number prod;
+    constexpr whole_number operator*(whole_number const &mul) const {
+      whole_number prod;
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -192,34 +192,34 @@ namespace epi {
       return prod;
     }
 
-    constexpr number &operator*=(number const &mul) {
+    constexpr whole_number &operator*=(whole_number const &mul) {
       *this = *this * mul;
       return *this;
     }
     // arithmetic operators : end
 
     // relational operators : start
-    constexpr bool operator==(number const &op) const {
+    constexpr bool operator==(whole_number const &op) const {
       return !compare(*this, op);
     }
 
-    constexpr bool operator!=(number const &op) const {
+    constexpr bool operator!=(whole_number const &op) const {
       return compare(*this, op);
     }
 
-    constexpr bool operator<(number const &op) const {
+    constexpr bool operator<(whole_number const &op) const {
       return compare(*this, op) == LESS;
     }
 
-    constexpr bool operator>(number const &op) const {
+    constexpr bool operator>(whole_number const &op) const {
       return compare(*this, op) == GREAT;
     }
 
-    constexpr bool operator<=(number const &op) const {
+    constexpr bool operator<=(whole_number const &op) const {
       return compare(*this, op) <= EQUAL;
     }
 
-    constexpr bool operator>=(number const &op) const {
+    constexpr bool operator>=(whole_number const &op) const {
       return compare(*this, op) >= EQUAL;
     }
 
@@ -227,12 +227,12 @@ namespace epi {
 
     // shift operators : start
 
-    constexpr number &operator<<=(size_t lshift) {
+    constexpr whole_number &operator<<=(size_t lshift) {
       return (*this = *this << lshift);
     }
 
-    constexpr number operator<<(size_t lshift) const {
-      number result = {0};
+    constexpr whole_number operator<<(size_t lshift) const {
+      whole_number result = {0};
       size_t lshift_internal = lshift;
 
       if (lshift_internal >= BITS) {
@@ -264,12 +264,12 @@ namespace epi {
       return result;
     }
 
-    constexpr number &operator>>=(size_t rshift) {
+    constexpr whole_number &operator>>=(size_t rshift) {
       return (*this = *this >> rshift);
     }
 
-    constexpr number operator>>(size_t rshift) const {
-      number result = {0};
+    constexpr whole_number operator>>(size_t rshift) const {
+      whole_number result = {0};
       size_t rshift_internal = rshift;
 
       if (rshift_internal >= BITS) {
@@ -303,10 +303,10 @@ namespace epi {
 
     // shift operators : end
 
-  }; // number class : end
+  }; // whole_number class : end
 
   template <typename limb_t, typename cast_t, size_t limb_n>
-  std::ostream &operator<<(std::ostream &out, const number<limb_t, cast_t, limb_n> &num) {
+  std::ostream &operator<<(std::ostream &out, const whole_number<limb_t, cast_t, limb_n> &num) {
 
     if (out.flags() & std::ios_base::hex) {
       auto             prev_ios_width = out.width();
@@ -359,30 +359,43 @@ namespace epi {
 
 // predefined types
 #if defined(ENV_64BIT_EXTENDED)
-  typedef number<uint64_t, __uint128_t, 2>  uint128_t;
-  typedef number<uint64_t, __uint128_t, 3>  uint192_t;
-  typedef number<uint64_t, __uint128_t, 4>  uint256_t;
-  typedef number<uint64_t, __uint128_t, 5>  uint320_t;
-  typedef number<uint64_t, __uint128_t, 8>  uint512_t;
-  typedef number<uint64_t, __uint128_t, 16> uint1024_t;
-  typedef number<uint64_t, __uint128_t, 32> uint2048_t;
+  typedef whole_number<uint64_t, __uint128_t, 2>  uint128_t;
+  typedef whole_number<uint64_t, __uint128_t, 3>  uint192_t;
+  typedef whole_number<uint64_t, __uint128_t, 4>  uint256_t;
+  typedef whole_number<uint64_t, __uint128_t, 5>  uint320_t;
+  typedef whole_number<uint64_t, __uint128_t, 8>  uint512_t;
+  typedef whole_number<uint64_t, __uint128_t, 16> uint1024_t;
+  typedef whole_number<uint64_t, __uint128_t, 32> uint2048_t;
+  typedef whole_number<uint64_t, __uint128_t, 64> uint4096_t;
+  typedef whole_number<uint64_t, __uint128_t, 128> uint8192_t;
+  typedef whole_number<uint64_t, __uint128_t, 256> uint16384_t;
+  typedef whole_number<uint64_t, __uint128_t, 512> uint32768_t;
+
 #elif defined(ENV_64BIT)
-  typedef number<uint32_t, uint64_t, 4>  uint128_t;
-  typedef number<uint32_t, uint64_t, 6>  uint192_t;
-  typedef number<uint32_t, uint64_t, 8>  uint256_t;
-  typedef number<uint32_t, uint64_t, 10> uint320_t;
-  typedef number<uint32_t, uint64_t, 16> uint512_t;
-  typedef number<uint32_t, uint64_t, 32> uint1024_t;
-  typedef number<uint32_t, uint64_t, 64> uint2048_t;
+  typedef whole_number<uint32_t, uint64_t, 4>  uint128_t;
+  typedef whole_number<uint32_t, uint64_t, 6>  uint192_t;
+  typedef whole_number<uint32_t, uint64_t, 8>  uint256_t;
+  typedef whole_number<uint32_t, uint64_t, 10> uint320_t;
+  typedef whole_number<uint32_t, uint64_t, 16> uint512_t;
+  typedef whole_number<uint32_t, uint64_t, 32> uint1024_t;
+  typedef whole_number<uint32_t, uint64_t, 64> uint2048_t;
+  typedef whole_number<uint32_t, uint64_t, 128> uint4096_t;
+  typedef whole_number<uint32_t, uint64_t, 256> uint8192_t;
+  typedef whole_number<uint32_t, uint64_t, 512> uint16384_t;
+  typedef whole_number<uint32_t, uint64_t, 1024> uint32768_t;
 #elif defined(ENV_32BIT)
-  typedef number<uint16_t, uint32_t, 4>   uint64_t;
-  typedef number<uint16_t, uint32_t, 8>   uint128_t;
-  typedef number<uint16_t, uint32_t, 12>  uint192_t;
-  typedef number<uint16_t, uint32_t, 16>  uint256_t;
-  typedef number<uint16_t, uint32_t, 20>  uint320_t;
-  typedef number<uint16_t, uint32_t, 32>  uint512_t;
-  typedef number<uint16_t, uint32_t, 64>  uint1024_t;
-  typedef number<uint16_t, uint32_t, 128> uint2048_t;
+  typedef whole_number<uint16_t, uint32_t, 4>   uint64_t;
+  typedef whole_number<uint16_t, uint32_t, 8>   uint128_t;
+  typedef whole_number<uint16_t, uint32_t, 12>  uint192_t;
+  typedef whole_number<uint16_t, uint32_t, 16>  uint256_t;
+  typedef whole_number<uint16_t, uint32_t, 20>  uint320_t;
+  typedef whole_number<uint16_t, uint32_t, 32>  uint512_t;
+  typedef whole_number<uint16_t, uint32_t, 64>  uint1024_t;
+  typedef whole_number<uint16_t, uint32_t, 128> uint2048_t;
+  typedef whole_number<uint16_t, uint32_t, 256> uint4096_t;
+  typedef whole_number<uint16_t, uint32_t, 512> uint8192_t;
+  typedef whole_number<uint16_t, uint32_t, 1024> uint16384_t;
+  typedef whole_number<uint16_t, uint32_t, 2048> uint32768_t;
 #endif
 
 } // namespace epi
