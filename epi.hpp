@@ -71,9 +71,9 @@ namespace epi {
         throw std::invalid_argument("initializer list has a bigger size than the defined whole_number<> type");
       }
 
-      size_t i = limb_n - num.size();
+      size_t i = limb_n - 1 - (limb_n - num.size());
       for (auto num_limb: num) {
-        limbs[limb_n - 1 - i++] = num_limb;
+        limbs[i--] = num_limb;
       }
     }
 
@@ -84,8 +84,7 @@ namespace epi {
 
       size_t partition = sizeof(T) / sizeof(limb_t);
 
-      size_t i = 0;
-      for (; i < partition; ++i) {
+      for (size_t i = 0; i < partition; ++i) {
         limbs[i] = num >> (i * sizeof(limb_t) * 8);
       }
     }
