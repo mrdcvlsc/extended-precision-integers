@@ -103,6 +103,7 @@ namespace epi {
           limbs[i] = src.limbs[i];
         }
       }
+      
       return *this;
     }
 
@@ -158,6 +159,30 @@ namespace epi {
       }
 
       return *this;
+    }
+
+    // pre-fix increment/decrement
+    constexpr whole_number &operator++() {
+      constexpr whole_number CONSTEXPR_ONE = { 0x01 };
+      return *this += CONSTEXPR_ONE;
+    }
+
+    constexpr whole_number &operator--() {
+      constexpr whole_number CONSTEXPR_ONE = { 0x01 };
+      return *this -= CONSTEXPR_ONE;
+    }
+
+    // post-fix increment/decrement
+    constexpr whole_number operator++(int) {
+      whole_number prev = *this;
+      ++*this;
+      return prev;
+    }
+
+    constexpr whole_number operator--(int) {
+      whole_number prev = *this;
+      --*this;
+      return prev;
     }
 
     constexpr whole_number operator*(whole_number const &mul) const {

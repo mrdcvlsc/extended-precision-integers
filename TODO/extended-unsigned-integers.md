@@ -28,13 +28,13 @@ when implementing with the `constexpr` specifier.
     - [ ] `operator/(own_type const&) const;`
     - [ ] `operator%(own_type const&) const;`
 
-- [ ] Pre-Fix Increment/Decrement
-    - [ ] `&operator++();`
-    - [ ] `&operator--();`
+- [X] Pre-Fix Increment/Decrement
+    - [X] `&operator++();`
+    - [X] `&operator--();`
 
-- [ ] Post-Fix Increment/Decrement
-    - [ ] `operator++(int);`
-    - [ ] `operator--(int);`
+- [X] Post-Fix Increment/Decrement
+    - [X] `operator++(int);`
+    - [X] `operator--(int);`
 
 - [X] Relational Operators
     - [X] `bool operator<(own_type const&) const;`

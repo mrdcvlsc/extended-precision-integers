@@ -1045,6 +1045,114 @@ int main() {
 
   // #############################################################
   std::cout << "\n----------------------------------------------\n";
+  std::cout << "BASIC PREFIX-INCREMENT\n";
+  {
+    {
+      uint64_t test = 0x00;
+      uint64_8t test_8t = { 0x00 };
+      uint64_8t test_16t = { 0x00 };
+      uint64_32t test_32t = { 0x00 };
+
+      while (test < 200) {
+        test++;
+        test_8t++;
+        test_16t++;
+        test_32t++;
+      }
+
+      int comp1 = std::memcmp(&test, &test_8t, sizeof(uint64_t));
+      int comp2 = std::memcmp(&test, &test_16t, sizeof(uint64_t));
+      int comp3 = std::memcmp(&test, &test_32t, sizeof(uint64_t));
+
+      t.cmp_exp(comp1 == 0, true, "increment test 1");
+      t.cmp_exp(comp2 == 0, true, "increment test 2");
+      t.cmp_exp(comp3 == 0, true, "increment test 3");
+    }
+  }
+
+  // #############################################################
+  std::cout << "\n----------------------------------------------\n";
+  std::cout << "BASIC POSTFIX-INCREMENT\n";
+  {
+    {
+      uint64_t test = 0x00;
+      uint64_8t test_8t = { 0x00 };
+      uint64_8t test_16t = { 0x00 };
+      uint64_32t test_32t = { 0x00 };
+
+      while (test < 200) {
+        ++test;
+        ++test_8t;
+        ++test_16t;
+        ++test_32t;
+      }
+
+      int comp1 = std::memcmp(&test, &test_8t, sizeof(uint64_t));
+      int comp2 = std::memcmp(&test, &test_16t, sizeof(uint64_t));
+      int comp3 = std::memcmp(&test, &test_32t, sizeof(uint64_t));
+
+      t.cmp_exp(comp1 == 0, true, "increment test 1");
+      t.cmp_exp(comp2 == 0, true, "increment test 2");
+      t.cmp_exp(comp3 == 0, true, "increment test 3");
+    }
+  }
+
+  // #############################################################
+  std::cout << "\n----------------------------------------------\n";
+  std::cout << "BASIC PREFIX-DECREMENT\n";
+  {
+    {
+      uint64_t test = 0x00;
+      uint64_8t test_8t = { 0x00 };
+      uint64_8t test_16t = { 0x00 };
+      uint64_32t test_32t = { 0x00 };
+
+      while (test < 200) {
+        test--;
+        test_8t--;
+        test_16t--;
+        test_32t--;
+      }
+
+      int comp1 = std::memcmp(&test, &test_8t, sizeof(uint64_t));
+      int comp2 = std::memcmp(&test, &test_16t, sizeof(uint64_t));
+      int comp3 = std::memcmp(&test, &test_32t, sizeof(uint64_t));
+
+      t.cmp_exp(comp1 == 0, true, "decrement test 1");
+      t.cmp_exp(comp2 == 0, true, "decrement test 2");
+      t.cmp_exp(comp3 == 0, true, "decrement test 3");
+    }
+  }
+
+  // #############################################################
+  std::cout << "\n----------------------------------------------\n";
+  std::cout << "BASIC POSTFIX-DECREMENT\n";
+  {
+    {
+      uint64_t test = 0x00;
+      uint64_8t test_8t = { 0x00 };
+      uint64_8t test_16t = { 0x00 };
+      uint64_32t test_32t = { 0x00 };
+
+      while (test < 200) {
+        --test;
+        --test_8t;
+        --test_16t;
+        --test_32t;
+      }
+
+      int comp1 = std::memcmp(&test, &test_8t, sizeof(uint64_t));
+      int comp2 = std::memcmp(&test, &test_16t, sizeof(uint64_t));
+      int comp3 = std::memcmp(&test, &test_32t, sizeof(uint64_t));
+
+      t.cmp_exp(comp1 == 0, true, "decrement test 1");
+      t.cmp_exp(comp2 == 0, true, "decrement test 2");
+      t.cmp_exp(comp3 == 0, true, "decrement test 3");
+    }
+  }
+
+  // #############################################################
+  std::cout << "\n----------------------------------------------\n";
   std::cout << "BASIC MULTIPLICATION\n";
   {
     {
