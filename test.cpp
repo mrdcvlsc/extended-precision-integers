@@ -11,6 +11,103 @@ int main() {
   smlts::test t;
 
   std::cout << "----------------------------------------------\n";
+  std::cout << "BOOLEAN OPERATOR : \n";
+  {
+
+    const uint64_t       has_value_a = 0xabcdef0123456789;
+    constexpr uint64_8t  has_value_b = has_value_a;
+    constexpr uint64_16t has_value_c = has_value_a;
+    constexpr uint64_32t has_value_d = has_value_a;
+
+    const uint64_t       zero_value_a = 0x00;
+    constexpr uint64_8t  zero_value_b = zero_value_a;
+    constexpr uint64_16t zero_value_c = zero_value_a;
+    constexpr uint64_32t zero_value_d = zero_value_a;
+
+    if (has_value_b) {
+      t.pass("if (has_value_b)");
+    } else {
+      t.fail("if (has_value_b)");
+    }
+
+    if (!zero_value_b) {
+      t.pass("if (!zero_value_b)");
+    } else {
+      t.fail("if (!zero_value_b)");
+    }
+
+    if (has_value_c) {
+      t.pass("if (has_value_c)");
+    } else {
+      t.fail("if (has_value_c)");
+    }
+
+    if (!zero_value_c) {
+      t.pass("if (!zero_value_c)");
+    } else {
+      t.fail("if (!zero_value_c)");
+    }
+
+    if (has_value_d) {
+      t.pass("if (has_value_d)");
+    } else {
+      t.fail("if (has_value_d)");
+    }
+
+    if (!zero_value_d) {
+      t.pass("if (!zero_value_d)");
+    } else {
+      t.fail("if (!zero_value_d)");
+    }
+
+    // AND: BOTH TRUE
+    if (has_value_b && has_value_b) {
+      t.pass("if (has_value_b && has_value_b)");
+    } else {
+      t.fail("if (has_value_b && has_value_b)");
+    }
+
+    if (has_value_c && has_value_c) {
+      t.pass("if (has_value_c && has_value_c)");
+    } else {
+      t.fail("if (has_value_c && has_value_c)");
+    }
+
+    if (has_value_d && has_value_d) {
+      t.pass("if (has_value_d && has_value_d)");
+    } else {
+      t.fail("if (has_value_d && has_value_d)");
+    }
+
+    // AND: RIGHT FALSE, LEFT TRUE
+    if (has_value_b && zero_value_b) {
+      t.fail("if (has_value_b && zero_value_b)");
+    } else {
+      t.pass("if (has_value_b && zero_value_b)");
+    }
+
+    if (has_value_c && zero_value_c) {
+      t.fail("if (has_value_c && zero_value_c)");
+    } else {
+      t.pass("if (has_value_c && zero_value_c)");
+    }
+
+    if (has_value_d && zero_value_d) {
+      t.fail("if (has_value_d && zero_value_d)");
+    } else {
+      t.pass("if (has_value_d && zero_value_d)");
+    }
+
+    t.cmp_exp((bool) has_value_b, true, "has_value_b, true");
+    t.cmp_exp((bool) has_value_c, true, "has_value_c, true");
+    t.cmp_exp((bool) has_value_d, true, "has_value_b, true");
+
+    t.cmp_exp((bool) zero_value_b, false, "zero_value_b, false");
+    t.cmp_exp((bool) zero_value_c, false, "zero_value_c, false");
+    t.cmp_exp((bool) zero_value_d, false, "zero_value_b, false");
+  }
+
+  std::cout << "----------------------------------------------\n";
   std::cout << "INTEGRAL CONSTRUCTOR : \n";
   {
     epi::whole_number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};

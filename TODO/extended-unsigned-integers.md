@@ -44,8 +44,8 @@ when implementing with the `constexpr` specifier.
     - [X] `bool operator<=(own_type const&) const;`
     - [X] `bool operator>=(own_type const&) const;`
 
-- [ ] Logical Operators
-    - [ ] `explicit operator bool() const noexcept;`
+- [X] Logical Operators
+    - [X] `explicit operator bool() const noexcept;`
 
 - [ ] Bit-Wise Logical Operators
     - [ ] `&operator&=(own_type const&);`

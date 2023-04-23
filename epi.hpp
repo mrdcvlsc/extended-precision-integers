@@ -240,6 +240,15 @@ namespace epi {
 
     // relational operators : end
 
+    constexpr explicit operator bool() const noexcept {
+      limb_t result = 0;
+      for (size_t i = 0; i < limb_n; ++i) {
+        result |= limbs[i];
+      }
+
+      return result;
+    }
+
     // shift operators : start
 
     constexpr whole_number &operator<<=(size_t lshift) {

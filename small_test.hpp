@@ -40,6 +40,9 @@ namespace smlts {
 
     void cmp_exp(bool A, bool B, std::string const &test_name = "");
 
+    void pass(std::string const& test_name);
+    void fail(std::string const& test_name);
+
     /** @brief To make the output cleaner you can use these -D compilation flags :
      * `_DISABLE_PRINT_RESULTS`, `_DISABLE_PRINT_TEST_NAMES` and/or `_DISABLE_PRINT_SUBJECTS`.
      */
@@ -113,6 +116,21 @@ namespace smlts {
 #ifndef _DISABLE_PRINT_SUBJECTS
     std::cout << std::hex << "  ->  " << A << " :::: " << B << "\n";
 #endif
+  }
+
+  void test::pass(std::string const& test_name) {
+    test_number++;
+    print_passed_failed(0, test_name);
+    test_results.push_back(0);
+    std::cout << "\n";
+  }
+
+  void test::fail(std::string const& test_name) {
+    test_number++;
+    print_passed_failed(1, test_name);
+    test_results.push_back(1);
+    failed_cases.push_back(test_number);
+    std::cout << "\n";
   }
 
   int test::get_final_verdict() {
