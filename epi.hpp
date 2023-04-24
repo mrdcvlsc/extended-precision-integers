@@ -240,6 +240,7 @@ namespace epi {
 
     // relational operators : end
 
+    /// @brief automatically resolve the logical &&, ||, and ! operators.
     constexpr explicit operator bool() const noexcept {
       limb_t result = 0;
       for (size_t i = 0; i < limb_n; ++i) {
@@ -248,6 +249,64 @@ namespace epi {
 
       return result;
     }
+
+    // bitwise logical operators : start
+
+    constexpr whole_number &operator&=(whole_number const& op) {
+      for (size_t i = 0; i < limb_n; ++i) {
+        limbs[i] &= op.limbs[i];
+      }
+      return *this;
+    }
+
+    constexpr whole_number &operator|=(whole_number const& op) {
+      for (size_t i = 0; i < limb_n; ++i) {
+        limbs[i] |= op.limbs[i];
+      }
+      return *this;
+    }
+
+    constexpr whole_number &operator^=(whole_number const& op) {
+      for (size_t i = 0; i < limb_n; ++i) {
+        limbs[i] ^= op.limbs[i];
+      }
+      return *this;
+    }
+
+    constexpr whole_number operator&(whole_number const& op) const {
+      whole_number bwl_and;
+      for (size_t i = 0; i < limb_n; ++i) {
+        bwl_and.limbs[i] = limbs[i] & op.limbs[i];
+      }
+      return bwl_and;
+    }
+
+    constexpr whole_number operator|(whole_number const& op) const {
+      whole_number bwl_or;
+      for (size_t i = 0; i < limb_n; ++i) {
+        bwl_or.limbs[i] = limbs[i] | op.limbs[i];
+      }
+      return bwl_or;
+    }
+
+    constexpr whole_number operator^(whole_number const& op) const {
+      whole_number bwl_xor;
+      for (size_t i = 0; i < limb_n; ++i) {
+        bwl_xor.limbs[i] = limbs[i] ^ op.limbs[i];
+      }
+      return bwl_xor;
+    }
+
+    constexpr whole_number operator~() const {
+      whole_number bwln = *this;
+      for (size_t i = 0; i < limb_n; ++i) {
+        bwln.limbs[i] = ~bwln.limbs[i];
+      }
+
+      return bwln;
+    }
+
+    // bitwise logical operators : end
 
     // shift operators : start
 

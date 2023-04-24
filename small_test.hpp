@@ -86,7 +86,7 @@ namespace smlts {
     print_passed_failed(result, test_name);
 
 #ifndef _DISABLE_PRINT_SUBJECTS
-    std::cout << std::hex << "  ->  " << a << " == " << b << "\n";
+    std::cout << std::hex << "  ->  " << a << " == " << std::hex << b << "\n";
 #endif
   }
 

@@ -47,14 +47,14 @@ when implementing with the `constexpr` specifier.
 - [X] Logical Operators
     - [X] `explicit operator bool() const noexcept;`
 
-- [ ] Bit-Wise Logical Operators
-    - [ ] `&operator&=(own_type const&);`
-    - [ ] `&operator|=(own_type const&);`
-    - [ ] `&operator^=(own_type const&);`
-    - [ ] `operator&(own_type const&) const;`
-    - [ ] `operator|(own_type const&) const;`
-    - [ ] `operator^(own_type const&) const;`
-    - [ ] `operator~() const;`
+- [X] Bit-Wise Logical Operators
+    - [X] `&operator&=(own_type const&);`
+    - [X] `&operator|=(own_type const&);`
+    - [X] `&operator^=(own_type const&);`
+    - [X] `operator&(own_type const&) const;`
+    - [X] `operator|(own_type const&) const;`
+    - [X] `operator^(own_type const&) const;`
+    - [X] `operator~() const;`
 
 - [ ] Shift Operators
     - [X] `&operator<<=(size_t bits);`
