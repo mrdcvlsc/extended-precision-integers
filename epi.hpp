@@ -80,7 +80,9 @@ namespace epi {
     /// integral constructor.
     template <typename T>
     constexpr whole_number(T num) : whole_number() {
-      // TODO: add check in the future to only accept unsigned integral types
+      if constexpr (!std::is_integral_v<T>) {
+        throw std::invalid_argument("Invalid initialization of whole_number with a non-integral type");
+      }
 
       size_t partition = sizeof(T) / sizeof(limb_t);
 
