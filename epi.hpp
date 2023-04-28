@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <cstring>
 #include <type_traits>
+#include <limits>
+#include <random>
 
 #include "config.hpp"
 
@@ -81,8 +83,12 @@ namespace epi {
     template <typename T>
     constexpr whole_number(T num) : whole_number() {
       if constexpr (!std::is_integral_v<T>) {
-        throw std::invalid_argument("Invalid initialization of whole_number with a non-integral type");
+        throw std::invalid_argument("Invalid initialization of whole_number with a signed or non-integral type");
       }
+
+      // if constexpr (!std::is_unsigned_v<T>) {
+      //   throw std::invalid_argument("Invalid initialization of whole_number with a signed integral type");
+      // }
 
       size_t partition = sizeof(T) / sizeof(limb_t);
 
@@ -310,6 +316,43 @@ namespace epi {
 
     // bitwise logical operators : end
 
+    // bitwise logical operators for integral operands : start
+    
+    constexpr whole_number &operator&=(limb_t op) {
+      limbs[0] &= op;
+      return *this;
+    }
+    
+    constexpr whole_number &operator|=(limb_t op) {
+      limbs[0] |= op;
+      return *this;
+    }
+    
+    constexpr whole_number &operator^=(limb_t op) {
+      limbs[0] ^= op;
+      return *this;
+    }
+    
+    constexpr whole_number operator&(limb_t op) const {
+      whole_number bwl_and;
+      bwl_and.limbs[0] = limbs[0] & op;
+      return bwl_and;
+    }
+    
+    constexpr whole_number operator|(limb_t op) const {
+      whole_number bwl_or;
+      bwl_or.limbs[0] = limbs[0] | op;
+      return bwl_or;
+    }
+    
+    constexpr whole_number operator^(limb_t op) const {
+      whole_number bwl_xor;
+      bwl_xor.limbs[0] = limbs[0] ^ op;
+      return bwl_xor;
+    }
+
+    // bitwise logical operators for integral operands : end
+
     // shift operators : start
 
     constexpr whole_number &operator<<=(size_t lshift) {
@@ -476,5 +519,34 @@ namespace epi {
 #endif
 
 } // namespace epi
+
+namespace std {
+  template <typename limb_t, typename cast_t, size_t limb_n>
+  struct numeric_limits<epi::whole_number<limb_t, cast_t, limb_n>> {
+      // static constexpr bool is_specialized = true;
+
+      constexpr static epi::whole_number<limb_t, cast_t, limb_n> max() {
+        constexpr size_t limb_bits = sizeof(limb_t) * 8;
+        constexpr limb_t max_limb = std::numeric_limits<limb_t>::max();
+        epi::whole_number<limb_t, cast_t, limb_n> max_value = max_limb;
+        for (size_t i = 0; i < limb_n - 1; ++i) {
+          max_value <<= limb_bits;
+          max_value |= max_limb;
+        }
+        return max_value;
+      }
+
+      constexpr static epi::whole_number<limb_t, cast_t, limb_n> min() {
+        constexpr size_t limb_bits = sizeof(limb_t) * 8;
+        constexpr limb_t min_limb = std::numeric_limits<limb_t>::min();
+        epi::whole_number<limb_t, cast_t, limb_n> min_value = min_limb;
+        for (size_t i = 0; i < limb_n - 1; ++i) {
+          min_value <<= limb_bits;
+          min_value |= min_limb;
+        }
+        return min_value;
+      }
+  };
+}
 
 #endif
