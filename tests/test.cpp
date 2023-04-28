@@ -1,7 +1,7 @@
+#include "../epi.hpp"
+#include "small_test.hpp"
 #include <iostream>
 #include <string>
-#include "epi.hpp"
-#include "small_test.hpp"
 
 typedef epi::whole_number<uint8_t, uint16_t, 8>  uint64_8t;
 typedef epi::whole_number<uint16_t, uint32_t, 4> uint64_16t;
@@ -14,15 +14,15 @@ int main() {
   std::cout << "BOOLEAN OPERATOR : \n";
   {
 
-    const uint64_t       has_value_a = 0xabcdef0123456789;
-    constexpr uint64_8t  has_value_b = has_value_a;
-    constexpr uint64_16t has_value_c = has_value_a;
-    constexpr uint64_32t has_value_d = has_value_a;
+    const uint64_t has_value_a = 0xabcdef0123456789;
+    uint64_8t      has_value_b = has_value_a;
+    uint64_16t     has_value_c = has_value_a;
+    uint64_32t     has_value_d = has_value_a;
 
-    const uint64_t       zero_value_a = 0x00;
-    constexpr uint64_8t  zero_value_b = zero_value_a;
-    constexpr uint64_16t zero_value_c = zero_value_a;
-    constexpr uint64_32t zero_value_d = zero_value_a;
+    const uint64_t zero_value_a = 0x00;
+    uint64_8t      zero_value_b = zero_value_a;
+    uint64_16t     zero_value_c = zero_value_a;
+    uint64_32t     zero_value_d = zero_value_a;
 
     if (has_value_b) {
       t.pass("if (has_value_b)");
@@ -112,25 +112,25 @@ int main() {
   {
     epi::whole_number<uint32_t, uint64_t, 7> SHOULD_NOT_THROW_ERROR{0xff};
     SHOULD_NOT_THROW_ERROR++;
-    
+
     t.cmp_ts<uint64_t, uint64_8t>();
     t.cmp_ts<uint64_t, uint64_16t>();
     t.cmp_ts<uint64_t, uint64_32t>();
 
-    const uint64_t       a = 0xabcdef0123456789;
-    constexpr uint64_8t  b = a;
-    constexpr uint64_16t c = a;
-    constexpr uint64_32t d = a;
+    const uint64_t a = 0xabcdef0123456789;
+    uint64_8t      b = a;
+    uint64_16t     c = a;
+    uint64_32t     d = a;
 
-    const uint64_t       a_2 = 0xdeadbeef;
-    constexpr uint64_8t  b_2 = a_2;
-    constexpr uint64_16t c_2 = a_2;
-    constexpr uint64_32t d_2 = a_2;
+    const uint64_t a_2 = 0xdeadbeef;
+    uint64_8t      b_2 = a_2;
+    uint64_16t     c_2 = a_2;
+    uint64_32t     d_2 = a_2;
 
-    const uint64_t       a_3 = 0xcafebabe00000000;
-    constexpr uint64_8t  b_3 = a_3;
-    constexpr uint64_16t c_3 = a_3;
-    constexpr uint64_32t d_3 = a_3;
+    const uint64_t a_3 = 0xcafebabe00000000;
+    uint64_8t      b_3 = a_3;
+    uint64_16t     c_3 = a_3;
+    uint64_32t     d_3 = a_3;
 
     t.cmp_eq(a, b, 8);
     t.cmp_eq(a, c, 8);
@@ -167,21 +167,21 @@ int main() {
     t.cmp_ts<uint64_t, uint64_16t>();
     t.cmp_ts<uint64_t, uint64_32t>();
 
-    const uint64_t       a = 0xabcdef0123456789;
-    constexpr uint64_8t  b = {0xab, 0xcd, 0xef, 0x01, 0x23, 0x45, 0x67, 0x89};
-    constexpr uint64_16t c = {0xabcd, 0xef01, 0x2345, 0x6789};
-    constexpr uint64_32t d = {0xabcdef01, 0x23456789};
+    const uint64_t a = 0xabcdef0123456789;
+    uint64_8t      b = {0xab, 0xcd, 0xef, 0x01, 0x23, 0x45, 0x67, 0x89};
+    uint64_16t     c = {0xabcd, 0xef01, 0x2345, 0x6789};
+    uint64_32t     d = {0xabcdef01, 0x23456789};
     ;
 
-    const uint64_t       a_2 = 0xdeadbeef;
-    constexpr uint64_8t  b_2 = {0xde, 0xad, 0xbe, 0xef};
-    constexpr uint64_16t c_2 = {0xdead, 0xbeef};
-    constexpr uint64_32t d_2 = {0xdeadbeef};
+    const uint64_t a_2 = 0xdeadbeef;
+    uint64_8t      b_2 = {0xde, 0xad, 0xbe, 0xef};
+    uint64_16t     c_2 = {0xdead, 0xbeef};
+    uint64_32t     d_2 = {0xdeadbeef};
 
-    const uint64_t       a_3 = 0xcafebabe00000000;
-    constexpr uint64_8t  b_3 = {0xca, 0xfe, 0xba, 0xbe, 0x00, 0x00, 0x00, 0x00};
-    constexpr uint64_16t c_3 = {0xcafe, 0xbabe, 0x0000, 0x0000};
-    constexpr uint64_32t d_3 = {0xcafebabe, 0x00000000};
+    const uint64_t a_3 = 0xcafebabe00000000;
+    uint64_8t      b_3 = {0xca, 0xfe, 0xba, 0xbe, 0x00, 0x00, 0x00, 0x00};
+    uint64_16t     c_3 = {0xcafe, 0xbabe, 0x0000, 0x0000};
+    uint64_32t     d_3 = {0xcafebabe, 0x00000000};
 
     t.cmp_eq(a, b, 8);
     t.cmp_eq(a, c, 8);
@@ -233,13 +233,12 @@ int main() {
 
     // left shifts
     {
-      constexpr uint64_8t EPI = 0xdeadbeefcafebabe;
+      uint64_8t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_8t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      // uint64_8t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                     g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_8t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
-                          i = EPI >> 63;
+      uint64_8t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_8t >> -2 : r_pod_a == a");
@@ -257,13 +256,12 @@ int main() {
     }
 
     {
-      constexpr uint64_16t EPI = 0xdeadbeefcafebabe;
+      uint64_16t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_16t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      // uint64_16t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_16t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
-                           i = EPI >> 63;
+      uint64_16t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_16t >> -2 : r_pod_a == a");
@@ -281,13 +279,12 @@ int main() {
     }
 
     {
-      constexpr uint64_32t EPI = 0xdeadbeefcafebabe;
+      uint64_32t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_32t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
+      // uint64_32t a = EPI >> -2, b = EPI >> -1, c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31,
       //                      g = EPI >> 32, h = EPI >> 33, i = EPI >> 63, j = EPI >> 64, k = EPI >> 65, l = EPI >> 66;
 
-      constexpr uint64_32t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33,
-                           i = EPI >> 63;
+      uint64_32t c = EPI >> 0, d = EPI >> 1, e = EPI >> 2, f = EPI >> 31, g = EPI >> 32, h = EPI >> 33, i = EPI >> 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
       // t.cmp_eq(r_pod_a, a, 8, "uint64_32t >> -2 : r_pod_a == a");
@@ -306,13 +303,12 @@ int main() {
 
     // right shifts
     {
-      constexpr uint64_8t EPI = 0xdeadbeefcafebabe;
+      uint64_8t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_8t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      // uint64_8t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                     g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_8t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
-                          i = EPI << 63;
+      uint64_8t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_8t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_8t << -2 : l_pod_a == a");
@@ -330,13 +326,12 @@ int main() {
     }
 
     {
-      constexpr uint64_16t EPI = 0xdeadbeefcafebabe;
+      uint64_16t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_16t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      // uint64_16t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_16t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
-                           i = EPI << 63;
+      uint64_16t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_16t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_16t << -2 : l_pod_a == a");
@@ -354,13 +349,12 @@ int main() {
     }
 
     {
-      constexpr uint64_32t EPI = 0xdeadbeefcafebabe;
+      uint64_32t EPI = 0xdeadbeefcafebabe;
 
-      // constexpr uint64_32t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
+      // uint64_32t a = EPI << -2, b = EPI << -1, c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31,
       //                      g = EPI << 32, h = EPI << 33, i = EPI << 63, j = EPI << 64, k = EPI << 65, l = EPI << 66;
 
-      constexpr uint64_32t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33,
-                           i = EPI << 63;
+      uint64_32t c = EPI << 0, d = EPI << 1, e = EPI << 2, f = EPI << 31, g = EPI << 32, h = EPI << 33, i = EPI << 63;
 
       t.cmp_eq(CONSTEXPR_POD, EPI, 8, "uint64_32t : POD == EPI");
       // t.cmp_eq(l_pod_a, a, 8, "uint64_32t << -2 : l_pod_a == a");
@@ -392,7 +386,7 @@ int main() {
       0b101010101010101010101010101010101010101010101010101010101010101};
 
     {
-      constexpr uint64_8t EPIs[8] = {
+      uint64_8t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -428,7 +422,7 @@ int main() {
     }
 
     {
-      constexpr uint64_16t EPIs[8] = {
+      uint64_16t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -464,7 +458,7 @@ int main() {
     }
 
     {
-      constexpr uint64_32t EPIs[8] = {
+      uint64_32t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -500,7 +494,7 @@ int main() {
     }
 
     {
-      constexpr uint64_8t EPIs[8] = {
+      uint64_8t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -538,7 +532,7 @@ int main() {
     }
 
     {
-      constexpr uint64_16t EPIs[8] = {
+      uint64_16t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -576,7 +570,7 @@ int main() {
     }
 
     {
-      constexpr uint64_32t EPIs[8] = {
+      uint64_32t EPIs[8] = {
         0xdeadbeefcafebabe,
         0xffffffffffffffff,
         0xffffffff00000000,
@@ -618,12 +612,12 @@ int main() {
   std::cout << "RELATIONAL OPERATORS : \n";
   {
     {
-      constexpr uint64_8t a = (uint64_t) 0x0;
-      constexpr uint64_8t b = (uint64_t) 0x1;
-      constexpr uint64_8t c = (uint64_t) 0xff;
-      constexpr uint64_8t d = (uint64_t) 0xffff;
-      constexpr uint64_8t e = (uint64_t) 0xffffffff;
-      constexpr uint64_8t f = (uint64_t) 0xffffffffffffffff;
+      uint64_8t a = (uint64_t) 0x0;
+      uint64_8t b = (uint64_t) 0x1;
+      uint64_8t c = (uint64_t) 0xff;
+      uint64_8t d = (uint64_t) 0xffff;
+      uint64_8t e = (uint64_t) 0xffffffff;
+      uint64_8t f = (uint64_t) 0xffffffffffffffff;
 
       t.cmp_eq(a, (uint64_t) 0x0, 8);
       t.cmp_eq(b, (uint64_t) 0x1, 8);
@@ -632,64 +626,64 @@ int main() {
       t.cmp_eq(e, (uint64_t) 0xffffffff, 8);
       t.cmp_eq(f, (uint64_t) 0xffffffffffffffff, 8);
 
-      constexpr bool a_l_b = a < b;
-      constexpr bool a_le_b = a <= b;
-      constexpr bool b_l_c = b < c;
-      constexpr bool b_le_c = b <= c;
-      constexpr bool c_l_d = c < d;
-      constexpr bool c_le_d = c <= d;
-      constexpr bool d_l_e = d < e;
-      constexpr bool d_le_e = d <= e;
-      constexpr bool e_l_f = e < f;
-      constexpr bool e_le_f = e <= f;
-      constexpr bool a_g_b = a > b;
-      constexpr bool a_ge_b = a >= b;
-      constexpr bool b_g_c = b > c;
-      constexpr bool b_ge_c = b >= c;
-      constexpr bool c_g_d = c > d;
-      constexpr bool c_ge_d = c >= d;
-      constexpr bool d_g_e = d > e;
-      constexpr bool d_ge_e = d >= e;
-      constexpr bool e_g_f = e > f;
-      constexpr bool e_ge_f = e >= f;
-      constexpr bool b_l_a = b < a;
-      constexpr bool b_le_a = b <= a;
-      constexpr bool c_l_b = c < b;
-      constexpr bool c_le_b = c <= b;
-      constexpr bool d_l_c = d < c;
-      constexpr bool d_le_c = d <= c;
-      constexpr bool e_l_d = e < d;
-      constexpr bool e_le_d = e <= d;
-      constexpr bool f_l_e = f < e;
-      constexpr bool f_le_e = f <= e;
-      constexpr bool b_g_a = b > a;
-      constexpr bool b_ge_a = b >= a;
-      constexpr bool c_g_b = c > b;
-      constexpr bool c_ge_b = c >= b;
-      constexpr bool d_g_c = d > c;
-      constexpr bool d_ge_c = d >= c;
-      constexpr bool e_g_d = e > d;
-      constexpr bool e_ge_d = e >= d;
-      constexpr bool f_g_e = f > e;
-      constexpr bool f_ge_e = f >= e;
-      constexpr bool a_eq_a = a == a;
-      constexpr bool b_eq_b = b == b;
-      constexpr bool c_eq_c = c == c;
-      constexpr bool d_eq_d = d == d;
-      constexpr bool e_eq_e = e == e;
-      constexpr bool f_eq_f = f == f;
-      constexpr bool a_le_a = a <= a;
-      constexpr bool b_le_b = b <= b;
-      constexpr bool c_le_c = c <= c;
-      constexpr bool d_le_d = d <= d;
-      constexpr bool e_le_e = e <= e;
-      constexpr bool f_le_f = f <= f;
-      constexpr bool a_ge_a = a >= a;
-      constexpr bool b_ge_b = b >= b;
-      constexpr bool c_ge_c = c >= c;
-      constexpr bool d_ge_d = d >= d;
-      constexpr bool e_ge_e = e >= e;
-      constexpr bool f_ge_f = f >= f;
+      bool a_l_b = a < b;
+      bool a_le_b = a <= b;
+      bool b_l_c = b < c;
+      bool b_le_c = b <= c;
+      bool c_l_d = c < d;
+      bool c_le_d = c <= d;
+      bool d_l_e = d < e;
+      bool d_le_e = d <= e;
+      bool e_l_f = e < f;
+      bool e_le_f = e <= f;
+      bool a_g_b = a > b;
+      bool a_ge_b = a >= b;
+      bool b_g_c = b > c;
+      bool b_ge_c = b >= c;
+      bool c_g_d = c > d;
+      bool c_ge_d = c >= d;
+      bool d_g_e = d > e;
+      bool d_ge_e = d >= e;
+      bool e_g_f = e > f;
+      bool e_ge_f = e >= f;
+      bool b_l_a = b < a;
+      bool b_le_a = b <= a;
+      bool c_l_b = c < b;
+      bool c_le_b = c <= b;
+      bool d_l_c = d < c;
+      bool d_le_c = d <= c;
+      bool e_l_d = e < d;
+      bool e_le_d = e <= d;
+      bool f_l_e = f < e;
+      bool f_le_e = f <= e;
+      bool b_g_a = b > a;
+      bool b_ge_a = b >= a;
+      bool c_g_b = c > b;
+      bool c_ge_b = c >= b;
+      bool d_g_c = d > c;
+      bool d_ge_c = d >= c;
+      bool e_g_d = e > d;
+      bool e_ge_d = e >= d;
+      bool f_g_e = f > e;
+      bool f_ge_e = f >= e;
+      bool a_eq_a = a == a;
+      bool b_eq_b = b == b;
+      bool c_eq_c = c == c;
+      bool d_eq_d = d == d;
+      bool e_eq_e = e == e;
+      bool f_eq_f = f == f;
+      bool a_le_a = a <= a;
+      bool b_le_b = b <= b;
+      bool c_le_c = c <= c;
+      bool d_le_d = d <= d;
+      bool e_le_e = e <= e;
+      bool f_le_f = f <= f;
+      bool a_ge_a = a >= a;
+      bool b_ge_b = b >= b;
+      bool c_ge_c = c >= c;
+      bool d_ge_d = d >= d;
+      bool e_ge_e = e >= e;
+      bool f_ge_f = f >= f;
 
       t.cmp_exp(a_l_b, true, "a < b, true");
       t.cmp_exp(a_le_b, true, "a <= b, true");
@@ -758,12 +752,12 @@ int main() {
     }
 
     {
-      constexpr uint64_16t a = (uint64_t) 0x0;
-      constexpr uint64_16t b = (uint64_t) 0x1;
-      constexpr uint64_16t c = (uint64_t) 0xff;
-      constexpr uint64_16t d = (uint64_t) 0xffff;
-      constexpr uint64_16t e = (uint64_t) 0xffffffff;
-      constexpr uint64_16t f = (uint64_t) 0xffffffffffffffff;
+      uint64_16t a = (uint64_t) 0x0;
+      uint64_16t b = (uint64_t) 0x1;
+      uint64_16t c = (uint64_t) 0xff;
+      uint64_16t d = (uint64_t) 0xffff;
+      uint64_16t e = (uint64_t) 0xffffffff;
+      uint64_16t f = (uint64_t) 0xffffffffffffffff;
 
       t.cmp_eq(a, (uint64_t) 0x0, 8);
       t.cmp_eq(b, (uint64_t) 0x1, 8);
@@ -839,12 +833,12 @@ int main() {
     }
 
     {
-      constexpr uint64_32t a = (uint64_t) 0x0;
-      constexpr uint64_32t b = (uint64_t) 0x1;
-      constexpr uint64_32t c = (uint64_t) 0xff;
-      constexpr uint64_32t d = (uint64_t) 0xffff;
-      constexpr uint64_32t e = (uint64_t) 0xffffffff;
-      constexpr uint64_32t f = (uint64_t) 0xffffffffffffffff;
+      uint64_32t a = (uint64_t) 0x0;
+      uint64_32t b = (uint64_t) 0x1;
+      uint64_32t c = (uint64_t) 0xff;
+      uint64_32t d = (uint64_t) 0xffff;
+      uint64_32t e = (uint64_t) 0xffffffff;
+      uint64_32t f = (uint64_t) 0xffffffffffffffff;
 
       t.cmp_eq(a, (uint64_t) 0x0, 8);
       t.cmp_eq(b, (uint64_t) 0x1, 8);
@@ -927,10 +921,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a + b, y = a + c, z = a + a, m = b + c,
                v = 0xfffffffffffffff, av = a + v;
 
-      constexpr uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1},
-                          c_8t = {0xff, 0xff, 0xff, 0xff}, x_8t = a_8t + b_8t, y_8t = a_8t + c_8t, z_8t = a_8t + a_8t,
-                          m_8t = b_8t + c_8t, v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-                          av_8t = a_8t + v_8t;
+      uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1}, c_8t = {0xff, 0xff, 0xff, 0xff},
+                x_8t = a_8t + b_8t, y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t,
+                v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, av_8t = a_8t + v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -960,9 +953,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a + b, y = a + c, z = a + a, m = b + c,
                v = 0xfffffffffffffff, av = a + v;
 
-      constexpr uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff},
-                           x_8t = a_8t + b_8t, y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t,
-                           v_8t = {0xfff, 0xffff, 0xffff, 0xffff}, av_8t = a_8t + v_8t;
+      uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff}, x_8t = a_8t + b_8t,
+                 y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t, v_8t = {0xfff, 0xffff, 0xffff, 0xffff},
+                 av_8t = a_8t + v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -992,9 +985,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a + b, y = a + c, z = a + a, m = b + c,
                v = 0xfffffffffffffff, av = a + v;
 
-      constexpr uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t + b_8t,
-                           y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t, v_8t = {0xfffffff, 0xffffffff},
-                           av_8t = a_8t + v_8t;
+      uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t + b_8t,
+                 y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t, v_8t = {0xfffffff, 0xffffffff},
+                 av_8t = a_8t + v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1022,17 +1015,16 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC SUBTRACTIONS\n";
   {
     {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a - b, y = a - c, z = a - a, m = b - c,
                v = 0xfffffffffffffff, av = a - v;
 
-      constexpr uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1},
-                          c_8t = {0xff, 0xff, 0xff, 0xff}, x_8t = a_8t - b_8t, y_8t = a_8t - c_8t, z_8t = a_8t - a_8t,
-                          m_8t = b_8t - c_8t, v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-                          av_8t = a_8t - v_8t;
+      uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1}, c_8t = {0xff, 0xff, 0xff, 0xff},
+                x_8t = a_8t - b_8t, y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t,
+                v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, av_8t = a_8t - v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1062,9 +1054,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a - b, y = a - c, z = a - a, m = b - c,
                v = 0xfffffffffffffff, av = a - v;
 
-      constexpr uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff},
-                           x_8t = a_8t - b_8t, y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t,
-                           v_8t = {0xfff, 0xffff, 0xffff, 0xffff}, av_8t = a_8t - v_8t;
+      uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff}, x_8t = a_8t - b_8t,
+                 y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t, v_8t = {0xfff, 0xffff, 0xffff, 0xffff},
+                 av_8t = a_8t - v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1094,9 +1086,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a - b, y = a - c, z = a - a, m = b - c,
                v = 0xfffffffffffffff, av = a - v;
 
-      constexpr uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t - b_8t,
-                           y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t, v_8t = {0xfffffff, 0xffffffff},
-                           av_8t = a_8t - v_8t;
+      uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t - b_8t,
+                 y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t, v_8t = {0xfffffff, 0xffffffff},
+                 av_8t = a_8t - v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1124,14 +1116,14 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC PREFIX-INCREMENT\n";
   {
     {
-      uint64_t test = 0x00;
-      uint64_8t test_8t = { 0x00 };
-      uint64_8t test_16t = { 0x00 };
-      uint64_32t test_32t = { 0x00 };
+      uint64_t   test = 0x00;
+      uint64_8t  test_8t = {0x00};
+      uint64_8t  test_16t = {0x00};
+      uint64_32t test_32t = {0x00};
 
       while (test < 200) {
         test++;
@@ -1151,14 +1143,14 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC POSTFIX-INCREMENT\n";
   {
     {
-      uint64_t test = 0x00;
-      uint64_8t test_8t = { 0x00 };
-      uint64_8t test_16t = { 0x00 };
-      uint64_32t test_32t = { 0x00 };
+      uint64_t   test = 0x00;
+      uint64_8t  test_8t = {0x00};
+      uint64_8t  test_16t = {0x00};
+      uint64_32t test_32t = {0x00};
 
       while (test < 200) {
         ++test;
@@ -1178,14 +1170,14 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC PREFIX-DECREMENT\n";
   {
     {
-      uint64_t test = 0x00;
-      uint64_8t test_8t = { 0x00 };
-      uint64_8t test_16t = { 0x00 };
-      uint64_32t test_32t = { 0x00 };
+      uint64_t   test = 0x00;
+      uint64_8t  test_8t = {0x00};
+      uint64_8t  test_16t = {0x00};
+      uint64_32t test_32t = {0x00};
 
       while (test < 200) {
         test--;
@@ -1205,14 +1197,14 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC POSTFIX-DECREMENT\n";
   {
     {
-      uint64_t test = 0x00;
-      uint64_8t test_8t = { 0x00 };
-      uint64_8t test_16t = { 0x00 };
-      uint64_32t test_32t = { 0x00 };
+      uint64_t   test = 0x00;
+      uint64_8t  test_8t = {0x00};
+      uint64_8t  test_16t = {0x00};
+      uint64_32t test_32t = {0x00};
 
       while (test < 200) {
         --test;
@@ -1232,17 +1224,16 @@ int main() {
   }
 
   // #############################################################
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   std::cout << "BASIC MULTIPLICATION\n";
   {
     {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a * b, y = a * c, z = a * a, m = b * c,
                v = 0xfffffffffffffff, av = a * v;
 
-      constexpr uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1},
-                          c_8t = {0xff, 0xff, 0xff, 0xff}, x_8t = a_8t * b_8t, y_8t = a_8t * c_8t, z_8t = a_8t * a_8t,
-                          m_8t = b_8t * c_8t, v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
-                          av_8t = a_8t * v_8t;
+      uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1}, c_8t = {0xff, 0xff, 0xff, 0xff},
+                x_8t = a_8t * b_8t, y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t,
+                v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, av_8t = a_8t * v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1272,9 +1263,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a * b, y = a * c, z = a * a, m = b * c,
                v = 0xfffffffffffffff, av = a * v;
 
-      constexpr uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff},
-                           x_8t = a_8t * b_8t, y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t,
-                           v_8t = {0xfff, 0xffff, 0xffff, 0xffff}, av_8t = a_8t * v_8t;
+      uint64_16t a_8t = {0xffff, 0xffff, 0xffff, 0xffff}, b_8t = {0x1}, c_8t = {0xffff, 0xffff}, x_8t = a_8t * b_8t,
+                 y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t, v_8t = {0xfff, 0xffff, 0xffff, 0xffff},
+                 av_8t = a_8t * v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1304,9 +1295,9 @@ int main() {
       uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, x = a * b, y = a * c, z = a * a, m = b * c,
                v = 0xfffffffffffffff, av = a * v;
 
-      constexpr uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t * b_8t,
-                           y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t, v_8t = {0xfffffff, 0xffffffff},
-                           av_8t = a_8t * v_8t;
+      uint64_32t a_8t = {0xffffffff, 0xffffffff}, b_8t = {0x1}, c_8t = {0xffffffff}, x_8t = a_8t * b_8t,
+                 y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t, v_8t = {0xfffffff, 0xffffffff},
+                 av_8t = a_8t * v_8t;
 
       t.cmp_eq(a, a_8t, 8);
       t.cmp_eq(b, b_8t, 8);
@@ -1335,38 +1326,38 @@ int main() {
 
   // #############################################################
   // BITWISE LOGICAL OPERATORS
-  std::cout << "\n----------------------------------------------\n";
+  std::cout << "----------------------------------------------\n";
   {
     {
       std::cout << "BITWISE LOGICAL AND\n";
 
-      constexpr uint64_t a_pod = 0xdeadbeefcafebabe;
-      constexpr uint64_t b_pod = 0xabcdef0123456789;
+      uint64_t a_pod = 0xdeadbeefcafebabe;
+      uint64_t b_pod = 0xabcdef0123456789;
 
-      constexpr uint64_8t a_8t = a_pod, b_8t = b_pod;
-      constexpr uint64_16t a_16t = a_pod, b_16t = b_pod;
-      constexpr uint64_32t a_32t = a_pod, b_32t = b_pod;
+      uint64_8t  a_8t = a_pod, b_8t = b_pod;
+      uint64_16t a_16t = a_pod, b_16t = b_pod;
+      uint64_32t a_32t = a_pod, b_32t = b_pod;
 
-      constexpr uint64_t c_pod = a_pod & b_pod;
-      constexpr uint64_8t c_8t = a_8t & b_8t;
-      constexpr uint64_16t c_16t = a_16t & b_16t;
-      constexpr uint64_32t c_32t = a_32t & b_32t;
+      uint64_t   c_pod = a_pod & b_pod;
+      uint64_8t  c_8t = a_8t & b_8t;
+      uint64_16t c_16t = a_16t & b_16t;
+      uint64_32t c_32t = a_32t & b_32t;
 
       t.cmp_eq(c_8t, c_pod, 8);
       t.cmp_eq(c_16t, c_pod, 8);
       t.cmp_eq(c_32t, c_pod, 8);
 
-      constexpr uint64_t d_pod = b_pod & a_pod;
-      constexpr uint64_8t d_8t = b_8t & a_8t;
-      constexpr uint64_16t d_16t = b_16t & a_16t;
-      constexpr uint64_32t d_32t = b_32t & a_32t;
+      uint64_t   d_pod = b_pod & a_pod;
+      uint64_8t  d_8t = b_8t & a_8t;
+      uint64_16t d_16t = b_16t & a_16t;
+      uint64_32t d_32t = b_32t & a_32t;
 
       t.cmp_eq(d_8t, d_pod, 8);
       t.cmp_eq(d_16t, d_pod, 8);
       t.cmp_eq(d_32t, d_pod, 8);
 
-      uint64_t a_copy_pod = a_pod;
-      uint64_8t a_copy_8t = a_8t;
+      uint64_t   a_copy_pod = a_pod;
+      uint64_8t  a_copy_8t = a_8t;
       uint64_16t a_copy_16t = a_16t;
       uint64_32t a_copy_32t = a_32t;
 
@@ -1379,13 +1370,13 @@ int main() {
       t.cmp_eq(a_copy_16t, a_copy_pod, 8);
       t.cmp_eq(a_copy_32t, a_copy_pod, 8);
 
-      uint64_t mask_pod = 0xffffffffffffffff;
-      uint64_8t mask_8t = mask_pod;
+      uint64_t   mask_pod = 0xffffffffffffffff;
+      uint64_8t  mask_8t = mask_pod;
       uint64_16t mask_16t = mask_pod;
       uint64_32t mask_32t = mask_pod;
 
-      uint64_t b_copy_pod = b_pod;
-      uint64_8t b_copy_8t = b_8t;
+      uint64_t   b_copy_pod = b_pod;
+      uint64_8t  b_copy_8t = b_8t;
       uint64_16t b_copy_16t = b_16t;
       uint64_32t b_copy_32t = b_32t;
 
@@ -1402,33 +1393,33 @@ int main() {
     {
       std::cout << "BITWISE LOGICAL OR\n";
 
-      constexpr uint64_t a_pod = 0xdeadbeefcafebabe;
-      constexpr uint64_t b_pod = 0xabcdef0123456789;
+      uint64_t a_pod = 0xdeadbeefcafebabe;
+      uint64_t b_pod = 0xabcdef0123456789;
 
-      constexpr uint64_8t a_8t = a_pod, b_8t = b_pod;
-      constexpr uint64_16t a_16t = a_pod, b_16t = b_pod;
-      constexpr uint64_32t a_32t = a_pod, b_32t = b_pod;
+      uint64_8t  a_8t = a_pod, b_8t = b_pod;
+      uint64_16t a_16t = a_pod, b_16t = b_pod;
+      uint64_32t a_32t = a_pod, b_32t = b_pod;
 
-      constexpr uint64_t c_pod = a_pod | b_pod;
-      constexpr uint64_8t c_8t = a_8t | b_8t;
-      constexpr uint64_16t c_16t = a_16t | b_16t;
-      constexpr uint64_32t c_32t = a_32t | b_32t;
+      uint64_t   c_pod = a_pod | b_pod;
+      uint64_8t  c_8t = a_8t | b_8t;
+      uint64_16t c_16t = a_16t | b_16t;
+      uint64_32t c_32t = a_32t | b_32t;
 
       t.cmp_eq(c_8t, c_pod, 8);
       t.cmp_eq(c_16t, c_pod, 8);
       t.cmp_eq(c_32t, c_pod, 8);
 
-      constexpr uint64_t d_pod = b_pod | a_pod;
-      constexpr uint64_8t d_8t = b_8t | a_8t;
-      constexpr uint64_16t d_16t = b_16t | a_16t;
-      constexpr uint64_32t d_32t = b_32t | a_32t;
+      uint64_t   d_pod = b_pod | a_pod;
+      uint64_8t  d_8t = b_8t | a_8t;
+      uint64_16t d_16t = b_16t | a_16t;
+      uint64_32t d_32t = b_32t | a_32t;
 
       t.cmp_eq(d_8t, d_pod, 8);
       t.cmp_eq(d_16t, d_pod, 8);
       t.cmp_eq(d_32t, d_pod, 8);
 
-      uint64_t a_copy_pod = a_pod;
-      uint64_8t a_copy_8t = a_8t;
+      uint64_t   a_copy_pod = a_pod;
+      uint64_8t  a_copy_8t = a_8t;
       uint64_16t a_copy_16t = a_16t;
       uint64_32t a_copy_32t = a_32t;
 
@@ -1441,13 +1432,13 @@ int main() {
       t.cmp_eq(a_copy_16t, a_copy_pod, 8);
       t.cmp_eq(a_copy_32t, a_copy_pod, 8);
 
-      uint64_t mask_pod = 0xffffffffffffffff;
-      uint64_8t mask_8t = mask_pod;
+      uint64_t   mask_pod = 0xffffffffffffffff;
+      uint64_8t  mask_8t = mask_pod;
       uint64_16t mask_16t = mask_pod;
       uint64_32t mask_32t = mask_pod;
 
-      uint64_t b_copy_pod = b_pod;
-      uint64_8t b_copy_8t = b_8t;
+      uint64_t   b_copy_pod = b_pod;
+      uint64_8t  b_copy_8t = b_8t;
       uint64_16t b_copy_16t = b_16t;
       uint64_32t b_copy_32t = b_32t;
 
@@ -1464,33 +1455,33 @@ int main() {
     {
       std::cout << "BITWISE LOGICAL XOR\n";
 
-      constexpr uint64_t a_pod = 0xdeadbeefcafebabe;
-      constexpr uint64_t b_pod = 0xabcdef0123456789;
+      uint64_t a_pod = 0xdeadbeefcafebabe;
+      uint64_t b_pod = 0xabcdef0123456789;
 
-      constexpr uint64_8t a_8t = a_pod, b_8t = b_pod;
-      constexpr uint64_16t a_16t = a_pod, b_16t = b_pod;
-      constexpr uint64_32t a_32t = a_pod, b_32t = b_pod;
+      uint64_8t  a_8t = a_pod, b_8t = b_pod;
+      uint64_16t a_16t = a_pod, b_16t = b_pod;
+      uint64_32t a_32t = a_pod, b_32t = b_pod;
 
-      constexpr uint64_t c_pod = a_pod ^ b_pod;
-      constexpr uint64_8t c_8t = a_8t ^ b_8t;
-      constexpr uint64_16t c_16t = a_16t ^ b_16t;
-      constexpr uint64_32t c_32t = a_32t ^ b_32t;
+      uint64_t   c_pod = a_pod ^ b_pod;
+      uint64_8t  c_8t = a_8t ^ b_8t;
+      uint64_16t c_16t = a_16t ^ b_16t;
+      uint64_32t c_32t = a_32t ^ b_32t;
 
       t.cmp_eq(c_8t, c_pod, 8);
       t.cmp_eq(c_16t, c_pod, 8);
       t.cmp_eq(c_32t, c_pod, 8);
 
-      constexpr uint64_t d_pod = b_pod ^ a_pod;
-      constexpr uint64_8t d_8t = b_8t ^ a_8t;
-      constexpr uint64_16t d_16t = b_16t ^ a_16t;
-      constexpr uint64_32t d_32t = b_32t ^ a_32t;
+      uint64_t   d_pod = b_pod ^ a_pod;
+      uint64_8t  d_8t = b_8t ^ a_8t;
+      uint64_16t d_16t = b_16t ^ a_16t;
+      uint64_32t d_32t = b_32t ^ a_32t;
 
       t.cmp_eq(d_8t, d_pod, 8);
       t.cmp_eq(d_16t, d_pod, 8);
       t.cmp_eq(d_32t, d_pod, 8);
 
-      uint64_t a_copy_pod = a_pod;
-      uint64_8t a_copy_8t = a_8t;
+      uint64_t   a_copy_pod = a_pod;
+      uint64_8t  a_copy_8t = a_8t;
       uint64_16t a_copy_16t = a_16t;
       uint64_32t a_copy_32t = a_32t;
 
@@ -1503,13 +1494,13 @@ int main() {
       t.cmp_eq(a_copy_16t, a_copy_pod, 8);
       t.cmp_eq(a_copy_32t, a_copy_pod, 8);
 
-      uint64_t mask_pod = 0xffffffffffffffff;
-      uint64_8t mask_8t = mask_pod;
+      uint64_t   mask_pod = 0xffffffffffffffff;
+      uint64_8t  mask_8t = mask_pod;
       uint64_16t mask_16t = mask_pod;
       uint64_32t mask_32t = mask_pod;
 
-      uint64_t b_copy_pod = b_pod;
-      uint64_8t b_copy_8t = b_8t;
+      uint64_t   b_copy_pod = b_pod;
+      uint64_8t  b_copy_8t = b_8t;
       uint64_16t b_copy_16t = b_16t;
       uint64_32t b_copy_32t = b_32t;
 
@@ -1526,26 +1517,26 @@ int main() {
     {
       std::cout << "BITWISE LOGICAL NOT\n";
 
-      constexpr uint64_t a_pod = 0xdeadbeefcafebabe;
-      constexpr uint64_t b_pod = 0xabcdef0123456789;
+      uint64_t a_pod = 0xdeadbeefcafebabe;
+      uint64_t b_pod = 0xabcdef0123456789;
 
-      constexpr uint64_8t a_8t = a_pod, b_8t = b_pod;
-      constexpr uint64_16t a_16t = a_pod, b_16t = b_pod;
-      constexpr uint64_32t a_32t = a_pod, b_32t = b_pod;
+      uint64_8t  a_8t = a_pod, b_8t = b_pod;
+      uint64_16t a_16t = a_pod, b_16t = b_pod;
+      uint64_32t a_32t = a_pod, b_32t = b_pod;
 
-      constexpr uint64_t c_pod = ~a_pod;
-      constexpr uint64_8t c_8t = ~a_8t;
-      constexpr uint64_16t c_16t = ~a_16t;
-      constexpr uint64_32t c_32t = ~a_32t;
+      uint64_t   c_pod = ~a_pod;
+      uint64_8t  c_8t = ~a_8t;
+      uint64_16t c_16t = ~a_16t;
+      uint64_32t c_32t = ~a_32t;
 
       t.cmp_eq(c_8t, c_pod, 8);
       t.cmp_eq(c_16t, c_pod, 8);
       t.cmp_eq(c_32t, c_pod, 8);
 
-      constexpr uint64_t d_pod = ~b_pod;
-      constexpr uint64_8t d_8t = ~b_8t;
-      constexpr uint64_16t d_16t = ~b_16t;
-      constexpr uint64_32t d_32t = ~b_32t;
+      uint64_t   d_pod = ~b_pod;
+      uint64_8t  d_8t = ~b_8t;
+      uint64_16t d_16t = ~b_16t;
+      uint64_32t d_32t = ~b_32t;
 
       t.cmp_eq(d_8t, d_pod, 8);
       t.cmp_eq(d_16t, d_pod, 8);

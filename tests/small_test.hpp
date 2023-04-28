@@ -1,11 +1,8 @@
 #ifndef SMALL_TEST_HPP
 #define SMALL_TEST_HPP
 
-#ifdef _DISABLE_PRINT_RESULTS
-  #define _DISABLE_PRINT_SUBJECTS
-#endif
-
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 namespace smlts {
@@ -24,7 +21,8 @@ namespace smlts {
     size_t              test_number;
     int                 final_verdict;
 
-    void print_passed_failed(int result, std::string const &test_name = "");
+    template <typename T1, typename T2>
+    void print_passed_failed(int result, T1 a, T2 b, std::string const &test_name);
 
     public:
 
@@ -40,8 +38,8 @@ namespace smlts {
 
     void cmp_exp(bool A, bool B, std::string const &test_name = "");
 
-    void pass(std::string const& test_name);
-    void fail(std::string const& test_name);
+    void pass(std::string const &test_name);
+    void fail(std::string const &test_name);
 
     /** @brief To make the output cleaner you can use these -D compilation flags :
      * `_DISABLE_PRINT_RESULTS`, `_DISABLE_PRINT_TEST_NAMES` and/or `_DISABLE_PRINT_SUBJECTS`.
@@ -51,28 +49,47 @@ namespace smlts {
 
   // method declarations
 
-  void test::print_passed_failed(int result, std::string const &test_name) {
+  template <typename T1, typename T2>
+  void test::print_passed_failed(int result, T1 a, T2 b, std::string const &test_name) {
+
 #ifndef _DISABLE_PRINT_TEST_NAMES
     std::string internal_test_name = test_name;
 #else
     std::string internal_test_name = "";
 #endif
 
-    if (!result) {
 #ifndef _DISABLE_PRINT_RESULTS
+    if (!result) {
+  #ifndef _NO_PRINT_PASS
       std::cout << "PASSED : "
                 << "test " << std::dec << test_number << " (" << internal_test_name << ")";
-#endif
+  #endif
     } else {
-#ifndef _DISABLE_PRINT_RESULTS
       std::cout << "!!! FAILED : "
                 << "test " << std::dec << test_number << " (" << internal_test_name << ")";
-#endif
       failed_cases.push_back(test_number);
     }
+#endif
 
-#ifdef _DISABLE_PRINT_SUBJECTS
+#ifndef _DISABLE_PRINT_SUBJECTS
+    if (!std::is_null_pointer_v<T1> && !std::is_null_pointer_v<T2>) {
+      std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
+    }
+
+    #if !defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS)
+      std::cout << "\n";
+    #endif
+#endif
+
+    // just fail this to remove unused warning
+    if (false) {
+      std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
+    }
+
+#if !defined(_NO_PRINT_PASS) || !defined(_DISABLE_PRINT_SUBJECTS) || !defined(_DISABLE_PRINT_RESULTS)
+    #if !(!defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS))
     std::cout << "\n";
+    #endif
 #endif
   }
 
@@ -83,11 +100,7 @@ namespace smlts {
     test_results.push_back(result);
     final_verdict |= result;
 
-    print_passed_failed(result, test_name);
-
-#ifndef _DISABLE_PRINT_SUBJECTS
-    std::cout << std::hex << "  ->  " << a << " == " << std::hex << b << "\n";
-#endif
+    print_passed_failed(result, a, b, test_name);
   }
 
   /// @brief  compare type sizes.
@@ -98,11 +111,7 @@ namespace smlts {
     test_results.push_back(result);
     final_verdict |= result;
 
-    print_passed_failed(result, test_name);
-
-#ifndef _DISABLE_PRINT_SUBJECTS
-    std::cout << std::hex << "  ->  " << sizeof(T1) << " ::type_equality:: " << sizeof(T2) << "\n";
-#endif
+    print_passed_failed(result, nullptr, nullptr, test_name);
   }
 
   void test::cmp_exp(bool A, bool B, std::string const &test_name) {
@@ -111,26 +120,20 @@ namespace smlts {
     test_results.push_back(result);
     final_verdict |= result;
 
-    print_passed_failed(result, test_name);
-
-#ifndef _DISABLE_PRINT_SUBJECTS
-    std::cout << std::hex << "  ->  " << A << " :::: " << B << "\n";
-#endif
+    print_passed_failed(result, A, B, test_name);
   }
 
-  void test::pass(std::string const& test_name) {
+  void test::pass(std::string const &test_name) {
     test_number++;
-    print_passed_failed(0, test_name);
+    print_passed_failed(0, nullptr, nullptr, test_name);
     test_results.push_back(0);
-    std::cout << "\n";
   }
 
-  void test::fail(std::string const& test_name) {
+  void test::fail(std::string const &test_name) {
     test_number++;
-    print_passed_failed(1, test_name);
+    print_passed_failed(1, nullptr, nullptr, test_name);
     test_results.push_back(1);
     failed_cases.push_back(test_number);
-    std::cout << "\n";
   }
 
   int test::get_final_verdict() {

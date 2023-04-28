@@ -27,21 +27,19 @@ test:
 	@echo compiling test program...
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
-	$(CXX) $(CXX_STANDARD) test.cpp -o $(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/constexpr_test.cpp -o tests/constexpr_$(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:
 	@echo running test program...
-ifeq ($(OS), Linux)
-	./$(OUTPUT_NAME).$(EXTENSION)
-else
-	./$(OUTPUT_NAME).$(EXTENSION)
-endif
+	./tests/$(OUTPUT_NAME).$(EXTENSION)
+	./tests/constexpr_$(OUTPUT_NAME).$(EXTENSION)
 	@echo done running test program.
 
 style:
 	@echo fixing code format and code style...
-	@clang-format -i -style=file *.cpp *.hpp
+	@clang-format -i -style=file *.cpp *.hpp tests/*.cpp tests/*.hpp
 	@echo done fixing style format.
 
 .PHONY: test run_test style
