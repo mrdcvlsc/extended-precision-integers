@@ -5,7 +5,7 @@
 ## **TO-DO List**
 
 Implementation of different functions, methods, constructors, and operators that is **constexper'able**
-should be `constexpr` and should follow the [guide lines](https://en.cppreference.com/w/cpp/language/constexpr)
+should be `constexpr` and should follow the [guidelines](https://en.cppreference.com/w/cpp/language/constexpr)
 when implementing with the `constexpr` specifier.
 
 - [ ] Constructors
@@ -54,6 +54,12 @@ when implementing with the `constexpr` specifier.
     - [ ] `operator&(own_type const&) const;`
     - [ ] `operator|(own_type const&) const;`
     - [ ] `operator^(own_type const&) const;`
+    - [ ] `&operator&=(limb_t);`
+    - [ ] `&operator|=(limb_t);`
+    - [ ] `&operator^=(limb_t);`
+    - [ ] `operator&(limb_t) const;`
+    - [ ] `operator|(limb_t) const;`
+    - [ ] `operator^(limb_t) const;`
     - [ ] `operator~() const;`
 
 - [ ] Shift Operators
