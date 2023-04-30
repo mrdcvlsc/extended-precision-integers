@@ -172,20 +172,38 @@ namespace epi {
 
     // mods
 
-    constexpr whole_number bit_long_mod(whole_number const &op) const {
-      return *this;
+    constexpr whole_number bit_long_mod(whole_number const &divisor) const {
+      constexpr size_t MS_LIMB = limb_n - 1;
+      whole_number     remainder = {0};
+      limb_t           remainder_bit = 0;
+
+      for (size_t i = 0; i < BITS; ++i) {
+        remainder = remainder << 1;
+        remainder_bit = limbs[MS_LIMB - i / LIMB_BITS] << i % LIMB_BITS;
+        remainder_bit >>= LIMB_BITS - 1;
+
+        remainder.limbs[0] |= remainder_bit;
+
+        if (remainder >= divisor) {
+          remainder -= divisor;
+        }
+      }
+
+      return remainder;
     }
 
-    constexpr whole_number &self_bit_long_mod(whole_number const &op) {
-      return *this;
-    }
+    constexpr limb_t mod_by_1limb(limb_t divisor) const {
+      cast_t remainder = 0;
 
-    constexpr whole_number mod_by_1limb(limb_t single_limb) const {
-      return *this;
-    }
+      remainder = limbs[limb_n - 1] % divisor;
+      remainder <<= LIMB_BITS;
 
-    constexpr whole_number &self_mod_by_1limb(limb_t single_limb) {
-      return *this;
+      for (size_t i = 1; i < limb_n; ++i) {
+        remainder |= limbs[limb_n - 1 - i];
+        remainder = (remainder % divisor) << LIMB_BITS;
+      }
+
+      return remainder >> LIMB_BITS;
     }
 
     public:
@@ -373,7 +391,7 @@ namespace epi {
       if (div_case == LIMB_OCCUPATION_ONE && div.limbs[0] == 1) {
         return *this;
       } else if (div_case == LIMB_OCCUPATION_ONE) {
-        div_by_1limb(div.limbs[0]);
+        return div_by_1limb(div.limbs[0]);
       }
 
       return bit_long_div(div);
@@ -393,12 +411,14 @@ namespace epi {
           for (size_t i = 1; i < limb_n; ++i) {
             limbs[i] = 0;
           }
-        } return *this;
+        }
+          return *this;
         case LESS: {
           for (size_t i = 0; i < limb_n; ++i) {
             limbs[i] = 0;
           }
-        } return *this;
+        }
+          return *this;
       }
 
       if (div_case == LIMB_OCCUPATION_ONE && div.limbs[0] == 1) {
@@ -413,10 +433,64 @@ namespace epi {
     }
 
     constexpr whole_number operator%(whole_number const &mod) const {
-      return *this;
+      if (!mod) {
+        throw std::domain_error("detected whole_number - mod by zero");
+      }
+
+      constexpr whole_number CONSTEXPR_ZERO = {0};
+
+      int mod_case = mod.is_one_limb();
+      int cmp_case = compare(*this, mod);
+
+      switch (cmp_case) {
+        case EQUAL:
+          return CONSTEXPR_ZERO;
+        case LESS:
+          return *this;
+      }
+
+      if (mod_case == LIMB_OCCUPATION_ONE && mod.limbs[0] == 1) {
+        return CONSTEXPR_ZERO;
+      } else if (mod_case == LIMB_OCCUPATION_ONE) {
+        return mod_by_1limb(mod.limbs[0]);
+      }
+
+      return bit_long_mod(mod);
     }
 
     constexpr whole_number &operator%=(whole_number const &mod) {
+      if (!mod) {
+        throw std::domain_error("detected whole_number - mod by zero");
+      }
+
+      int mod_case = mod.is_one_limb();
+      int cmp_case = compare(*this, mod);
+
+      switch (cmp_case) {
+        case EQUAL: {
+          for (size_t i = 0; i < limb_n; ++i) {
+            limbs[i] = 0;
+          }
+        }
+          return *this;
+        case LESS:
+          return *this;
+      }
+
+      if (mod_case == LIMB_OCCUPATION_ONE && mod.limbs[0] == 1) {
+        for (size_t i = 0; i < limb_n; ++i) {
+          limbs[i] = 0;
+        }
+        return *this;
+      } else if (mod_case == LIMB_OCCUPATION_ONE) {
+        limbs[0] = mod_by_1limb(mod.limbs[0]);
+        for (size_t i = 1; i < limb_n; ++i) {
+          limbs[i] = 0;
+        }
+        return *this;
+      }
+
+      *this = bit_long_mod(mod);
       return *this;
     }
     // arithmetic operators : end

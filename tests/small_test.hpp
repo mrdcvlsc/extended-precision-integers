@@ -72,9 +72,7 @@ namespace smlts {
 #endif
 
 #ifndef _DISABLE_PRINT_SUBJECTS
-    if (!std::is_null_pointer_v<T1> && !std::is_null_pointer_v<T2>) {
-      std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
-    }
+    std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
 
   #if !defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS)
     std::cout << "\n";
@@ -111,7 +109,7 @@ namespace smlts {
     test_results.push_back(result);
     final_verdict |= result;
 
-    print_passed_failed(result, nullptr, nullptr, test_name);
+    print_passed_failed(result, 0, 0, test_name);
   }
 
   void test::cmp_exp(bool A, bool B, std::string const &test_name) {
@@ -125,13 +123,13 @@ namespace smlts {
 
   void test::pass(std::string const &test_name) {
     test_number++;
-    print_passed_failed(0, nullptr, nullptr, test_name);
+    print_passed_failed(0, 0, 0, test_name);
     test_results.push_back(0);
   }
 
   void test::fail(std::string const &test_name) {
     test_number++;
-    print_passed_failed(1, nullptr, nullptr, test_name);
+    print_passed_failed(1, 0, 0, test_name);
     test_results.push_back(1);
     failed_cases.push_back(test_number);
   }
