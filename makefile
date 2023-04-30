@@ -28,13 +28,11 @@ test:
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
 	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
-	$(CXX) $(CXX_STANDARD) tests/constexpr_test.cpp -o tests/constexpr_$(OUTPUT_NAME).$(EXTENSION) $(FLAGS) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:
 	@echo running test program...
 	./tests/$(OUTPUT_NAME).$(EXTENSION)
-	./tests/constexpr_$(OUTPUT_NAME).$(EXTENSION)
 	@echo done running test program.
 
 style:

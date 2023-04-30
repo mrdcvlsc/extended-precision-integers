@@ -76,9 +76,9 @@ namespace smlts {
       std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
     }
 
-    #if !defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS)
-      std::cout << "\n";
-    #endif
+  #if !defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS)
+    std::cout << "\n";
+  #endif
 #endif
 
     // just fail this to remove unused warning
@@ -87,9 +87,9 @@ namespace smlts {
     }
 
 #if !defined(_NO_PRINT_PASS) || !defined(_DISABLE_PRINT_SUBJECTS) || !defined(_DISABLE_PRINT_RESULTS)
-    #if !(!defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS))
+  #if !(!defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS))
     std::cout << "\n";
-    #endif
+  #endif
 #endif
   }
 
