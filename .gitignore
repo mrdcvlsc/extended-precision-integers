@@ -33,3 +33,5 @@
 
 .vscode
 playground.*
+perf*.txt
+perf*.data

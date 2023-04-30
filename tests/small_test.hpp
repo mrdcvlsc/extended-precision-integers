@@ -45,6 +45,7 @@ namespace smlts {
      * `_DISABLE_PRINT_RESULTS`, `_DISABLE_PRINT_TEST_NAMES` and/or `_DISABLE_PRINT_SUBJECTS`.
      */
     int get_final_verdict();
+    int get_final_verdict_silent();
   };
 
   // method declarations
@@ -149,6 +150,14 @@ namespace smlts {
 
     std::cout << "\nNumber of failed test cases : " << failed_cases.size() << "\n";
     std::cout << "\n";
+
+    return 1;
+  }
+
+  int test::get_final_verdict_silent() {
+    if (!final_verdict) {
+      return 0;
+    }
 
     return 1;
   }
