@@ -20,12 +20,12 @@ when implementing with the `constexpr` specifier.
     - [X] `&operator+=(own_type const&);`
     - [X] `&operator-=(own_type const&);`
     - [X] `&operator*=(own_type const&);`
-    - [ ] `&operator/=(own_type const&);`
+    - [X] `&operator/=(own_type const&);`
     - [ ] `&operator%=(own_type const&);`
     - [X] `operator+(own_type const&) const;`
     - [X] `operator-(own_type const&) const;`
     - [X] `operator*(own_type const&) const;`
-    - [ ] `operator/(own_type const&) const;`
+    - [X] `operator/(own_type const&) const;`
     - [ ] `operator%(own_type const&) const;`
 
 - [X] Pre-Fix Increment/Decrement

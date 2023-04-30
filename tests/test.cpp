@@ -932,18 +932,17 @@ int main() {
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
     constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
-                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g,
-                          h_16t = h;
+                         v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
     constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
-                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
+                         v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
     constexpr uint64_t x = a + b, y = a + c, z = a + a, m = b + c, av = a + v, ad = a + d, ae = a + e, af = a + f,
-                        ag = a + g, ah = a + h, hv = h + v, hd = h + d, he = h + e, hf = h + f, hg = h + g, gv = g + v,
-                        gd = g + d, ge = g + e, gf = g + f, gh = g + h, dv = d + v, de = d + e, df = d + f, dg = d + g,
-                        dh = d + h, vd = v + d, ve = v + e, vf = v + f, vg = v + g, vh = v + h, ev = e + v, ed = e + d,
-                        ef = e + f, eg = e + g, eh = e + h;
+                       ag = a + g, ah = a + h, hv = h + v, hd = h + d, he = h + e, hf = h + f, hg = h + g, gv = g + v,
+                       gd = g + d, ge = g + e, gf = g + f, gh = g + h, dv = d + v, de = d + e, df = d + f, dg = d + g,
+                       dh = d + h, vd = v + d, ve = v + e, vf = v + f, vg = v + g, vh = v + h, ev = e + v, ed = e + d,
+                       ef = e + f, eg = e + g, eh = e + h;
 
     constexpr uint64_8t x_8t = a_8t + b_8t, y_8t = a_8t + c_8t, z_8t = a_8t + a_8t, m_8t = b_8t + c_8t,
                         av_8t = a_8t + v_8t, ad_8t = a_8t + d_8t, ae_8t = a_8t + e_8t, af_8t = a_8t + f_8t,
@@ -956,30 +955,24 @@ int main() {
                         ef_8t = e_8t + f_8t, eg_8t = e_8t + g_8t, eh_8t = e_8t + h_8t;
 
     constexpr uint64_16t x_16t = a_16t + b_16t, y_16t = a_16t + c_16t, z_16t = a_16t + a_16t, m_16t = b_16t + c_16t,
-                          av_16t = a_16t + v_16t, ad_16t = a_16t + d_16t, ae_16t = a_16t + e_16t,
-                          af_16t = a_16t + f_16t, ag_16t = a_16t + g_16t, ah_16t = a_16t + h_16t,
-                          hv_16t = h_16t + v_16t, hd_16t = h_16t + d_16t, he_16t = h_16t + e_16t,
-                          hf_16t = h_16t + f_16t, hg_16t = h_16t + g_16t, gv_16t = g_16t + v_16t,
-                          gd_16t = g_16t + d_16t, ge_16t = g_16t + e_16t, gf_16t = g_16t + f_16t,
-                          gh_16t = g_16t + h_16t, dv_16t = d_16t + v_16t, de_16t = d_16t + e_16t,
-                          df_16t = d_16t + f_16t, dg_16t = d_16t + g_16t, dh_16t = d_16t + h_16t,
-                          vd_16t = v_16t + d_16t, ve_16t = v_16t + e_16t, vf_16t = v_16t + f_16t,
-                          vg_16t = v_16t + g_16t, vh_16t = v_16t + h_16t, ev_16t = e_16t + v_16t,
-                          ed_16t = e_16t + d_16t, ef_16t = e_16t + f_16t, eg_16t = e_16t + g_16t,
-                          eh_16t = e_16t + h_16t;
+                         av_16t = a_16t + v_16t, ad_16t = a_16t + d_16t, ae_16t = a_16t + e_16t, af_16t = a_16t + f_16t,
+                         ag_16t = a_16t + g_16t, ah_16t = a_16t + h_16t, hv_16t = h_16t + v_16t, hd_16t = h_16t + d_16t,
+                         he_16t = h_16t + e_16t, hf_16t = h_16t + f_16t, hg_16t = h_16t + g_16t, gv_16t = g_16t + v_16t,
+                         gd_16t = g_16t + d_16t, ge_16t = g_16t + e_16t, gf_16t = g_16t + f_16t, gh_16t = g_16t + h_16t,
+                         dv_16t = d_16t + v_16t, de_16t = d_16t + e_16t, df_16t = d_16t + f_16t, dg_16t = d_16t + g_16t,
+                         dh_16t = d_16t + h_16t, vd_16t = v_16t + d_16t, ve_16t = v_16t + e_16t, vf_16t = v_16t + f_16t,
+                         vg_16t = v_16t + g_16t, vh_16t = v_16t + h_16t, ev_16t = e_16t + v_16t, ed_16t = e_16t + d_16t,
+                         ef_16t = e_16t + f_16t, eg_16t = e_16t + g_16t, eh_16t = e_16t + h_16t;
 
     constexpr uint64_32t x_32t = a_32t + b_32t, y_32t = a_32t + c_32t, z_32t = a_32t + a_32t, m_32t = b_32t + c_32t,
-                          av_32t = a_32t + v_32t, ad_32t = a_32t + d_32t, ae_32t = a_32t + e_32t,
-                          af_32t = a_32t + f_32t, ag_32t = a_32t + g_32t, ah_32t = a_32t + h_32t,
-                          hv_32t = h_32t + v_32t, hd_32t = h_32t + d_32t, he_32t = h_32t + e_32t,
-                          hf_32t = h_32t + f_32t, hg_32t = h_32t + g_32t, gv_32t = g_32t + v_32t,
-                          gd_32t = g_32t + d_32t, ge_32t = g_32t + e_32t, gf_32t = g_32t + f_32t,
-                          gh_32t = g_32t + h_32t, dv_32t = d_32t + v_32t, de_32t = d_32t + e_32t,
-                          df_32t = d_32t + f_32t, dg_32t = d_32t + g_32t, dh_32t = d_32t + h_32t,
-                          vd_32t = v_32t + d_32t, ve_32t = v_32t + e_32t, vf_32t = v_32t + f_32t,
-                          vg_32t = v_32t + g_32t, vh_32t = v_32t + h_32t, ev_32t = e_32t + v_32t,
-                          ed_32t = e_32t + d_32t, ef_32t = e_32t + f_32t, eg_32t = e_32t + g_32t,
-                          eh_32t = e_32t + h_32t;
+                         av_32t = a_32t + v_32t, ad_32t = a_32t + d_32t, ae_32t = a_32t + e_32t, af_32t = a_32t + f_32t,
+                         ag_32t = a_32t + g_32t, ah_32t = a_32t + h_32t, hv_32t = h_32t + v_32t, hd_32t = h_32t + d_32t,
+                         he_32t = h_32t + e_32t, hf_32t = h_32t + f_32t, hg_32t = h_32t + g_32t, gv_32t = g_32t + v_32t,
+                         gd_32t = g_32t + d_32t, ge_32t = g_32t + e_32t, gf_32t = g_32t + f_32t, gh_32t = g_32t + h_32t,
+                         dv_32t = d_32t + v_32t, de_32t = d_32t + e_32t, df_32t = d_32t + f_32t, dg_32t = d_32t + g_32t,
+                         dh_32t = d_32t + h_32t, vd_32t = v_32t + d_32t, ve_32t = v_32t + e_32t, vf_32t = v_32t + f_32t,
+                         vg_32t = v_32t + g_32t, vh_32t = v_32t + h_32t, ev_32t = e_32t + v_32t, ed_32t = e_32t + d_32t,
+                         ef_32t = e_32t + f_32t, eg_32t = e_32t + g_32t, eh_32t = e_32t + h_32t;
 
     t.cmp_eq(x_8t, x, 8);
     t.cmp_eq(y_8t, y, 8);
@@ -1426,18 +1419,17 @@ int main() {
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
     constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
-                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g,
-                          h_16t = h;
+                         v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
     constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
-                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
+                         v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
     constexpr uint64_t x = a - b, y = a - c, z = a - a, m = b - c, av = a - v, ad = a - d, ae = a - e, af = a - f,
-                        ag = a - g, ah = a - h, hv = h - v, hd = h - d, he = h - e, hf = h - f, hg = h - g, gv = g - v,
-                        gd = g - d, ge = g - e, gf = g - f, gh = g - h, dv = d - v, de = d - e, df = d - f, dg = d - g,
-                        dh = d - h, vd = v - d, ve = v - e, vf = v - f, vg = v - g, vh = v - h, ev = e - v, ed = e - d,
-                        ef = e - f, eg = e - g, eh = e - h;
+                       ag = a - g, ah = a - h, hv = h - v, hd = h - d, he = h - e, hf = h - f, hg = h - g, gv = g - v,
+                       gd = g - d, ge = g - e, gf = g - f, gh = g - h, dv = d - v, de = d - e, df = d - f, dg = d - g,
+                       dh = d - h, vd = v - d, ve = v - e, vf = v - f, vg = v - g, vh = v - h, ev = e - v, ed = e - d,
+                       ef = e - f, eg = e - g, eh = e - h;
 
     constexpr uint64_8t x_8t = a_8t - b_8t, y_8t = a_8t - c_8t, z_8t = a_8t - a_8t, m_8t = b_8t - c_8t,
                         av_8t = a_8t - v_8t, ad_8t = a_8t - d_8t, ae_8t = a_8t - e_8t, af_8t = a_8t - f_8t,
@@ -1450,30 +1442,24 @@ int main() {
                         ef_8t = e_8t - f_8t, eg_8t = e_8t - g_8t, eh_8t = e_8t - h_8t;
 
     constexpr uint64_16t x_16t = a_16t - b_16t, y_16t = a_16t - c_16t, z_16t = a_16t - a_16t, m_16t = b_16t - c_16t,
-                          av_16t = a_16t - v_16t, ad_16t = a_16t - d_16t, ae_16t = a_16t - e_16t,
-                          af_16t = a_16t - f_16t, ag_16t = a_16t - g_16t, ah_16t = a_16t - h_16t,
-                          hv_16t = h_16t - v_16t, hd_16t = h_16t - d_16t, he_16t = h_16t - e_16t,
-                          hf_16t = h_16t - f_16t, hg_16t = h_16t - g_16t, gv_16t = g_16t - v_16t,
-                          gd_16t = g_16t - d_16t, ge_16t = g_16t - e_16t, gf_16t = g_16t - f_16t,
-                          gh_16t = g_16t - h_16t, dv_16t = d_16t - v_16t, de_16t = d_16t - e_16t,
-                          df_16t = d_16t - f_16t, dg_16t = d_16t - g_16t, dh_16t = d_16t - h_16t,
-                          vd_16t = v_16t - d_16t, ve_16t = v_16t - e_16t, vf_16t = v_16t - f_16t,
-                          vg_16t = v_16t - g_16t, vh_16t = v_16t - h_16t, ev_16t = e_16t - v_16t,
-                          ed_16t = e_16t - d_16t, ef_16t = e_16t - f_16t, eg_16t = e_16t - g_16t,
-                          eh_16t = e_16t - h_16t;
+                         av_16t = a_16t - v_16t, ad_16t = a_16t - d_16t, ae_16t = a_16t - e_16t, af_16t = a_16t - f_16t,
+                         ag_16t = a_16t - g_16t, ah_16t = a_16t - h_16t, hv_16t = h_16t - v_16t, hd_16t = h_16t - d_16t,
+                         he_16t = h_16t - e_16t, hf_16t = h_16t - f_16t, hg_16t = h_16t - g_16t, gv_16t = g_16t - v_16t,
+                         gd_16t = g_16t - d_16t, ge_16t = g_16t - e_16t, gf_16t = g_16t - f_16t, gh_16t = g_16t - h_16t,
+                         dv_16t = d_16t - v_16t, de_16t = d_16t - e_16t, df_16t = d_16t - f_16t, dg_16t = d_16t - g_16t,
+                         dh_16t = d_16t - h_16t, vd_16t = v_16t - d_16t, ve_16t = v_16t - e_16t, vf_16t = v_16t - f_16t,
+                         vg_16t = v_16t - g_16t, vh_16t = v_16t - h_16t, ev_16t = e_16t - v_16t, ed_16t = e_16t - d_16t,
+                         ef_16t = e_16t - f_16t, eg_16t = e_16t - g_16t, eh_16t = e_16t - h_16t;
 
     constexpr uint64_32t x_32t = a_32t - b_32t, y_32t = a_32t - c_32t, z_32t = a_32t - a_32t, m_32t = b_32t - c_32t,
-                          av_32t = a_32t - v_32t, ad_32t = a_32t - d_32t, ae_32t = a_32t - e_32t,
-                          af_32t = a_32t - f_32t, ag_32t = a_32t - g_32t, ah_32t = a_32t - h_32t,
-                          hv_32t = h_32t - v_32t, hd_32t = h_32t - d_32t, he_32t = h_32t - e_32t,
-                          hf_32t = h_32t - f_32t, hg_32t = h_32t - g_32t, gv_32t = g_32t - v_32t,
-                          gd_32t = g_32t - d_32t, ge_32t = g_32t - e_32t, gf_32t = g_32t - f_32t,
-                          gh_32t = g_32t - h_32t, dv_32t = d_32t - v_32t, de_32t = d_32t - e_32t,
-                          df_32t = d_32t - f_32t, dg_32t = d_32t - g_32t, dh_32t = d_32t - h_32t,
-                          vd_32t = v_32t - d_32t, ve_32t = v_32t - e_32t, vf_32t = v_32t - f_32t,
-                          vg_32t = v_32t - g_32t, vh_32t = v_32t - h_32t, ev_32t = e_32t - v_32t,
-                          ed_32t = e_32t - d_32t, ef_32t = e_32t - f_32t, eg_32t = e_32t - g_32t,
-                          eh_32t = e_32t - h_32t;
+                         av_32t = a_32t - v_32t, ad_32t = a_32t - d_32t, ae_32t = a_32t - e_32t, af_32t = a_32t - f_32t,
+                         ag_32t = a_32t - g_32t, ah_32t = a_32t - h_32t, hv_32t = h_32t - v_32t, hd_32t = h_32t - d_32t,
+                         he_32t = h_32t - e_32t, hf_32t = h_32t - f_32t, hg_32t = h_32t - g_32t, gv_32t = g_32t - v_32t,
+                         gd_32t = g_32t - d_32t, ge_32t = g_32t - e_32t, gf_32t = g_32t - f_32t, gh_32t = g_32t - h_32t,
+                         dv_32t = d_32t - v_32t, de_32t = d_32t - e_32t, df_32t = d_32t - f_32t, dg_32t = d_32t - g_32t,
+                         dh_32t = d_32t - h_32t, vd_32t = v_32t - d_32t, ve_32t = v_32t - e_32t, vf_32t = v_32t - f_32t,
+                         vg_32t = v_32t - g_32t, vh_32t = v_32t - h_32t, ev_32t = e_32t - v_32t, ed_32t = e_32t - d_32t,
+                         ef_32t = e_32t - f_32t, eg_32t = e_32t - g_32t, eh_32t = e_32t - h_32t;
 
     t.cmp_eq(x_8t, x, 8);
     t.cmp_eq(y_8t, y, 8);
@@ -2028,18 +2014,17 @@ int main() {
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
     constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
-                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g,
-                          h_16t = h;
+                         v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
     constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
-                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
+                         v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
     constexpr uint64_t x = a * b, y = a * c, z = a * a, m = b * c, av = a * v, ad = a * d, ae = a * e, af = a * f,
-                        ag = a * g, ah = a * h, hv = h * v, hd = h * d, he = h * e, hf = h * f, hg = h * g, gv = g * v,
-                        gd = g * d, ge = g * e, gf = g * f, gh = g * h, dv = d * v, de = d * e, df = d * f, dg = d * g,
-                        dh = d * h, vd = v * d, ve = v * e, vf = v * f, vg = v * g, vh = v * h, ev = e * v, ed = e * d,
-                        ef = e * f, eg = e * g, eh = e * h;
+                       ag = a * g, ah = a * h, hv = h * v, hd = h * d, he = h * e, hf = h * f, hg = h * g, gv = g * v,
+                       gd = g * d, ge = g * e, gf = g * f, gh = g * h, dv = d * v, de = d * e, df = d * f, dg = d * g,
+                       dh = d * h, vd = v * d, ve = v * e, vf = v * f, vg = v * g, vh = v * h, ev = e * v, ed = e * d,
+                       ef = e * f, eg = e * g, eh = e * h;
 
     constexpr uint64_8t x_8t = a_8t * b_8t, y_8t = a_8t * c_8t, z_8t = a_8t * a_8t, m_8t = b_8t * c_8t,
                         av_8t = a_8t * v_8t, ad_8t = a_8t * d_8t, ae_8t = a_8t * e_8t, af_8t = a_8t * f_8t,
@@ -2052,30 +2037,24 @@ int main() {
                         ef_8t = e_8t * f_8t, eg_8t = e_8t * g_8t, eh_8t = e_8t * h_8t;
 
     constexpr uint64_16t x_16t = a_16t * b_16t, y_16t = a_16t * c_16t, z_16t = a_16t * a_16t, m_16t = b_16t * c_16t,
-                          av_16t = a_16t * v_16t, ad_16t = a_16t * d_16t, ae_16t = a_16t * e_16t,
-                          af_16t = a_16t * f_16t, ag_16t = a_16t * g_16t, ah_16t = a_16t * h_16t,
-                          hv_16t = h_16t * v_16t, hd_16t = h_16t * d_16t, he_16t = h_16t * e_16t,
-                          hf_16t = h_16t * f_16t, hg_16t = h_16t * g_16t, gv_16t = g_16t * v_16t,
-                          gd_16t = g_16t * d_16t, ge_16t = g_16t * e_16t, gf_16t = g_16t * f_16t,
-                          gh_16t = g_16t * h_16t, dv_16t = d_16t * v_16t, de_16t = d_16t * e_16t,
-                          df_16t = d_16t * f_16t, dg_16t = d_16t * g_16t, dh_16t = d_16t * h_16t,
-                          vd_16t = v_16t * d_16t, ve_16t = v_16t * e_16t, vf_16t = v_16t * f_16t,
-                          vg_16t = v_16t * g_16t, vh_16t = v_16t * h_16t, ev_16t = e_16t * v_16t,
-                          ed_16t = e_16t * d_16t, ef_16t = e_16t * f_16t, eg_16t = e_16t * g_16t,
-                          eh_16t = e_16t * h_16t;
+                         av_16t = a_16t * v_16t, ad_16t = a_16t * d_16t, ae_16t = a_16t * e_16t, af_16t = a_16t * f_16t,
+                         ag_16t = a_16t * g_16t, ah_16t = a_16t * h_16t, hv_16t = h_16t * v_16t, hd_16t = h_16t * d_16t,
+                         he_16t = h_16t * e_16t, hf_16t = h_16t * f_16t, hg_16t = h_16t * g_16t, gv_16t = g_16t * v_16t,
+                         gd_16t = g_16t * d_16t, ge_16t = g_16t * e_16t, gf_16t = g_16t * f_16t, gh_16t = g_16t * h_16t,
+                         dv_16t = d_16t * v_16t, de_16t = d_16t * e_16t, df_16t = d_16t * f_16t, dg_16t = d_16t * g_16t,
+                         dh_16t = d_16t * h_16t, vd_16t = v_16t * d_16t, ve_16t = v_16t * e_16t, vf_16t = v_16t * f_16t,
+                         vg_16t = v_16t * g_16t, vh_16t = v_16t * h_16t, ev_16t = e_16t * v_16t, ed_16t = e_16t * d_16t,
+                         ef_16t = e_16t * f_16t, eg_16t = e_16t * g_16t, eh_16t = e_16t * h_16t;
 
     constexpr uint64_32t x_32t = a_32t * b_32t, y_32t = a_32t * c_32t, z_32t = a_32t * a_32t, m_32t = b_32t * c_32t,
-                          av_32t = a_32t * v_32t, ad_32t = a_32t * d_32t, ae_32t = a_32t * e_32t,
-                          af_32t = a_32t * f_32t, ag_32t = a_32t * g_32t, ah_32t = a_32t * h_32t,
-                          hv_32t = h_32t * v_32t, hd_32t = h_32t * d_32t, he_32t = h_32t * e_32t,
-                          hf_32t = h_32t * f_32t, hg_32t = h_32t * g_32t, gv_32t = g_32t * v_32t,
-                          gd_32t = g_32t * d_32t, ge_32t = g_32t * e_32t, gf_32t = g_32t * f_32t,
-                          gh_32t = g_32t * h_32t, dv_32t = d_32t * v_32t, de_32t = d_32t * e_32t,
-                          df_32t = d_32t * f_32t, dg_32t = d_32t * g_32t, dh_32t = d_32t * h_32t,
-                          vd_32t = v_32t * d_32t, ve_32t = v_32t * e_32t, vf_32t = v_32t * f_32t,
-                          vg_32t = v_32t * g_32t, vh_32t = v_32t * h_32t, ev_32t = e_32t * v_32t,
-                          ed_32t = e_32t * d_32t, ef_32t = e_32t * f_32t, eg_32t = e_32t * g_32t,
-                          eh_32t = e_32t * h_32t;
+                         av_32t = a_32t * v_32t, ad_32t = a_32t * d_32t, ae_32t = a_32t * e_32t, af_32t = a_32t * f_32t,
+                         ag_32t = a_32t * g_32t, ah_32t = a_32t * h_32t, hv_32t = h_32t * v_32t, hd_32t = h_32t * d_32t,
+                         he_32t = h_32t * e_32t, hf_32t = h_32t * f_32t, hg_32t = h_32t * g_32t, gv_32t = g_32t * v_32t,
+                         gd_32t = g_32t * d_32t, ge_32t = g_32t * e_32t, gf_32t = g_32t * f_32t, gh_32t = g_32t * h_32t,
+                         dv_32t = d_32t * v_32t, de_32t = d_32t * e_32t, df_32t = d_32t * f_32t, dg_32t = d_32t * g_32t,
+                         dh_32t = d_32t * h_32t, vd_32t = v_32t * d_32t, ve_32t = v_32t * e_32t, vf_32t = v_32t * f_32t,
+                         vg_32t = v_32t * g_32t, vh_32t = v_32t * h_32t, ev_32t = e_32t * v_32t, ed_32t = e_32t * d_32t,
+                         ef_32t = e_32t * f_32t, eg_32t = e_32t * g_32t, eh_32t = e_32t * h_32t;
 
     t.cmp_eq(x_8t, x, 8);
     t.cmp_eq(y_8t, y, 8);
@@ -2522,18 +2501,17 @@ int main() {
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
     constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
-                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g,
-                          h_16t = h;
+                         v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
     constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
-                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
+                         v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
     constexpr uint64_t x = a / b, y = a / c, z = a / a, m = b / c, av = a / v, ad = a / d, ae = a / e, af = a / f,
-                        ag = a / g, ah = a / h, hv = h / v, hd = h / d, he = h / e, hf = h / f, hg = h / g, gv = g / v,
-                        gd = g / d, ge = g / e, gf = g / f, gh = g / h, dv = d / v, de = d / e, df = d / f, dg = d / g,
-                        dh = d / h, vd = v / d, ve = v / e, vf = v / f, vg = v / g, vh = v / h, ev = e / v, ed = e / d,
-                        ef = e / f, eg = e / g, eh = e / h;
+                       ag = a / g, ah = a / h, hv = h / v, hd = h / d, he = h / e, hf = h / f, hg = h / g, gv = g / v,
+                       gd = g / d, ge = g / e, gf = g / f, gh = g / h, dv = d / v, de = d / e, df = d / f, dg = d / g,
+                       dh = d / h, vd = v / d, ve = v / e, vf = v / f, vg = v / g, vh = v / h, ev = e / v, ed = e / d,
+                       ef = e / f, eg = e / g, eh = e / h;
 
     constexpr uint64_8t x_8t = a_8t / b_8t, y_8t = a_8t / c_8t, z_8t = a_8t / a_8t, m_8t = b_8t / c_8t,
                         av_8t = a_8t / v_8t, ad_8t = a_8t / d_8t, ae_8t = a_8t / e_8t, af_8t = a_8t / f_8t,
@@ -2546,30 +2524,24 @@ int main() {
                         ef_8t = e_8t / f_8t, eg_8t = e_8t / g_8t, eh_8t = e_8t / h_8t;
 
     constexpr uint64_16t x_16t = a_16t / b_16t, y_16t = a_16t / c_16t, z_16t = a_16t / a_16t, m_16t = b_16t / c_16t,
-                          av_16t = a_16t / v_16t, ad_16t = a_16t / d_16t, ae_16t = a_16t / e_16t,
-                          af_16t = a_16t / f_16t, ag_16t = a_16t / g_16t, ah_16t = a_16t / h_16t,
-                          hv_16t = h_16t / v_16t, hd_16t = h_16t / d_16t, he_16t = h_16t / e_16t,
-                          hf_16t = h_16t / f_16t, hg_16t = h_16t / g_16t, gv_16t = g_16t / v_16t,
-                          gd_16t = g_16t / d_16t, ge_16t = g_16t / e_16t, gf_16t = g_16t / f_16t,
-                          gh_16t = g_16t / h_16t, dv_16t = d_16t / v_16t, de_16t = d_16t / e_16t,
-                          df_16t = d_16t / f_16t, dg_16t = d_16t / g_16t, dh_16t = d_16t / h_16t,
-                          vd_16t = v_16t / d_16t, ve_16t = v_16t / e_16t, vf_16t = v_16t / f_16t,
-                          vg_16t = v_16t / g_16t, vh_16t = v_16t / h_16t, ev_16t = e_16t / v_16t,
-                          ed_16t = e_16t / d_16t, ef_16t = e_16t / f_16t, eg_16t = e_16t / g_16t,
-                          eh_16t = e_16t / h_16t;
+                         av_16t = a_16t / v_16t, ad_16t = a_16t / d_16t, ae_16t = a_16t / e_16t, af_16t = a_16t / f_16t,
+                         ag_16t = a_16t / g_16t, ah_16t = a_16t / h_16t, hv_16t = h_16t / v_16t, hd_16t = h_16t / d_16t,
+                         he_16t = h_16t / e_16t, hf_16t = h_16t / f_16t, hg_16t = h_16t / g_16t, gv_16t = g_16t / v_16t,
+                         gd_16t = g_16t / d_16t, ge_16t = g_16t / e_16t, gf_16t = g_16t / f_16t, gh_16t = g_16t / h_16t,
+                         dv_16t = d_16t / v_16t, de_16t = d_16t / e_16t, df_16t = d_16t / f_16t, dg_16t = d_16t / g_16t,
+                         dh_16t = d_16t / h_16t, vd_16t = v_16t / d_16t, ve_16t = v_16t / e_16t, vf_16t = v_16t / f_16t,
+                         vg_16t = v_16t / g_16t, vh_16t = v_16t / h_16t, ev_16t = e_16t / v_16t, ed_16t = e_16t / d_16t,
+                         ef_16t = e_16t / f_16t, eg_16t = e_16t / g_16t, eh_16t = e_16t / h_16t;
 
     constexpr uint64_32t x_32t = a_32t / b_32t, y_32t = a_32t / c_32t, z_32t = a_32t / a_32t, m_32t = b_32t / c_32t,
-                          av_32t = a_32t / v_32t, ad_32t = a_32t / d_32t, ae_32t = a_32t / e_32t,
-                          af_32t = a_32t / f_32t, ag_32t = a_32t / g_32t, ah_32t = a_32t / h_32t,
-                          hv_32t = h_32t / v_32t, hd_32t = h_32t / d_32t, he_32t = h_32t / e_32t,
-                          hf_32t = h_32t / f_32t, hg_32t = h_32t / g_32t, gv_32t = g_32t / v_32t,
-                          gd_32t = g_32t / d_32t, ge_32t = g_32t / e_32t, gf_32t = g_32t / f_32t,
-                          gh_32t = g_32t / h_32t, dv_32t = d_32t / v_32t, de_32t = d_32t / e_32t,
-                          df_32t = d_32t / f_32t, dg_32t = d_32t / g_32t, dh_32t = d_32t / h_32t,
-                          vd_32t = v_32t / d_32t, ve_32t = v_32t / e_32t, vf_32t = v_32t / f_32t,
-                          vg_32t = v_32t / g_32t, vh_32t = v_32t / h_32t, ev_32t = e_32t / v_32t,
-                          ed_32t = e_32t / d_32t, ef_32t = e_32t / f_32t, eg_32t = e_32t / g_32t,
-                          eh_32t = e_32t / h_32t;
+                         av_32t = a_32t / v_32t, ad_32t = a_32t / d_32t, ae_32t = a_32t / e_32t, af_32t = a_32t / f_32t,
+                         ag_32t = a_32t / g_32t, ah_32t = a_32t / h_32t, hv_32t = h_32t / v_32t, hd_32t = h_32t / d_32t,
+                         he_32t = h_32t / e_32t, hf_32t = h_32t / f_32t, hg_32t = h_32t / g_32t, gv_32t = g_32t / v_32t,
+                         gd_32t = g_32t / d_32t, ge_32t = g_32t / e_32t, gf_32t = g_32t / f_32t, gh_32t = g_32t / h_32t,
+                         dv_32t = d_32t / v_32t, de_32t = d_32t / e_32t, df_32t = d_32t / f_32t, dg_32t = d_32t / g_32t,
+                         dh_32t = d_32t / h_32t, vd_32t = v_32t / d_32t, ve_32t = v_32t / e_32t, vf_32t = v_32t / f_32t,
+                         vg_32t = v_32t / g_32t, vh_32t = v_32t / h_32t, ev_32t = e_32t / v_32t, ed_32t = e_32t / d_32t,
+                         ef_32t = e_32t / f_32t, eg_32t = e_32t / g_32t, eh_32t = e_32t / h_32t;
 
     t.cmp_eq(x_8t, x, 8);
     t.cmp_eq(y_8t, y, 8);
@@ -3018,18 +2990,17 @@ int main() {
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
     constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
-                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g,
-                          h_16t = h;
+                         v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
     constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
-                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
+                         v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
     constexpr uint64_t x = a % b, y = a % c, z = a % a, m = b % c, av = a % v, ad = a % d, ae = a % e, af = a % f,
-                        ag = a % g, ah = a % h, hv = h % v, hd = h % d, he = h % e, hf = h % f, hg = h % g, gv = g % v,
-                        gd = g % d, ge = g % e, gf = g % f, gh = g % h, dv = d % v, de = d % e, df = d % f, dg = d % g,
-                        dh = d % h, vd = v % d, ve = v % e, vf = v % f, vg = v % g, vh = v % h, ev = e % v, ed = e % d,
-                        ef = e % f, eg = e % g, eh = e % h;
+                       ag = a % g, ah = a % h, hv = h % v, hd = h % d, he = h % e, hf = h % f, hg = h % g, gv = g % v,
+                       gd = g % d, ge = g % e, gf = g % f, gh = g % h, dv = d % v, de = d % e, df = d % f, dg = d % g,
+                       dh = d % h, vd = v % d, ve = v % e, vf = v % f, vg = v % g, vh = v % h, ev = e % v, ed = e % d,
+                       ef = e % f, eg = e % g, eh = e % h;
 
     constexpr uint64_8t x_8t = a_8t % b_8t, y_8t = a_8t % c_8t, z_8t = a_8t % a_8t, m_8t = b_8t % c_8t,
                         av_8t = a_8t % v_8t, ad_8t = a_8t % d_8t, ae_8t = a_8t % e_8t, af_8t = a_8t % f_8t,
@@ -3042,30 +3013,24 @@ int main() {
                         ef_8t = e_8t % f_8t, eg_8t = e_8t % g_8t, eh_8t = e_8t % h_8t;
 
     constexpr uint64_16t x_16t = a_16t % b_16t, y_16t = a_16t % c_16t, z_16t = a_16t % a_16t, m_16t = b_16t % c_16t,
-                          av_16t = a_16t % v_16t, ad_16t = a_16t % d_16t, ae_16t = a_16t % e_16t,
-                          af_16t = a_16t % f_16t, ag_16t = a_16t % g_16t, ah_16t = a_16t % h_16t,
-                          hv_16t = h_16t % v_16t, hd_16t = h_16t % d_16t, he_16t = h_16t % e_16t,
-                          hf_16t = h_16t % f_16t, hg_16t = h_16t % g_16t, gv_16t = g_16t % v_16t,
-                          gd_16t = g_16t % d_16t, ge_16t = g_16t % e_16t, gf_16t = g_16t % f_16t,
-                          gh_16t = g_16t % h_16t, dv_16t = d_16t % v_16t, de_16t = d_16t % e_16t,
-                          df_16t = d_16t % f_16t, dg_16t = d_16t % g_16t, dh_16t = d_16t % h_16t,
-                          vd_16t = v_16t % d_16t, ve_16t = v_16t % e_16t, vf_16t = v_16t % f_16t,
-                          vg_16t = v_16t % g_16t, vh_16t = v_16t % h_16t, ev_16t = e_16t % v_16t,
-                          ed_16t = e_16t % d_16t, ef_16t = e_16t % f_16t, eg_16t = e_16t % g_16t,
-                          eh_16t = e_16t % h_16t;
+                         av_16t = a_16t % v_16t, ad_16t = a_16t % d_16t, ae_16t = a_16t % e_16t, af_16t = a_16t % f_16t,
+                         ag_16t = a_16t % g_16t, ah_16t = a_16t % h_16t, hv_16t = h_16t % v_16t, hd_16t = h_16t % d_16t,
+                         he_16t = h_16t % e_16t, hf_16t = h_16t % f_16t, hg_16t = h_16t % g_16t, gv_16t = g_16t % v_16t,
+                         gd_16t = g_16t % d_16t, ge_16t = g_16t % e_16t, gf_16t = g_16t % f_16t, gh_16t = g_16t % h_16t,
+                         dv_16t = d_16t % v_16t, de_16t = d_16t % e_16t, df_16t = d_16t % f_16t, dg_16t = d_16t % g_16t,
+                         dh_16t = d_16t % h_16t, vd_16t = v_16t % d_16t, ve_16t = v_16t % e_16t, vf_16t = v_16t % f_16t,
+                         vg_16t = v_16t % g_16t, vh_16t = v_16t % h_16t, ev_16t = e_16t % v_16t, ed_16t = e_16t % d_16t,
+                         ef_16t = e_16t % f_16t, eg_16t = e_16t % g_16t, eh_16t = e_16t % h_16t;
 
     constexpr uint64_32t x_32t = a_32t % b_32t, y_32t = a_32t % c_32t, z_32t = a_32t % a_32t, m_32t = b_32t % c_32t,
-                          av_32t = a_32t % v_32t, ad_32t = a_32t % d_32t, ae_32t = a_32t % e_32t,
-                          af_32t = a_32t % f_32t, ag_32t = a_32t % g_32t, ah_32t = a_32t % h_32t,
-                          hv_32t = h_32t % v_32t, hd_32t = h_32t % d_32t, he_32t = h_32t % e_32t,
-                          hf_32t = h_32t % f_32t, hg_32t = h_32t % g_32t, gv_32t = g_32t % v_32t,
-                          gd_32t = g_32t % d_32t, ge_32t = g_32t % e_32t, gf_32t = g_32t % f_32t,
-                          gh_32t = g_32t % h_32t, dv_32t = d_32t % v_32t, de_32t = d_32t % e_32t,
-                          df_32t = d_32t % f_32t, dg_32t = d_32t % g_32t, dh_32t = d_32t % h_32t,
-                          vd_32t = v_32t % d_32t, ve_32t = v_32t % e_32t, vf_32t = v_32t % f_32t,
-                          vg_32t = v_32t % g_32t, vh_32t = v_32t % h_32t, ev_32t = e_32t % v_32t,
-                          ed_32t = e_32t % d_32t, ef_32t = e_32t % f_32t, eg_32t = e_32t % g_32t,
-                          eh_32t = e_32t % h_32t;
+                         av_32t = a_32t % v_32t, ad_32t = a_32t % d_32t, ae_32t = a_32t % e_32t, af_32t = a_32t % f_32t,
+                         ag_32t = a_32t % g_32t, ah_32t = a_32t % h_32t, hv_32t = h_32t % v_32t, hd_32t = h_32t % d_32t,
+                         he_32t = h_32t % e_32t, hf_32t = h_32t % f_32t, hg_32t = h_32t % g_32t, gv_32t = g_32t % v_32t,
+                         gd_32t = g_32t % d_32t, ge_32t = g_32t % e_32t, gf_32t = g_32t % f_32t, gh_32t = g_32t % h_32t,
+                         dv_32t = d_32t % v_32t, de_32t = d_32t % e_32t, df_32t = d_32t % f_32t, dg_32t = d_32t % g_32t,
+                         dh_32t = d_32t % h_32t, vd_32t = v_32t % d_32t, ve_32t = v_32t % e_32t, vf_32t = v_32t % f_32t,
+                         vg_32t = v_32t % g_32t, vh_32t = v_32t % h_32t, ev_32t = e_32t % v_32t, ed_32t = e_32t % d_32t,
+                         ef_32t = e_32t % f_32t, eg_32t = e_32t % g_32t, eh_32t = e_32t % h_32t;
 
     t.cmp_eq(x_8t, x, 8);
     t.cmp_eq(y_8t, y, 8);
