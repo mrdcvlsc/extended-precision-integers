@@ -12,7 +12,14 @@
 
 namespace epi {
 
-  // Forward declare both templates:
+  /// @brief Template Class for creating any fixed arbitrary sized whole numbers.
+  ///
+  /// @note Example: an unsigned 128 bit integer is equal to whole_number<uint32_t, uint64_t, 4>,
+  /// this is because 32 * 4 = 128 so basically we just used four uint32_t to represent a uint128_t.
+  ///
+  /// @tparam limb_t any unsigned integral types.
+  /// @tparam cast_t unsigned integral types that is exactly two times bigger than limb_t.
+  /// @tparam limb_n number of limbs a whole number representation will have.
   template <typename limb_t, typename cast_t, size_t limb_n>
   class whole_number;
 
@@ -210,35 +217,42 @@ namespace epi {
 
     /// default constuctor.
     constexpr whole_number() : limbs() {
-      if constexpr (sizeof(limb_t) * 2 != sizeof(cast_t)) {
-        throw std::invalid_argument(
-          "In 'whole_number<limb_t, cast_t, ...>' : the sizeof(cast_t) should be 2 times the sizeof(limb_t)."
-        );
-      }
+      static_assert(
+        std::is_unsigned_v<limb_t>,
+        "limb_t should be an unsigned integral type"
+      );
+
+      static_assert(
+        std::is_unsigned_v<cast_t>,
+        "cast_t should be an unsigned integral type"
+      );
+
+      static_assert(
+        sizeof(limb_t) * 2 == sizeof(cast_t),
+        "invalid template arguments for whole_number<limb_t, cast_t, size_t> :"
+        " cast_t should be two times of the size of limb_t"
+      );
     }
 
     /// initializer list constructor.
     constexpr whole_number(std::initializer_list<limb_t> num) : whole_number() {
-      if (sizeof(limb_t) * limb_n < sizeof(limb_t) * num.size()) {
-        throw std::invalid_argument("initializer list has a bigger size than the defined whole_number<> type");
+      if (num.size() > limb_n) {
+        throw std::invalid_argument("initializer list elements should be less than or equal the limb_n");
       }
 
       size_t i = limb_n - 1 - (limb_n - num.size());
-      for (auto num_limb: num) {
-        limbs[i--] = num_limb;
+      for (auto e: num) {
+        limbs[i--] = e;
       }
     }
 
     /// integral constructor.
     template <typename T>
     constexpr whole_number(T num) : whole_number() {
-      if constexpr (!std::is_integral_v<T>) {
-        throw std::invalid_argument("Invalid initialization of whole_number with a signed or non-integral type");
-      }
-
-      // if constexpr (!std::is_unsigned_v<T>) {
-      //   throw std::invalid_argument("Invalid initialization of whole_number with a signed integral type");
-      // }
+      static_assert(
+        std::is_integral_v<T>,
+        "literal should be of integral type"
+      );
 
       size_t partition = sizeof(T) / sizeof(limb_t);
 
