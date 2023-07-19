@@ -3,9 +3,13 @@
 #include <iostream>
 #include <string>
 
+#include "../epi.hpp"
+
 typedef epi::whole_number<uint8_t, uint16_t, 8>  uint64_8t;
 typedef epi::whole_number<uint16_t, uint32_t, 4> uint64_16t;
 typedef epi::whole_number<uint32_t, uint64_t, 2> uint64_32t;
+
+#include "../epi.hpp"
 
 int main() {
   smlts::test t;

@@ -5,6 +5,8 @@
 #include <type_traits>
 #include <vector>
 
+#include "../epi.hpp"
+
 namespace smlts {
 
   // class definition

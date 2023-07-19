@@ -6,13 +6,23 @@ SANITIZER_FLAG=
 OS := $(shell uname)
 
 ifeq ($(OS), Linux)
-SANITIZER_FLAG+=-fsanitize=address
 EXTENSION=out
 OUTPUT_NAME=epi_test
 else
 EXTENSION=exe
 OUTPUT_NAME=epi_test
 endif
+
+OS_COMPILER=$(OS)$(CXX)
+
+ifeq ($(CXX), clang++)
+SANITIZER_FLAG+=-fsanitize=address
+endif
+
+
+# ifeq ($(OS_COMPILER), Linuxclang++)
+# SANITIZER_FLAG+=-fsanitize=address
+# endif
 
 
 default:
@@ -38,7 +48,7 @@ run_test:
 
 style:
 	@echo fixing code format and code style...
-	@clang-format -i -style=file *.cpp *.hpp tests/*.cpp tests/*.hpp
+	@clang-format -i -style=file *.cpp *.hpp tests/*.cpp tests/*.hpp benchmark/*.cpp benchmark/*.hpp
 	@echo done fixing style format.
 
 perf_build:

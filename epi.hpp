@@ -1,5 +1,5 @@
-#ifndef EXTENDED_PRECISION_INTEGERS_HPP
-#define EXTENDED_PRECISION_INTEGERS_HPP
+#ifndef MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
+#define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
 #include <cstring>
 #include <iomanip>
@@ -11,6 +11,10 @@
 #include "config.hpp"
 
 namespace epi {
+
+#if (__cplusplus < 201703L)
+  #error C++17 is needed
+#else
 
   /// @brief Template Class for creating any fixed arbitrary sized whole numbers.
   ///
@@ -217,14 +221,10 @@ namespace epi {
 
     /// default constuctor.
     constexpr whole_number() : limbs() {
-      static_assert(
-        std::is_unsigned_v<limb_t>,
-        "limb_t should be an unsigned integral type"
-      );
+      static_assert(std::is_unsigned_v<limb_t>, "limb_t should be an unsigned integral type");
 
       static_assert(
-        std::is_unsigned_v<cast_t>,
-        "cast_t should be an unsigned integral type"
+        std::is_unsigned_v<cast_t> || std::is_same_v<__uint128_t, cast_t>, "cast_t should be an unsigned integral type"
       );
 
       static_assert(
@@ -249,15 +249,16 @@ namespace epi {
     /// integral constructor.
     template <typename T>
     constexpr whole_number(T num) : whole_number() {
-      static_assert(
-        std::is_integral_v<T>,
-        "literal should be of integral type"
-      );
+      static_assert(std::is_integral_v<T>, "literal should be of integral type");
 
-      size_t partition = sizeof(T) / sizeof(limb_t);
+      constexpr size_t partition = sizeof(T) / sizeof(limb_t);
 
-      for (size_t i = 0; i < partition; ++i) {
-        limbs[i] = num >> (i * sizeof(limb_t) * 8);
+      if constexpr (partition) {
+        for (size_t i = 0; i < partition; ++i) {
+          limbs[i] = num >> (i * sizeof(limb_t) * 8);
+        }
+      } else if constexpr (!partition) {
+        limbs[0] = num;
       }
     }
 
@@ -765,8 +766,9 @@ namespace epi {
     return out;
   }
 
-// predefined types
-#if defined(ENV_64BIT_EXTENDED)
+  // predefined types
+  #if defined(ENV_64BIT_EXTENDED)
+
   typedef whole_number<uint64_t, __uint128_t, 2>   uint128_t;
   typedef whole_number<uint64_t, __uint128_t, 3>   uint192_t;
   typedef whole_number<uint64_t, __uint128_t, 4>   uint256_t;
@@ -779,7 +781,8 @@ namespace epi {
   typedef whole_number<uint64_t, __uint128_t, 256> uint16384_t;
   typedef whole_number<uint64_t, __uint128_t, 512> uint32768_t;
 
-#elif defined(ENV_64BIT)
+  #elif defined(ENV_64BIT)
+
   typedef whole_number<uint32_t, uint64_t, 4>    uint128_t;
   typedef whole_number<uint32_t, uint64_t, 6>    uint192_t;
   typedef whole_number<uint32_t, uint64_t, 8>    uint256_t;
@@ -791,7 +794,9 @@ namespace epi {
   typedef whole_number<uint32_t, uint64_t, 256>  uint8192_t;
   typedef whole_number<uint32_t, uint64_t, 512>  uint16384_t;
   typedef whole_number<uint32_t, uint64_t, 1024> uint32768_t;
-#elif defined(ENV_32BIT)
+
+  #elif defined(ENV_32BIT)
+
   typedef whole_number<uint16_t, uint32_t, 4>    uint64_t;
   typedef whole_number<uint16_t, uint32_t, 8>    uint128_t;
   typedef whole_number<uint16_t, uint32_t, 12>   uint192_t;
@@ -804,10 +809,14 @@ namespace epi {
   typedef whole_number<uint16_t, uint32_t, 512>  uint8192_t;
   typedef whole_number<uint16_t, uint32_t, 1024> uint16384_t;
   typedef whole_number<uint16_t, uint32_t, 2048> uint32768_t;
+
+  #endif
+
 #endif
 
 } // namespace epi
 
+#if (__cplusplus >= 201703L)
 namespace std {
   template <typename limb_t, typename cast_t, size_t limb_n>
   struct numeric_limits<epi::whole_number<limb_t, cast_t, limb_n>> {
@@ -836,5 +845,6 @@ namespace std {
     }
   };
 } // namespace std
+#endif
 
 #endif

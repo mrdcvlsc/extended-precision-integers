@@ -7,6 +7,26 @@ on:
     branches: [ main ]
 
 jobs:
+
+  aarch64-gcc:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: update and upgrade env
+      run: sudo apt-get update && sudo apt-get upgrade
+
+    - name: Install essentials
+      run: sudo apt-get install qemu-user qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu binutils-aarch64-linux-gnu-dbg build-essential
+
+    - name: Build
+      run: make test CXX=aarch64-linux-gnu-g++ CXX+=-static
+
+    - name: Run
+      run: make run_test
+
   clang:
 
     runs-on: ${{ matrix.os }}
