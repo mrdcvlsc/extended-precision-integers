@@ -1,8 +1,8 @@
-name: bench
+name: benchmark
 
 on:
   workflow_run:
-    wokflows: [tests]
+    workflows: [tests]
     types: [completed]
 
 jobs:
@@ -34,7 +34,10 @@ jobs:
       - name: Stash Benchmark Results
         run: git add benchmark/benchmark-and-comparison-Linux-clang++.md
 
-      - name: Remove other changes
+      - name: Commit Changes
+        run: git commit -m "..."
+
+      - name: Remove Other Changes
         run: git checkout .
 
       - name: Clean Artifacts
@@ -43,8 +46,11 @@ jobs:
       - name: Checkout Benchmark Branch
         run: git checkout benchmarks
 
+      - name: Checkout Benchmark Markdown Results
+        run: git checkout main benchmark/benchmark-and-comparison-Linux-clang++.md
+
       - name: Save Changes
-        run: git commit -m "benchmark - run"
+        run: git commit -m "run::$(date)"
 
       - name: Push Changes To Benchmark Branch
         run: git push

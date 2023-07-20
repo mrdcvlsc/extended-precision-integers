@@ -7,24 +7,21 @@
 #include "boost/include/boost/multiprecision/cpp_int.hpp"
 #include "wide-integer/math/wide_integer/uintwide_t.h"
 
-// _ARITHMETIC, _ASSIGN_ARITHMETIC, _SHIFTS
-
-#ifdef _WIDENESS_128BIT
+#ifdef _WIDENESS_BIT_NUM1
 constexpr size_t WIDENESS = 128;
-#elif defined(_WIDENESS_192BIT)
+#elif defined(_WIDENESS_BIT_NUM2)
 constexpr size_t WIDENESS = 192;
-#elif defined(_WIDENESS_256BIT)
+#elif defined(_WIDENESS_BIT_NUM3)
 constexpr size_t WIDENESS = 256;
-#elif defined(_WIDENESS_320BIT)
+#elif defined(_WIDENESS_BIT_NUM4)
 constexpr size_t WIDENESS = 320;
-#elif defined(_WIDENESS_512BIT)
+#elif defined(_WIDENESS_BIT_NUM5)
 constexpr size_t WIDENESS = 512;
-#elif defined(_WIDENESS_1024BIT)
+#elif defined(_WIDENESS_BIT_NUM6)
 constexpr size_t WIDENESS = 1024;
-#elif defined(_WIDENESS_524288BIT)
+#elif defined(_WIDENESS_BIT_NUM7)
 constexpr size_t WIDENESS = 524288;
 #endif
-
 
 #define _LIMBSIZE_U32
 
@@ -38,8 +35,8 @@ using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint32_t>;
 using uint_tB = epi::whole_number<uint32_t, uint64_t, (WIDENESS / (sizeof(uint_t) * 8))>;
 #elif defined(_LIMBSIZE_U64)
 using uint_t = uint64_t;
-using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint64_t>;
-using uint_tB = epi::whole_number<uint64_t, uint64_t, (WIDENESS / (sizeof(uint_t) * 8))>;
+using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint32_t>; // not supported uint64_t as limb?
+using uint_tB = epi::whole_number<uint64_t, __uint128_t, (WIDENESS / (sizeof(uint_t) * 8))>;
 #endif
 
 using uint_tC = boost::multiprecision::number<boost::multiprecision::cpp_int_backend<
@@ -56,18 +53,18 @@ int main() {
 
   std::uniform_int_distribution<uint_t> rng(std::numeric_limits<uint_t>::min() + 1, std::numeric_limits<uint_t>::max());
 
-  constexpr size_t cold_runs = 10;
-  constexpr size_t mul_cold_runs = 1;
-  constexpr size_t div_cold_runs = 1;
+  constexpr size_t cold_runs = 512;
+  constexpr size_t mul_cold_runs = 32;
+  constexpr size_t div_cold_runs = 32;
 
-  constexpr size_t add_iteration = 10;
-  constexpr size_t sub_iteration = 10;
-  constexpr size_t mul_iteration = 3;
-  constexpr size_t div_iteration = 3;
+  constexpr size_t add_iteration = 256;
+  constexpr size_t sub_iteration = 256;
+  constexpr size_t mul_iteration = 16;
+  constexpr size_t div_iteration = 16;
 
-  constexpr size_t shift_iteration = 10;
+  constexpr size_t shift_iteration = 256;
 
-  constexpr size_t assigns_iteration = 10;
+  constexpr size_t assigns_iteration = 256;
 
   if constexpr (sizeof(uint_tA) != sizeof(uint_tB)) {
     std::cout << "Invalid Sizes Detected\n\n";
@@ -77,14 +74,12 @@ int main() {
   constexpr size_t BUFFER_LEN = sizeof(uint_tA) / sizeof(uint_t);
   uint_t           BUFFER[BUFFER_LEN] = {};
 
-// _ARITHMETIC, _ASSIGNED_ARITHMETIC, _SHIFTS
+#if defined(_BLOCK_1)
 
-#if defined(_ARITHMETIC)
-
-  std::cout << "## **uint" << WIDENESS << "_t**\n\n";
+  std::cout << "# Benchmark for **uint" << WIDENESS << "_t**\n\n";
 
   {
-    std::cout << "## add operation : \n\n";
+    std::cout << "### uint" << WIDENESS << "_t Arithmetic Operations : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + add_iteration; ++i) {
@@ -159,15 +154,14 @@ int main() {
     size_t aveB = totalB / add_iteration;
     size_t aveC = totalC / add_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
+    std::cout << "| Library | Operator | Average |\n";
     std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **+** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **+** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **+** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`+`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`+`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`+`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## sub operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + sub_iteration; ++i) {
@@ -242,15 +236,12 @@ int main() {
     size_t aveB = totalB / sub_iteration;
     size_t aveC = totalC / sub_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **-** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **-** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **-** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`-`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`-`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`-`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## mul operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < mul_cold_runs + mul_iteration; ++i) {
@@ -325,15 +316,12 @@ int main() {
     size_t aveB = totalB / mul_iteration;
     size_t aveC = totalC / mul_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | ***** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | ***** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | ***** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`*`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`*`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`*`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## div operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
@@ -408,15 +396,12 @@ int main() {
     size_t aveB = totalB / div_iteration;
     size_t aveC = totalC / div_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **/** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **/** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **/** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`/`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`/`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`/`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## mod operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
@@ -491,18 +476,14 @@ int main() {
     size_t aveB = totalB / div_iteration;
     size_t aveC = totalC / div_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **%** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **%** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **%** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`%`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`%`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`%`** | " << aveC << " ns |\n";
   }
 
-// _ARITHMETIC, _ASSIGNED_ARITHMETIC, _SHIFTS
-#elif defined(_ASSIGNED_ARITHMETIC)
+#elif defined(_BLOCK_2)
 
   {
-    std::cout << "## assign add operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + add_iteration; ++i) {
@@ -580,15 +561,12 @@ int main() {
     size_t aveB = totalB / add_iteration;
     size_t aveC = totalC / add_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **+=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **+=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **+=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`+=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`+=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`+=`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## assign sub operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + sub_iteration; ++i) {
@@ -666,15 +644,12 @@ int main() {
     size_t aveB = totalB / sub_iteration;
     size_t aveC = totalC / sub_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **-=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **-=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **-=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`-=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`-=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`-=`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## assign mul operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < mul_cold_runs + mul_iteration; ++i) {
@@ -752,15 +727,12 @@ int main() {
     size_t aveB = totalB / mul_iteration;
     size_t aveC = totalC / mul_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | ***=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | ***=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | ***=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`*=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`*=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`*=`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## assign div operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
@@ -838,15 +810,12 @@ int main() {
     size_t aveB = totalB / div_iteration;
     size_t aveC = totalC / div_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **/=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **/=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **/=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`/=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`/=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`/=`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## assign mod operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
@@ -924,18 +893,15 @@ int main() {
     size_t aveB = totalB / div_iteration;
     size_t aveC = totalC / div_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **%=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **%=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **%=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`%=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`%=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`%=`** | " << aveC << " ns |\n\n";
   }
 
-#elif defined(_SHIFTS)
-  //
+#elif defined(_BLOCK_3)
 
   {
-    std::cout << "## left shift operation : \n\n";
+    std::cout << "### uint" << WIDENESS << "_t Shift Operations : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
@@ -1010,15 +976,14 @@ int main() {
     size_t aveB = totalB / shift_iteration;
     size_t aveC = totalC / shift_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
+    std::cout << "| Library | Operator | Average |\n";
     std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **<<** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **<<** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **<<** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`<<`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`<<`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`<<`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## right shift operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
@@ -1093,17 +1058,14 @@ int main() {
     size_t aveB = totalB / shift_iteration;
     size_t aveC = totalC / shift_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **>>** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **>>** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **>>** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`>>`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`>>`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`>>`** | " << aveC << " ns |\n";
   }
 
   // //
 
   {
-    std::cout << "## assign left shift operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
@@ -1181,15 +1143,12 @@ int main() {
     size_t aveB = totalB / shift_iteration;
     size_t aveC = totalC / shift_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **<<=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **<<=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **<<=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`<<=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`<<=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`<<=`** | " << aveC << " ns |\n";
   }
 
   {
-    std::cout << "## assign right shift operation : \n\n";
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
@@ -1267,11 +1226,9 @@ int main() {
     size_t aveB = totalB / shift_iteration;
     size_t aveC = totalC / shift_iteration;
 
-    std::cout << "| Lib | Operator | Average |\n";
-    std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **>>=** | " << aveA << " nanoseconds |\n";
-    std::cout << "| " << libB << " | **>>=** | " << aveB << " nanoseconds |\n";
-    std::cout << "| " << libC << " | **>>=** | " << aveC << " nanoseconds |\n\n";
+    std::cout << "| " << libA << " | **`>>=`** | " << aveA << " ns |\n";
+    std::cout << "| " << libB << " | **`>>=`** | " << aveB << " ns |\n";
+    std::cout << "| " << libC << " | **`>>=`** | " << aveC << " ns |\n\n";
   }
 #endif
 
