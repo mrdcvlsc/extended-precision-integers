@@ -13,7 +13,6 @@ jobs:
       contents: write
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
