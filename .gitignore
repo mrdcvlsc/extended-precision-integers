@@ -41,3 +41,4 @@ benchmark/*.dlrc
 
 # ignore benchmark libraries
 benchmark/wide-integer
+benchmark/boost
