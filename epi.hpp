@@ -55,7 +55,7 @@ namespace epi {
     static constexpr int LIMB_OCCUPATION_ONE = 1;
     static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
 
-    static constexpr int compare(whole_number const &l, whole_number const &r) {
+    static constexpr int compare(whole_number const &l, whole_number const &r) noexcept {
       int comparison_result = EQUAL;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -72,7 +72,7 @@ namespace epi {
     }
 
     /// @return 0 - if a zero integer, return 1 - if has one limb, return 2 - if has higher limb value occupations.
-    constexpr int is_one_limb() const {
+    constexpr int is_one_limb() const noexcept {
       limb_t upper_values = 0;
       for (size_t i = 1; i < limb_n; ++i) {
         upper_values |= limbs[i];
@@ -87,7 +87,7 @@ namespace epi {
 
     // divs
 
-    constexpr whole_number bit_long_div(whole_number const &divisor) const {
+    constexpr whole_number bit_long_div(whole_number const &divisor) const noexcept {
       constexpr size_t MS_LIMB = limb_n - 1;
       whole_number     quotient = {0}, remainder = {0};
       limb_t           remainder_bit = 0, one_bit = 1;
@@ -112,7 +112,7 @@ namespace epi {
       return quotient;
     }
 
-    constexpr whole_number &self_bit_long_div(whole_number const &divisor) {
+    constexpr whole_number &self_bit_long_div(whole_number const &divisor) noexcept {
       constexpr size_t MS_LIMB = limb_n - 1;
       whole_number     remainder = {0};
       limb_t           remainder_bit = 0, one_bit = 1;
@@ -148,7 +148,7 @@ namespace epi {
       return *this;
     }
 
-    constexpr whole_number div_by_1limb(limb_t divisor) const {
+    constexpr whole_number div_by_1limb(limb_t divisor) const noexcept {
       whole_number quotient;
       cast_t       remainder = 0;
 
@@ -165,7 +165,7 @@ namespace epi {
       return quotient;
     }
 
-    constexpr whole_number &self_div_by_1limb(limb_t divisor) {
+    constexpr whole_number &self_div_by_1limb(limb_t divisor) noexcept {
       cast_t remainder = 0;
 
       remainder = limbs[limb_n - 1] % divisor;
@@ -183,7 +183,7 @@ namespace epi {
 
     // mods
 
-    constexpr whole_number bit_long_mod(whole_number const &divisor) const {
+    constexpr whole_number bit_long_mod(whole_number const &divisor) const noexcept {
       constexpr size_t MS_LIMB = limb_n - 1;
       whole_number     remainder = {0};
       limb_t           remainder_bit = 0;
@@ -203,7 +203,7 @@ namespace epi {
       return remainder;
     }
 
-    constexpr limb_t mod_by_1limb(limb_t divisor) const {
+    constexpr limb_t mod_by_1limb(limb_t divisor) const noexcept {
       cast_t remainder = 0;
 
       remainder = limbs[limb_n - 1] % divisor;
@@ -220,18 +220,18 @@ namespace epi {
     public:
 
     /// default constuctor.
-    constexpr whole_number() : limbs() {
-      static_assert(std::is_unsigned_v<limb_t>, "limb_t should be an unsigned integral type");
+    constexpr whole_number() noexcept : limbs() {
+      constexpr bool invalid_limb_t = std::is_unsigned_v<limb_t>;
+      constexpr bool invalid_cast_t = std::is_unsigned_v<cast_t> || std::is_same_v<__uint128_t, cast_t>;
+      constexpr bool wrong_cast_t_size = sizeof(limb_t) * 2 == sizeof(cast_t);
 
-      static_assert(
-        std::is_unsigned_v<cast_t> || std::is_same_v<__uint128_t, cast_t>, "cast_t should be an unsigned integral type"
-      );
-
-      static_assert(
-        sizeof(limb_t) * 2 == sizeof(cast_t),
-        "invalid template arguments for whole_number<limb_t, cast_t, size_t> :"
-        " cast_t should be two times of the size of limb_t"
-      );
+      if constexpr (!invalid_cast_t) {
+        static_assert(invalid_limb_t, "limb_t should be an unsigned integral type");
+      } else if constexpr (!invalid_cast_t) {
+        static_assert(invalid_cast_t, "cast_t should be an unsigned integral type");
+      } else if constexpr (!wrong_cast_t_size) {
+        static_assert(wrong_cast_t_size, "sizeof(cast_t) should be exactly 2x the sizeof(limb_t)");
+      }
     }
 
     /// initializer list constructor.
@@ -248,8 +248,9 @@ namespace epi {
 
     /// integral constructor.
     template <typename T>
-    constexpr whole_number(T num) : whole_number() {
-      static_assert(std::is_integral_v<T>, "literal should be of integral type");
+    constexpr whole_number(T num) noexcept : whole_number() {
+      constexpr bool invalid_type = std::is_integral_v<T>;
+      static_assert(invalid_type, "literal should be of integral type");
 
       constexpr size_t partition = sizeof(T) / sizeof(limb_t);
 
@@ -263,14 +264,14 @@ namespace epi {
     }
 
     /// copy constructor.
-    constexpr whole_number(whole_number const &src) : whole_number() {
+    constexpr whole_number(whole_number const &src) noexcept : whole_number() {
       for (size_t i = 0; i < limb_n; ++i) {
         limbs[i] = src.limbs[i];
       }
     }
 
     /// copy assignment.
-    constexpr whole_number &operator=(whole_number const &src) {
+    constexpr whole_number &operator=(whole_number const &src) noexcept {
       if (this != &src) {
         for (size_t i = 0; i < limb_n; ++i) {
           limbs[i] = src.limbs[i];
@@ -284,7 +285,7 @@ namespace epi {
       limb_t, cast_t, limb_n>(std::ostream &, const whole_number<limb_t, cast_t, limb_n> &);
 
     // arithmetic operators : start
-    constexpr whole_number operator+(whole_number const &add) const {
+    constexpr whole_number operator+(whole_number const &add) const noexcept {
       whole_number sum;
       limb_t       carry = 0;
 
@@ -297,7 +298,7 @@ namespace epi {
       return sum;
     }
 
-    constexpr whole_number &operator+=(whole_number const &add) {
+    constexpr whole_number &operator+=(whole_number const &add) noexcept {
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -309,7 +310,7 @@ namespace epi {
       return *this;
     }
 
-    constexpr whole_number operator-(whole_number const &sub) const {
+    constexpr whole_number operator-(whole_number const &sub) const noexcept {
       whole_number diff;
       limb_t       carry = 0;
 
@@ -322,7 +323,7 @@ namespace epi {
       return diff;
     }
 
-    constexpr whole_number &operator-=(whole_number const &sub) {
+    constexpr whole_number &operator-=(whole_number const &sub) noexcept {
       limb_t carry = 0;
 
       for (size_t i = 0; i < limb_n; ++i) {
@@ -335,30 +336,30 @@ namespace epi {
     }
 
     // pre-fix increment/decrement
-    constexpr whole_number &operator++() {
+    constexpr whole_number &operator++() noexcept {
       constexpr whole_number CONSTEXPR_ONE = {0x01};
       return *this += CONSTEXPR_ONE;
     }
 
-    constexpr whole_number &operator--() {
+    constexpr whole_number &operator--() noexcept {
       constexpr whole_number CONSTEXPR_ONE = {0x01};
       return *this -= CONSTEXPR_ONE;
     }
 
     // post-fix increment/decrement
-    constexpr whole_number operator++(int) {
+    constexpr whole_number operator++(int) noexcept {
       whole_number prev = *this;
       ++*this;
       return prev;
     }
 
-    constexpr whole_number operator--(int) {
+    constexpr whole_number operator--(int) noexcept {
       whole_number prev = *this;
       --*this;
       return prev;
     }
 
-    constexpr whole_number operator*(whole_number const &mul) const {
+    constexpr whole_number operator*(whole_number const &mul) const noexcept {
       whole_number prod;
       limb_t       carry = 0;
 
@@ -380,7 +381,7 @@ namespace epi {
       return prod;
     }
 
-    constexpr whole_number &operator*=(whole_number const &mul) {
+    constexpr whole_number &operator*=(whole_number const &mul) noexcept {
       *this = *this * mul;
       return *this;
     }
@@ -511,27 +512,27 @@ namespace epi {
     // arithmetic operators : end
 
     // relational operators : start
-    constexpr bool operator==(whole_number const &op) const {
+    constexpr bool operator==(whole_number const &op) const noexcept {
       return !compare(*this, op);
     }
 
-    constexpr bool operator!=(whole_number const &op) const {
+    constexpr bool operator!=(whole_number const &op) const noexcept {
       return compare(*this, op);
     }
 
-    constexpr bool operator<(whole_number const &op) const {
+    constexpr bool operator<(whole_number const &op) const noexcept {
       return compare(*this, op) == LESS;
     }
 
-    constexpr bool operator>(whole_number const &op) const {
+    constexpr bool operator>(whole_number const &op) const noexcept {
       return compare(*this, op) == GREAT;
     }
 
-    constexpr bool operator<=(whole_number const &op) const {
+    constexpr bool operator<=(whole_number const &op) const noexcept {
       return compare(*this, op) <= EQUAL;
     }
 
-    constexpr bool operator>=(whole_number const &op) const {
+    constexpr bool operator>=(whole_number const &op) const noexcept {
       return compare(*this, op) >= EQUAL;
     }
 
@@ -549,28 +550,28 @@ namespace epi {
 
     // bitwise logical operators : start
 
-    constexpr whole_number &operator&=(whole_number const &op) {
+    constexpr whole_number &operator&=(whole_number const &op) noexcept {
       for (size_t i = 0; i < limb_n; ++i) {
         limbs[i] &= op.limbs[i];
       }
       return *this;
     }
 
-    constexpr whole_number &operator|=(whole_number const &op) {
+    constexpr whole_number &operator|=(whole_number const &op) noexcept {
       for (size_t i = 0; i < limb_n; ++i) {
         limbs[i] |= op.limbs[i];
       }
       return *this;
     }
 
-    constexpr whole_number &operator^=(whole_number const &op) {
+    constexpr whole_number &operator^=(whole_number const &op) noexcept {
       for (size_t i = 0; i < limb_n; ++i) {
         limbs[i] ^= op.limbs[i];
       }
       return *this;
     }
 
-    constexpr whole_number operator&(whole_number const &op) const {
+    constexpr whole_number operator&(whole_number const &op) const noexcept {
       whole_number bwl_and;
       for (size_t i = 0; i < limb_n; ++i) {
         bwl_and.limbs[i] = limbs[i] & op.limbs[i];
@@ -578,7 +579,7 @@ namespace epi {
       return bwl_and;
     }
 
-    constexpr whole_number operator|(whole_number const &op) const {
+    constexpr whole_number operator|(whole_number const &op) const noexcept {
       whole_number bwl_or;
       for (size_t i = 0; i < limb_n; ++i) {
         bwl_or.limbs[i] = limbs[i] | op.limbs[i];
@@ -586,7 +587,7 @@ namespace epi {
       return bwl_or;
     }
 
-    constexpr whole_number operator^(whole_number const &op) const {
+    constexpr whole_number operator^(whole_number const &op) const noexcept {
       whole_number bwl_xor;
       for (size_t i = 0; i < limb_n; ++i) {
         bwl_xor.limbs[i] = limbs[i] ^ op.limbs[i];
@@ -594,7 +595,7 @@ namespace epi {
       return bwl_xor;
     }
 
-    constexpr whole_number operator~() const {
+    constexpr whole_number operator~() const noexcept {
       whole_number bwln = *this;
       for (size_t i = 0; i < limb_n; ++i) {
         bwln.limbs[i] = ~bwln.limbs[i];
@@ -607,34 +608,34 @@ namespace epi {
 
     // bitwise logical operators for integral operands : start
 
-    constexpr whole_number &operator&=(limb_t op) {
+    constexpr whole_number &operator&=(limb_t op) noexcept {
       limbs[0] &= op;
       return *this;
     }
 
-    constexpr whole_number &operator|=(limb_t op) {
+    constexpr whole_number &operator|=(limb_t op) noexcept {
       limbs[0] |= op;
       return *this;
     }
 
-    constexpr whole_number &operator^=(limb_t op) {
+    constexpr whole_number &operator^=(limb_t op) noexcept {
       limbs[0] ^= op;
       return *this;
     }
 
-    constexpr whole_number operator&(limb_t op) const {
+    constexpr whole_number operator&(limb_t op) const noexcept {
       whole_number bwl_and;
       bwl_and.limbs[0] = limbs[0] & op;
       return bwl_and;
     }
 
-    constexpr whole_number operator|(limb_t op) const {
+    constexpr whole_number operator|(limb_t op) const noexcept {
       whole_number bwl_or;
       bwl_or.limbs[0] = limbs[0] | op;
       return bwl_or;
     }
 
-    constexpr whole_number operator^(limb_t op) const {
+    constexpr whole_number operator^(limb_t op) const noexcept {
       whole_number bwl_xor;
       bwl_xor.limbs[0] = limbs[0] ^ op;
       return bwl_xor;
@@ -644,11 +645,11 @@ namespace epi {
 
     // shift operators : start
 
-    constexpr whole_number &operator<<=(size_t lshift) {
+    constexpr whole_number &operator<<=(size_t lshift) noexcept {
       return (*this = *this << lshift);
     }
 
-    constexpr whole_number operator<<(size_t lshift) const {
+    constexpr whole_number operator<<(size_t lshift) const noexcept {
       whole_number result;
 
       size_t lshift_internal = lshift % BITS;
@@ -677,11 +678,11 @@ namespace epi {
       return result;
     }
 
-    constexpr whole_number &operator>>=(size_t rshift) {
+    constexpr whole_number &operator>>=(size_t rshift) noexcept {
       return (*this = *this >> rshift);
     }
 
-    constexpr whole_number operator>>(size_t rshift) const {
+    constexpr whole_number operator>>(size_t rshift) const noexcept {
       whole_number result;
 
       size_t rshift_internal = rshift % BITS;
@@ -726,11 +727,11 @@ namespace epi {
         size_t i = 0;
         for (; i < limb_n; ++i) {
           if (num.limbs[limb_n - 1 - i]) {
-            std::cout << (unsigned int) num.limbs[limb_n - 1 - i];
+            out << (unsigned int) num.limbs[limb_n - 1 - i];
             i++;
             break;
           } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
-            std::cout << 0x0;
+            out << 0x0;
           }
         }
 
@@ -742,11 +743,11 @@ namespace epi {
         size_t i = 0;
         for (; i < limb_n; ++i) {
           if (num.limbs[limb_n - 1 - i]) {
-            std::cout << num.limbs[limb_n - 1 - i];
+            out << num.limbs[limb_n - 1 - i];
             i++;
             break;
           } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
-            std::cout << 0x0;
+            out << 0x0;
           }
         }
 
