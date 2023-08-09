@@ -19,12 +19,6 @@ ifeq ($(CXX), clang++)
 SANITIZER_FLAG+=-fsanitize=address
 endif
 
-
-# ifeq ($(OS_COMPILER), Linuxclang++)
-# SANITIZER_FLAG+=-fsanitize=address
-# endif
-
-
 default:
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)

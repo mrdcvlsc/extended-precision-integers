@@ -1,11 +1,11 @@
+#include "../epi.hpp"
+#include "boost/include/boost/multiprecision/cpp_int.hpp"
+#include "wide-integer/math/wide_integer/uintwide_t.h"
+
 #include <chrono>
 #include <cstring>
 #include <iostream>
 #include <random>
-
-#include "../epi.hpp"
-#include "boost/include/boost/multiprecision/cpp_int.hpp"
-#include "wide-integer/math/wide_integer/uintwide_t.h"
 
 #ifdef _WIDENESS_BIT_NUM1
 constexpr size_t WIDENESS = 128;
@@ -143,7 +143,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== add (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed add operation\n\n";
           return 1;
         }
@@ -159,6 +171,7 @@ int main() {
     std::cout << "| " << libA << " | **`+`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`+`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`+`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -179,7 +192,7 @@ int main() {
       std::memcpy(&c1, BUFFER, sizeof(BUFFER));
 
       BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
+      for (size_t j = 1; j < BUFFER_LEN - 1; ++j) {
         BUFFER[j] = rng(rand_engine);
       }
 
@@ -225,7 +238,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== sub (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed sub operation\n\n";
           return 1;
         }
@@ -239,6 +264,7 @@ int main() {
     std::cout << "| " << libA << " | **`-`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`-`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`-`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -305,7 +331,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== mul (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed mul operation\n\n";
           return 1;
         }
@@ -319,6 +357,7 @@ int main() {
     std::cout << "| " << libA << " | **`*`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`*`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`*`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -385,7 +424,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== div (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed div operation\n\n";
           return 1;
         }
@@ -399,6 +450,7 @@ int main() {
     std::cout << "| " << libA << " | **`/`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`/`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`/`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -465,7 +517,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== mod (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed div operation\n\n";
           return 1;
         }
@@ -479,6 +543,7 @@ int main() {
     std::cout << "| " << libA << " | **`%`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`%`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`%`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
 #elif defined(_BLOCK_2)
@@ -550,7 +615,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== add assign (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign add operation\n\n";
           return 1;
         }
@@ -564,6 +641,7 @@ int main() {
     std::cout << "| " << libA << " | **`+=`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`+=`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`+=`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -633,7 +711,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== sub assign (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign sub operation\n\n";
           return 1;
         }
@@ -647,6 +737,7 @@ int main() {
     std::cout << "| " << libA << " | **`-=`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`-=`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`-=`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -716,7 +807,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== mul assign (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign mul operation\n\n";
           return 1;
         }
@@ -730,6 +833,7 @@ int main() {
     std::cout << "| " << libA << " | **`*=`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`*=`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`*=`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -799,7 +903,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== div assign (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign div operation\n\n";
           return 1;
         }
@@ -813,6 +929,7 @@ int main() {
     std::cout << "| " << libA << " | **`/=`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`/=`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`/=`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -882,7 +999,19 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cerr << "\n\n";
+          std::cerr << "==================== mod assign (uint" << WIDENESS << "_t) ==================== \n\n";
+          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
+          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
+
+          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
+          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
+
+          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
+          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
+          std::cerr << "\n\n";
+
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign mod operation\n\n";
           return 1;
         }
@@ -965,7 +1094,7 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed left shift operation\n\n";
           return 1;
         }
@@ -981,6 +1110,7 @@ int main() {
     std::cout << "| " << libA << " | **`<<`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`<<`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`<<`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -1047,7 +1177,7 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed right shift operation\n\n";
           return 1;
         }
@@ -1061,6 +1191,7 @@ int main() {
     std::cout << "| " << libA << " | **`>>`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`>>`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`>>`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   // //
@@ -1132,7 +1263,7 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign left shift operation\n\n";
           return 1;
         }
@@ -1146,6 +1277,7 @@ int main() {
     std::cout << "| " << libA << " | **`<<=`** | " << aveA << " ns |\n";
     std::cout << "| " << libB << " | **`<<=`** | " << aveB << " ns |\n";
     std::cout << "| " << libC << " | **`<<=`** | " << aveC << " ns |\n";
+    std::cout << "| ................................. | ........ | ............ |\n";
   }
 
   {
@@ -1215,7 +1347,7 @@ int main() {
         totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cout << "memcmp = " << std::memcmp(&numA, &numC, sizeof(uint_tA)) << "\n";
+          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
           std::cout << "Failed assign right shift operation\n\n";
           return 1;
         }
