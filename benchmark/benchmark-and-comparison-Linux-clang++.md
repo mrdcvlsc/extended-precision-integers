@@ -1,6 +1,6 @@
 # **Benchmark and Comparison**
 
-Date: Fri Jul 21 18:03:14 UTC 2023
+Date: Wed Aug  9 14:21:27 UTC 2023
 
 Compiler : clang++
 
@@ -13,53 +13,65 @@ OS : Linux
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 23 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 32 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 19 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 29 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 30 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 25 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 37 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 30 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 25 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 26 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 40 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 14 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 43 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 25 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 31 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 75 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 325 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 62 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 68 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 243 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 43 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 156 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 31 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 56 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 225 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 50 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 0 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 60 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 0 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 30 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 28 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 27 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 31 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 68 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 306 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 43 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 81 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 331 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 50 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 25 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 35 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 19 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 25 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 28 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 43 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 25 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 31 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 325 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 6 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 93 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 268 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 18 ns |
 
 ### uint128_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 25 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 29 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 31 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 27 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 26 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 28 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 30 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 26 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 35 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 28 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 29 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 26 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 27 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 28 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 25 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 32 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 23 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 29 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 28 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 26 ns |
 
 # Benchmark for **uint192_t**
 
@@ -67,53 +79,65 @@ OS : Linux
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 26 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 28 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 29 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 29 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 30 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 34 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 43 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 50 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 368 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 50 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 75 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 493 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 43 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 28 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 32 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 50 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 43 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 18 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 68 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 575 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 37 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 81 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 431 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 50 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 30 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 29 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 30 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 28 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 32 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 29 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 35 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 43 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 50 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 0 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 34 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 31 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 37 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 62 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 750 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 56 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 81 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 362 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 37 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 506 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 50 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 131 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 650 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 31 ns |
 
 ### uint192_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 30 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 41 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 27 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 30 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 27 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 29 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 40 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 28 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 31 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 36 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 34 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 30 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 27 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 33 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 33 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 29 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 29 ns |
 
 # Benchmark for **uint256_t**
 
@@ -121,44 +145,65 @@ OS : Linux
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 29 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 28 ns |
-memcmp = -154
-Failed sub operation
-
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 34 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 28 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 32 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 32 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 36 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 30 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 29 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 33 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 33 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 35 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 56 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 56 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 31 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 50 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 868 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 75 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 125 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 875 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 50 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 32 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 29 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 30 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 31 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 32 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 35 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 62 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 43 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 18 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 75 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 34 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 37 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 31 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 43 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 62 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 675 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 118 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 856 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 25 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 43 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 100 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 962 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 18 ns |
 
 ### uint256_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 26 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 31 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 33 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 42 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 40 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 29 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 30 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 34 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 27 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 33 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 36 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 26 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 33 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 34 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 33 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 28 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 31 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 25 ns |
 
 # Benchmark for **uint320_t**
 
@@ -166,53 +211,65 @@ Failed sub operation
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 30 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 39 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 33 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 38 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 32 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 29 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 41 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 35 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 32 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 68 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 62 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 62 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 56 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 31 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 81 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 1331 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 68 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 187 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 1931 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 33 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 33 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 32 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 32 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 37 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 34 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 68 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 62 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 75 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 1500 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 62 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 87 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 1168 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 50 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 32 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 32 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 29 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 35 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 35 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 36 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 62 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 68 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 25 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 81 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 1875 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 62 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 112 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 1337 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 43 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 68 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 1712 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 37 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 106 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 981 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 31 ns |
 
 ### uint320_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 27 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 40 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 32 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 34 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 38 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 29 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 32 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 31 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 39 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 34 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 32 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 35 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 31 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 28 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 35 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 32 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 26 ns |
 
 # Benchmark for **uint512_t**
 
@@ -220,53 +277,65 @@ Failed sub operation
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 45 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 97 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 28 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 49 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 41 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 39 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 150 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 125 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 81 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 2881 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 25 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 262 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 5743 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 18 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 39 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 35 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 31 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 45 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 41 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 41 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 156 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 43 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 41 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 27 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 51 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 42 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 40 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 212 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 112 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 18 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 87 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 3825 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 62 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 156 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 3381 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 25 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 44 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 38 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 23 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 47 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 44 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 32 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 175 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 125 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 18 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 100 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 5043 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 181 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 3843 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 43 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 37 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 106 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 4618 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 56 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 143 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 3362 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 37 ns |
 
 ### uint512_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 27 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 30 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 37 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 42 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 36 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 31 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 37 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 38 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 38 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 40 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 30 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 35 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 32 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 36 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 37 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 35 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 32 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 41 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 28 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 30 ns |
 
 # Benchmark for **uint1024_t**
 
@@ -274,53 +343,65 @@ Failed sub operation
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 62 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 61 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 53 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 32 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 72 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 62 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 675 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 543 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 29 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 73 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 64 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 41 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 518 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 468 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 37 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 100 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 18937 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 62 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 275 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 18225 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 168 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 21256 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 6 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 350 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 22575 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 43 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 57 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 56 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 53 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 33 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 69 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 64 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 42 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 531 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 31 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 66 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 66 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 43 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 687 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 487 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 56 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 131 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 24031 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 62 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 400 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 22587 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 31 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 18 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 112 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 14300 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 56 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 337 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 18062 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 6 ns |
 
 ### uint1024_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 28 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 57 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 47 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 33 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 53 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 42 ns |
+| ................................. | ........ | ............ |
 | [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 33 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 85 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 32 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 41 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 74 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 83 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 33 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 40 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 75 ns |
 | [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 39 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 37 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 40 ns |
 | [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 101 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 26 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 28 ns |
 
 # Benchmark for **uint524288_t**
 
@@ -328,53 +409,65 @@ Failed sub operation
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 20203 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 18144 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 2185 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 31463 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 23051 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 2747 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 25654235 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 147909669 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 16212 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 54750 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 4368352379 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 11931 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 173758 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 6184582401 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 9593 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 18328 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 18331 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 2953 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 29274 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 23890 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 3216 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 25579472 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 147843286 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 17162 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 56925 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 4656012399 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 16225 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 140520 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 5475685400 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 11400 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+`** | 20153 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+`** | 18214 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+`** | 2260 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-`** | 31126 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-`** | 23096 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-`** | 2534 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*`** | 25593856 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*`** | 147902294 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*`** | 9100 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/`** | 68875 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/`** | 6379758673 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/`** | 9737 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%`** | 223396 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%`** | 5882415374 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%`** | 6668 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`+=`** | 18326 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`+=`** | 18379 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`+=`** | 2991 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`-=`** | 29320 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`-=`** | 23838 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`-=`** | 3220 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`*=`** | 25580843 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`*=`** | 147864909 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`*=`** | 9587 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`/=`** | 68019 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`/=`** | 6950032676 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`/=`** | 12656 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`%=`** | 109869 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`%=`** | 4739940873 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`%=`** | 7550 ns |
 
 ### uint524288_t Shift Operations : 
 
 | Library | Operator | Average |
 | --- | --- | --- |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 11275 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 20351 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 3016 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 9975 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 31646 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 2971 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 8720 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 23808 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 2992 ns |
-| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 8086 ns |
-| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 34242 ns |
-| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 3044 ns |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<`** | 10765 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<`** | 20322 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<`** | 2935 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>`** | 9929 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>`** | 31546 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>`** | 2941 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`<<=`** | 7934 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`<<=`** | 19598 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`<<=`** | 2880 ns |
+| ................................. | ........ | ............ |
+| [`wide-integer`](https://github.com/ckormanyos/wide-integer) | **`>>=`** | 8039 ns |
+| [`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers) | **`>>=`** | 34272 ns |
+| [`boost::multiprecision`](https://github.com/boostorg/multiprecision) | **`>>=`** | 2900 ns |
 
 
 ## System 
