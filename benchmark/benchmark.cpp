@@ -1,8 +1,9 @@
 #include "../epi.hpp"
-#include "boost/include/boost/multiprecision/cpp_int.hpp"
 #include "wide-integer/math/wide_integer/uintwide_t.h"
+#include <boost/multiprecision/cpp_int.hpp>
 
 #include <chrono>
+#include <cstddef>
 #include <cstring>
 #include <iostream>
 #include <random>
@@ -21,6 +22,8 @@ constexpr size_t WIDENESS = 512;
 constexpr size_t WIDENESS = 1024;
 #elif defined(_WIDENESS_BIT_NUM7)
 constexpr size_t WIDENESS = 524288;
+#else
+constexpr size_t WIDENESS = 128;
 #endif
 
 #define _LIMBSIZE_U32
@@ -43,16 +46,66 @@ using uint_tC = boost::multiprecision::number<boost::multiprecision::cpp_int_bac
   WIDENESS, WIDENESS, boost::multiprecision::cpp_integer_type::unsigned_magnitude,
   boost::multiprecision::cpp_int_check_type::unchecked, void>>;
 
+unsigned int    seed = std::chrono::steady_clock::now().time_since_epoch().count();
+std::mt19937_64 rand_engine(seed);
+
+std::uniform_int_distribution<uint_t> rng(std::numeric_limits<uint_t>::min() + 1, std::numeric_limits<uint_t>::max());
+
+template <typename T1, typename T2, typename T3, typename BufferT>
+void memory_copy(T1 &a, T2 &b, T3 &c, BufferT *BUFFER, const size_t BufferBytes) {
+  std::memcpy(&a, BUFFER, BufferBytes);
+  std::memcpy(&b, BUFFER, BufferBytes);
+  std::memcpy(&c, BUFFER, BufferBytes);
+}
+
+template <typename BufferT>
+void randomize_buffer(BufferT *BUFFER, size_t BufferLen, size_t offset = 0) {
+  BUFFER[0] = rng(rand_engine) | 1;
+  for (size_t i = 1; i < BufferLen - offset; ++i) {
+    BUFFER[i] = rng(rand_engine);
+  }
+
+  for (size_t i = BufferLen - offset; i < BufferLen; ++i) {
+    BUFFER[i] = 0;
+  }
+}
+
+template <typename T1, typename T2, typename T3>
+int debug_log(
+  std::string const &operation_name, T1 const &a1, T1 const &a2, T2 const &b1, T2 const &b2, T3 const &c1, T3 const &c2,
+  T1 const &numA, T2 const &numB, T3 const &numC
+) {
+  std::cerr << "\n\n";
+  std::cerr << "==================== " << operation_name << "(uint" << WIDENESS << "_t) ==================== \n\n";
+  std::cerr << "a1 = " << std::hex << a1 << std::dec << "\n";
+  std::cerr << "b1 = " << std::hex << b1 << std::dec << "\n";
+  std::cerr << "c1 = " << std::hex << c1 << std::dec << "\n\n";
+
+  std::cerr << "a2 = " << std::hex << a2 << std::dec << "\n";
+  std::cerr << "b2 = " << std::hex << b2 << std::dec << "\n";
+  std::cerr << "c2 = " << std::hex << c2 << std::dec << "\n\n";
+
+  std::cerr << "numA = " << std::hex << numA << std::dec << "\n";
+  std::cerr << "numB = " << std::hex << numB << std::dec << "\n";
+  std::cerr << "numC = " << std::hex << numC << std::dec << "\n\n";
+
+  std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
+  std::cout << "Failed " << operation_name << " operation\n\n";
+  return 1;
+}
+
+std::string libA = "[`wide-integer`](https://github.com/ckormanyos/wide-integer)";
+std::string libB = "[`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers)";
+std::string libC = "[`boost::multiprecision`](https://github.com/boostorg/multiprecision)";
+
+void print_average(std::string const &operation_symbol, size_t aveA, size_t aveB, size_t aveC) {
+  std::cout << "| " << libA << " | **" << operation_symbol << "** | " << aveA << " ns |\n";
+  std::cout << "| " << libB << " | **" << operation_symbol << "** | " << aveB << " ns |\n";
+  std::cout << "| " << libC << " | **" << operation_symbol << "** | " << aveC << " ns |\n";
+  std::cout << "| ................................. | ........ | ............ |\n";
+}
+
 int main() {
-  std::string libA = "[`wide-integer`](https://github.com/ckormanyos/wide-integer)";
-  std::string libB = "[`extended-precision-integers`](https://github.com/mrdcvlsc/extended-precision-integers)";
-  std::string libC = "[`boost::multiprecision`](https://github.com/boostorg/multiprecision)";
-
-  unsigned int    seed = std::chrono::steady_clock::now().time_since_epoch().count();
-  std::mt19937_64 rand_engine(seed);
-
-  std::uniform_int_distribution<uint_t> rng(std::numeric_limits<uint_t>::min() + 1, std::numeric_limits<uint_t>::max());
-
   constexpr size_t cold_runs = 512;
   constexpr size_t mul_cold_runs = 32;
   constexpr size_t div_cold_runs = 32;
@@ -74,6 +127,10 @@ int main() {
   constexpr size_t BUFFER_LEN = sizeof(uint_tA) / sizeof(uint_t);
   uint_t           BUFFER[BUFFER_LEN] = {};
 
+  uint_tA a1 = 0, a2 = 0;
+  uint_tB b1 = 0, b2 = 0;
+  uint_tC c1 = 0, c2 = 1;
+
 #if defined(_BLOCK_1)
 
   std::cout << "# Benchmark for **uint" << WIDENESS << "_t**\n\n";
@@ -83,32 +140,11 @@ int main() {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + add_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization add operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 + c2;
@@ -126,84 +162,30 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== add (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed add operation\n\n";
-          return 1;
+          return debug_log("add", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / add_iteration;
-    size_t aveB = totalB / add_iteration;
-    size_t aveC = totalC / add_iteration;
+    size_t aveA = totalA / add_iteration, aveB = totalB / add_iteration, aveC = totalC / add_iteration;
 
     std::cout << "| Library | Operator | Average |\n";
     std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **`+`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`+`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`+`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    print_average("`+`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + sub_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN - 1; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization sub operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 - c2;
@@ -221,82 +203,27 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== sub (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed sub operation\n\n";
-          return 1;
+          return debug_log("sub", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / sub_iteration;
-    size_t aveB = totalB / sub_iteration;
-    size_t aveC = totalC / sub_iteration;
-
-    std::cout << "| " << libA << " | **`-`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`-`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`-`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / sub_iteration, aveB = totalB / sub_iteration, aveC = totalC / sub_iteration;
+    print_average("`-`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < mul_cold_runs + mul_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization mul operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 * c2;
@@ -314,82 +241,28 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= mul_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== mul (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed mul operation\n\n";
-          return 1;
+          return debug_log("mul", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / mul_iteration;
-    size_t aveB = totalB / mul_iteration;
-    size_t aveC = totalC / mul_iteration;
-
-    std::cout << "| " << libA << " | **`*`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`*`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`*`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / mul_iteration, aveB = totalB / mul_iteration, aveC = totalC / mul_iteration;
+    print_average("`*`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization div operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 / c2;
@@ -407,82 +280,28 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= div_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== div (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed div operation\n\n";
-          return 1;
+          return debug_log("div", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / div_iteration;
-    size_t aveB = totalB / div_iteration;
-    size_t aveC = totalC / div_iteration;
-
-    std::cout << "| " << libA << " | **`/`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`/`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`/`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / div_iteration, aveB = totalB / div_iteration, aveC = totalC / div_iteration;
+    print_average("`/`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization div operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 % c2;
@@ -500,50 +319,17 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= div_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== mod (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed div operation\n\n";
-          return 1;
+          return debug_log("mod", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / div_iteration;
-    size_t aveB = totalB / div_iteration;
-    size_t aveC = totalC / div_iteration;
-
-    std::cout << "| " << libA << " | **`%`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`%`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`%`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / div_iteration, aveB = totalB / div_iteration, aveC = totalC / div_iteration;
+    print_average("`%`", aveA, aveB, aveC);
   }
 
 #elif defined(_BLOCK_2)
@@ -552,32 +338,11 @@ int main() {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + add_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign_add operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -598,82 +363,27 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== add assign (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed assign add operation\n\n";
-          return 1;
+          return debug_log("add assign", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / add_iteration;
-    size_t aveB = totalB / add_iteration;
-    size_t aveC = totalC / add_iteration;
-
-    std::cout << "| " << libA << " | **`+=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`+=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`+=`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / add_iteration, aveB = totalB / add_iteration, aveC = totalC / add_iteration;
+    print_average("`+=`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + sub_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign sub operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -694,82 +404,27 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== sub assign (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed assign sub operation\n\n";
-          return 1;
+          return debug_log("sub assign", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / sub_iteration;
-    size_t aveB = totalB / sub_iteration;
-    size_t aveC = totalC / sub_iteration;
-
-    std::cout << "| " << libA << " | **`-=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`-=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`-=`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / sub_iteration, aveB = totalB / sub_iteration, aveC = totalC / sub_iteration;
+    print_average("`-=`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < mul_cold_runs + mul_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign mul operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -790,82 +445,28 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= mul_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== mul assign (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed assign mul operation\n\n";
-          return 1;
+          return debug_log("mul assign", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / mul_iteration;
-    size_t aveB = totalB / mul_iteration;
-    size_t aveC = totalC / mul_iteration;
-
-    std::cout << "| " << libA << " | **`*=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`*=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`*=`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / mul_iteration, aveB = totalB / mul_iteration, aveC = totalC / mul_iteration;
+    print_average("`*=`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign div operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -886,82 +487,28 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= div_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== div assign (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed assign div operation\n\n";
-          return 1;
+          return debug_log("div assign", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / div_iteration;
-    size_t aveB = totalB / div_iteration;
-    size_t aveC = totalC / div_iteration;
-
-    std::cout << "| " << libA << " | **`/=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`/=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`/=`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / div_iteration, aveB = totalB / div_iteration, aveC = totalC / div_iteration;
+    print_average("`/=`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < div_cold_runs + div_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign mod operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -982,49 +529,18 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= div_cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
 
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
-          std::cerr << "\n\n";
-          std::cerr << "==================== mod assign (uint" << WIDENESS << "_t) ==================== \n\n";
-          std::cerr << "a1 = "<< std::hex << a1 << std::dec << "\n";
-          std::cerr << "b1 = "<< std::hex << b1 << std::dec << "\n\n";
-
-          std::cerr << "a2 = "<< std::hex << a2 << std::dec << "\n";
-          std::cerr << "b2 = "<< std::hex << b2 << std::dec << "\n\n";
-
-          std::cerr << "numA = "<< std::hex << numA << std::dec << "\n";
-          std::cerr << "numB = "<< std::hex << numB << std::dec << "\n\n";
-          std::cerr << "\n\n";
-
-          std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
-          std::cout << "Failed assign mod operation\n\n";
-          return 1;
+          return debug_log("mod assign", a1, a2, b1, b2, c1, c2, numA, numB, numC);
         }
       }
     }
 
-    size_t aveA = totalA / div_iteration;
-    size_t aveB = totalB / div_iteration;
-    size_t aveC = totalC / div_iteration;
-
-    std::cout << "| " << libA << " | **`%=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`%=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`%=`** | " << aveC << " ns |\n\n";
+    size_t aveA = totalA / div_iteration, aveB = totalB / div_iteration, aveC = totalC / div_iteration;
+    print_average("`%=`", aveA, aveB, aveC);
+    std::cout << "\n";
   }
 
 #elif defined(_BLOCK_3)
@@ -1034,32 +550,11 @@ int main() {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization left shift operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 << 1;
@@ -1077,21 +572,7 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
           std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
@@ -1101,48 +582,22 @@ int main() {
       }
     }
 
-    size_t aveA = totalA / shift_iteration;
-    size_t aveB = totalB / shift_iteration;
-    size_t aveC = totalC / shift_iteration;
+    size_t aveA = totalA / shift_iteration, aveB = totalB / shift_iteration, aveC = totalC / shift_iteration;
 
     std::cout << "| Library | Operator | Average |\n";
     std::cout << "| --- | --- | --- |\n";
-    std::cout << "| " << libA << " | **`<<`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`<<`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`<<`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    print_average("`<<`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization right shift operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1 >> 1;
@@ -1160,21 +615,7 @@ int main() {
       auto    durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
           std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
@@ -1184,14 +625,8 @@ int main() {
       }
     }
 
-    size_t aveA = totalA / shift_iteration;
-    size_t aveB = totalB / shift_iteration;
-    size_t aveC = totalC / shift_iteration;
-
-    std::cout << "| " << libA << " | **`>>`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`>>`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`>>`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / shift_iteration, aveB = totalB / shift_iteration, aveC = totalC / shift_iteration;
+    print_average("`>>`", aveA, aveB, aveC);
   }
 
   // //
@@ -1200,32 +635,11 @@ int main() {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign left shift operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -1246,21 +660,7 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
           std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
@@ -1270,46 +670,19 @@ int main() {
       }
     }
 
-    size_t aveA = totalA / shift_iteration;
-    size_t aveB = totalB / shift_iteration;
-    size_t aveC = totalC / shift_iteration;
-
-    std::cout << "| " << libA << " | **`<<=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`<<=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`<<=`** | " << aveC << " ns |\n";
-    std::cout << "| ................................. | ........ | ............ |\n";
+    size_t aveA = totalA / shift_iteration, aveB = totalB / shift_iteration, aveC = totalC / shift_iteration;
+    print_average("`<<=`", aveA, aveB, aveC);
   }
 
   {
     size_t totalA = 0, totalB = 0, totalC = 0;
 
     for (size_t i = 0; i < cold_runs + shift_iteration; ++i) {
-      uint_tA a1 = 0, a2 = 0;
-      uint_tB b1 = 0, b2 = 0;
-      uint_tC c1 = 0, c2 = 0;
+      randomize_buffer(BUFFER, BUFFER_LEN);
+      memory_copy(a1, b1, c1, BUFFER, sizeof(BUFFER));
 
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b1, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c1, BUFFER, sizeof(BUFFER));
-
-      BUFFER[0] = rng(rand_engine) ^ 1;
-      for (size_t j = 1; j < BUFFER_LEN; ++j) {
-        BUFFER[j] = rng(rand_engine);
-      }
-
-      std::memcpy(&a2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&b2, BUFFER, sizeof(BUFFER));
-      std::memcpy(&c2, BUFFER, sizeof(BUFFER));
-
-      if (std::memcmp(&a1, &b1, sizeof(uint_tA)) | std::memcmp(&a1, &c1, sizeof(uint_tA))) {
-        std::cout << "Initialization assign right shift operation errorsss\n\n";
-        return 1;
-      }
+      randomize_buffer(BUFFER, BUFFER_LEN, 1);
+      memory_copy(a2, b2, c2, BUFFER, sizeof(BUFFER));
 
       auto    startC = std::chrono::high_resolution_clock::now();
       uint_tC numC = c1;
@@ -1330,21 +703,7 @@ int main() {
       auto durA = std::chrono::duration_cast<std::chrono::nanoseconds>(endA - startA);
 
       if (i >= cold_runs) {
-        uint_t *blimb = (uint_t *) &numB;
-        uint_t *climb = (uint_t *) &numC;
-
-        bool boostfalse = false;
-        for (size_t i = 0; i < sizeof(uint_tA); ++i) {
-          if (!blimb[sizeof(uint_tA) - 1 - i]) {
-            climb[sizeof(uint_tA) - 1 - i] = 0x00;
-          } else {
-            break;
-          }
-        }
-
-        totalA += durA.count();
-        totalB += durB.count();
-        totalC += durC.count();
+        totalA += durA.count(), totalB += durB.count(), totalC += durC.count();
 
         if (std::memcmp(&numA, &numB, sizeof(uint_tA))) {
           std::cout << "memcmp = " << std::memcmp(&numA, &numB, sizeof(uint_tA)) << "\n";
@@ -1354,13 +713,9 @@ int main() {
       }
     }
 
-    size_t aveA = totalA / shift_iteration;
-    size_t aveB = totalB / shift_iteration;
-    size_t aveC = totalC / shift_iteration;
-
-    std::cout << "| " << libA << " | **`>>=`** | " << aveA << " ns |\n";
-    std::cout << "| " << libB << " | **`>>=`** | " << aveB << " ns |\n";
-    std::cout << "| " << libC << " | **`>>=`** | " << aveC << " ns |\n\n";
+    size_t aveA = totalA / shift_iteration, aveB = totalB / shift_iteration, aveC = totalC / shift_iteration;
+    print_average("`>>=`", aveA, aveB, aveC);
+    std::cout << "\n";
   }
 #endif
 
