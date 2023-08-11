@@ -42,7 +42,7 @@ jobs:
       run: make default
 
     - name: Build
-      run: make test CXX=clang++
+      run: make test CXX=clang++ CC=clang
 
     - name: Run
       run: make run_test
@@ -62,7 +62,7 @@ jobs:
       run: make default
 
     - name: Build
-      run: make test CXX=g++
+      run: make test CXX=g++ CC=clang
 
     - name: Run
       run: make run_test

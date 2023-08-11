@@ -20,9 +20,10 @@ SANITIZER_FLAG+=-fsanitize=address
 endif
 
 default:
-	@echo OS : $(OS)
-	@echo Compiler : $(CXX) --version
 	@echo extended-precision-integers : written by @mrdcvlsc
+	@echo OS : $(OS)
+	@echo Compiler :
+	@$(CXX) --version
 
 test:
 	@echo compiling test program...

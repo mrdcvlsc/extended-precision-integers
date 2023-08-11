@@ -2,6 +2,7 @@
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
 #include <cmath>
+#include <cstdint>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
@@ -108,8 +109,8 @@ namespace epi {
       return base8_max_digits;
     }
 
-    static constexpr size_t BASE10_MAX_NUM_OF_DIGITS = get_base10_max_digit();
-    static constexpr size_t BASE8_MAX_NUM_OF_DIGITS = get_base8_max_digit();
+    static constexpr size_t BASE10_MAX_NUM_DIGITS = get_base10_max_digit();
+    static constexpr size_t BASE8_MAX_NUM_DIGITS = get_base8_max_digit();
 
     static constexpr unsigned char HEX_TO_CHAR[16] = {
       '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
@@ -171,7 +172,7 @@ namespace epi {
       }
 
       if (is_all_digit) {
-        constexpr size_t base10_max_digits = BASE10_MAX_NUM_OF_DIGITS;
+        constexpr size_t base10_max_digits = BASE10_MAX_NUM_DIGITS;
         if (num.size() > base10_max_digits) {
           throw std::length_error("base 10 number string exceed the max number of digits");
         } else if (!valid_base10(num)) {
@@ -189,7 +190,7 @@ namespace epi {
             }
             number_base = number_base_t::bin;
           } else if (num[1] == 'o') {
-            constexpr size_t base8_max_digits = BASE8_MAX_NUM_OF_DIGITS;
+            constexpr size_t base8_max_digits = BASE8_MAX_NUM_DIGITS;
             if ((num.size() - 2) > base8_max_digits) {
               throw std::length_error("octal string exceed the max number of digits");
             } else if (!valid_base8(num)) {
@@ -209,6 +210,28 @@ namespace epi {
       }
 
       if (number_base == number_base_t::dec) {
+        constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
+        std::uint8_t output[output_len] = {};
+
+        constexpr size_t NUMBER_BASE = 10;
+
+        for (size_t i = 0; i < num.size(); ++i) {
+          uint8_t carry = num[i] - '0';
+          size_t j = num.size();
+          while (j--) {
+            uint8_t tmp = output[j] * NUMBER_BASE + carry;
+            output[j] = tmp % 16;
+            carry = tmp / 16;
+          }
+        }
+
+        size_t offset = output_len - num.size();
+
+        for (size_t i = offset; i < output_len; ++i) {
+          // limb_t multiplier = std::pow(0x10, (i - offset) % (sizeof(limb_t) * 2));
+          limb_t multiplier = (limb_t) 0x1 << (4 * ((i - offset) % (sizeof(limb_t) * 2)));
+          limbs[(i - offset) / (sizeof(limb_t) * 2)] |= (limb_t) output[output_len - 1 - i] * multiplier;
+        }
 
       } else if (number_base == number_base_t::bin) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
