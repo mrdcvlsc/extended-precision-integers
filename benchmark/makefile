@@ -1,5 +1,5 @@
 CXX:=clang++
-CXX_FLAGS:=-std=c++17
+CXX_FLAGS:=-std=c++20
 OFLAG:=-O3
 OS:=$(shell uname)
 

@@ -1,5 +1,5 @@
 CXX=clang++
-CXX_STANDARD=-std=c++17
+CXX_STANDARD=-std=c++20
 WARNING_FLAGS=-Wall -Wextra -Wno-shift-count-negative -Wno-shift-count-overflow
 DFLAGS=
 SANITIZER_FLAG=
@@ -32,12 +32,18 @@ test:
 	@echo compiling test program...
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
-	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)0.$(EXTENSION) -O0 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)1.$(EXTENSION) -O1 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)2.$(EXTENSION) -O2 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)3.$(EXTENSION) -O3 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:
 	@echo running test program...
-	./tests/$(OUTPUT_NAME).$(EXTENSION)
+	./tests/$(OUTPUT_NAME)0.$(EXTENSION)
+	./tests/$(OUTPUT_NAME)1.$(EXTENSION)
+	./tests/$(OUTPUT_NAME)2.$(EXTENSION)
+	./tests/$(OUTPUT_NAME)3.$(EXTENSION)
 	@echo done running test program.
 
 style:
