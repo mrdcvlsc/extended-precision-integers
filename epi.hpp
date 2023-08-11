@@ -232,7 +232,6 @@ namespace epi {
           limb_t multiplier = (limb_t) 0x1 << (4 * ((i - offset) % (sizeof(limb_t) * 2)));
           limbs[(i - offset) / (sizeof(limb_t) * 2)] |= (limb_t) output[output_len - 1 - i] * multiplier;
         }
-
       } else if (number_base == number_base_t::bin) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
           limb_t hex_char = num[num.size() - 1 - i] - '0';
@@ -240,7 +239,27 @@ namespace epi {
           limbs[i / (sizeof(limb_t) * 8)] |= (hex_char << (BIN_CHAR_BITS * (i % (sizeof(limb_t) * 8))));
         }
       } else if (number_base == number_base_t::oct) {
+        constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
+        std::uint8_t output[output_len] = {};
 
+        constexpr size_t NUMBER_BASE = 8;
+
+        for (size_t i = 2; i < num.size(); ++i) {
+          uint8_t carry = num[i] - '0';
+          size_t j = (num.size() - 2);
+          while (j--) {
+            uint8_t tmp = output[j] * NUMBER_BASE + carry;
+            output[j] = tmp % 16;
+            carry = tmp / 16;
+          }
+        }
+
+        size_t offset = output_len - (num.size() - 2);
+        
+        for (size_t i = offset; i < output_len; ++i) {
+          limb_t multiplier = (limb_t) 0x1 << (4 * ((i - offset) % (sizeof(limb_t) * 2)));
+          limbs[(i - offset) / (sizeof(limb_t) * 2)] |= (limb_t) output[output_len - 1 - i] * multiplier;
+        }
       } else if (number_base == number_base_t::hex) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
           limb_t hex_char = CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
