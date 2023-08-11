@@ -46,6 +46,85 @@ namespace epi {
 
   template <typename limb_t, typename cast_t, size_t limb_n>
   class whole_number {
+
+    private:
+
+    limb_t limbs[limb_n];
+
+    /// @brief whole_Number base use to represent the integer.
+    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
+    static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
+
+    /// @brief Total bytes of the whole_number<> type.
+    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
+
+    /// @brief Total bits of the whole_number<> type.
+    static constexpr size_t BITS = BYTES * 8;
+
+    static constexpr int LESS = -1;
+    static constexpr int GREAT = 1;
+    static constexpr int EQUAL = 0;
+
+    static constexpr int LIMB_OCCUPATION_ZERO = 0;
+    static constexpr int LIMB_OCCUPATION_ONE = 1;
+    static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
+
+    /// @brief get the maximum number of digits for the whole_number<> if it was
+    /// represented in base10 for any arbitrary 2^n whole_number<> type, a replacement
+    /// for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since it can't
+    /// calculate past 2^128 - 1, or the max value of a `uint128_t`.
+    static constexpr size_t get_base10_max_digit() {
+      // when we get the series of maximum digits for each of the number in the series
+      // of powers of 2 raised to increasing multiples of 8, we can get the repeating
+      // series below by repeatedly subtracting a previous maximum digit to its next
+      // corresponding maximum digit. we repeat the same thing for the next maximum
+      // then to the next one, if we do this repeatedly we will see a repeating
+      // sequence of ... 2, 3, 2, 3, 2, ... will emerge.
+      constexpr size_t base10_diff_series[5] = {2, 3, 2, 3, 2};
+
+      /// initial base 2^8 starting max number of digit when represented in base 10.
+      size_t base10_max_digits = 3;
+
+      // we then use the repeating sequence to get the maximum possible numbers of
+      // digit that the current whole_number<> class can hold in a base10 representation.
+      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+        base10_max_digits += base10_diff_series[i % 5];
+      }
+
+      return base10_max_digits;
+    }
+
+    /// @brief get the maximum number of digits for the whole_number<> if it was
+    /// represented in base8 for any arbitrary 2^n whole_number<> type.
+    static constexpr size_t get_base8_max_digit() {
+      // uses the same technique in `get_base10_max_digit`.
+      constexpr size_t base8_diff_series[3] = {3, 2, 3};
+      size_t base8_max_digits = 3;
+      
+      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+        base8_max_digits += base8_diff_series[i % 3];
+      }
+
+      return base8_max_digits;
+    }
+
+    static constexpr size_t BASE10_MAX_NUM_OF_DIGITS = get_base10_max_digit();
+    static constexpr size_t BASE8_MAX_NUM_OF_DIGITS = get_base8_max_digit();
+
+    static constexpr unsigned char HEX_TO_CHAR[16] = {
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+    };
+
+    static constexpr unsigned char CHAR_TO_HEX[127] = {
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+      0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff,
+      0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    };
+
     public:
 
     /// default constuctor.
@@ -54,7 +133,7 @@ namespace epi {
       constexpr bool invalid_cast_t = std::is_unsigned_v<cast_t> || std::is_same_v<__uint128_t, cast_t>;
       constexpr bool wrong_cast_t_size = sizeof(limb_t) * 2 == sizeof(cast_t);
 
-      if constexpr (!invalid_cast_t) {
+      if constexpr (!invalid_limb_t) {
         static_assert(invalid_limb_t, "limb_t should be an unsigned integral type");
       } else if constexpr (!invalid_cast_t) {
         static_assert(invalid_cast_t, "cast_t should be an unsigned integral type");
@@ -615,50 +694,6 @@ namespace epi {
 
     private:
 
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base10 for any arbitrary 2^n whole_number<> type, a replacement
-    /// for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since it can't
-    /// calculate past 2^128 - 1, or the max value of a `uint128_t`.
-    static constexpr size_t get_base10_max_digit() noexcept {
-      // when we get the series of maximum digits for each of the number in the series
-      // of powers of 2 raised to increasing multiples of 8, we can get the repeating
-      // series below by repeatedly subtracting a previous maximum digit to its next
-      // corresponding maximum digit. we repeat the same thing for the next maximum
-      // then to the next one, if we do this repeatedly we will see a repeating
-      // sequence of ... 2, 3, 2, 3, 2, ... will emerge.
-      constexpr size_t base10_diff_series[5] = {2, 3, 2, 3, 2};
-
-      /// initial base 2^8 starting max number of digit when represented in base 10.
-      size_t base10_max_digits = 3;
-
-      // we then use the repeating sequence to get the maximum possible numbers of
-      // digit that the current whole_number<> class can hold in a base10 representation.
-      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
-        base10_max_digits += base10_diff_series[i % 5];
-      }
-
-      return base10_max_digits;
-    }
-
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base8 for any arbitrary 2^n whole_number<> type.
-    static constexpr size_t get_base8_max_digit() noexcept {
-      // uses the same technique in `get_base10_max_digit`.
-
-      constexpr size_t base8_diff_series[3] = {3, 2, 3};
-
-      size_t base8_max_digits = 3;
-
-      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
-        base8_max_digits += base8_diff_series[i % 3];
-      }
-
-      return base8_max_digits;
-    }
-
-    static constexpr size_t BASE10_MAX_NUM_OF_DIGITS = get_base10_max_digit();
-    static constexpr size_t BASE8_MAX_NUM_OF_DIGITS = get_base8_max_digit();
-
     static constexpr bool valid_base16(std::string_view const &num) {
       for (size_t i = 2; i < num.size(); ++i) {
         if (!((num[i] >= '0' && num[i] <= '9') || (num[i] >= 'a' && num[i] <= 'f'))) {
@@ -856,43 +891,6 @@ namespace epi {
 
       return remainder >> LIMB_BITS;
     }
-
-    /// @brief whole_Number base use to represent the integer.
-    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
-    static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
-
-    /// @brief Total bytes of the whole_number<> type.
-    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
-
-    /// @brief Total bits of the whole_number<> type.
-    static constexpr size_t BITS = BYTES * 8;
-
-    static constexpr size_t BIN_CHAR_PER_LIMB = BYTES * 8;
-    static constexpr size_t HEX_CHAR_PER_LIMB = BYTES * 2;
-
-    static constexpr int LESS = -1;
-    static constexpr int GREAT = 1;
-    static constexpr int EQUAL = 0;
-
-    static constexpr int LIMB_OCCUPATION_ZERO = 0;
-    static constexpr int LIMB_OCCUPATION_ONE = 1;
-    static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
-
-    static constexpr unsigned char HEX_TO_CHAR[16] = {
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-    };
-
-    static constexpr unsigned char CHAR_TO_HEX[127] = {
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-      0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff,
-      0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    };
-
-    limb_t limbs[limb_n];
   }; // whole_number class : end
 
   template <typename limb_t, typename cast_t, size_t limb_n>
