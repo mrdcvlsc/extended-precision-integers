@@ -38,6 +38,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: System Info
+      run: make default
+
     - name: Build
       run: make test CXX=clang++
 
@@ -54,6 +57,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+
+    - name: System Info
+      run: make default
 
     - name: Build
       run: make test CXX=g++

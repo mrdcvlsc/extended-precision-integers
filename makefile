@@ -15,18 +15,14 @@ endif
 
 OS_COMPILER=$(OS)$(CXX)
 
-ifeq ($(CXX), clang++)
+ifeq ($(OS_COMPILER), Linuxclang++)
 SANITIZER_FLAG+=-fsanitize=address
 endif
 
 default:
 	@echo OS : $(OS)
-	@echo Compiler : $(CXX)
+	@echo Compiler : $(CXX) --version
 	@echo extended-precision-integers : written by @mrdcvlsc
-	@echo makefile commands:
-	@echo make test - compile test program
-	@echo make run_test - run test program
-	@echo make style - apply clang format
 
 test:
 	@echo compiling test program...
