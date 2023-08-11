@@ -1,11 +1,16 @@
 #ifndef MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
+#include <cmath>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <math.h>
+#include <ostream>
 #include <random>
+#include <stdexcept>
+#include <string_view>
 #include <type_traits>
 
 #include "config.hpp"
@@ -15,6 +20,15 @@ namespace epi {
 #if (__cplusplus < 201703L)
   #error C++17 is needed
 #else
+
+  enum class number_base_t
+  {
+    bin,
+    oct,
+    dec,
+    hex,
+    invalid
+  };
 
   /// @brief Template Class for creating any fixed arbitrary sized whole numbers.
   ///
@@ -32,191 +46,6 @@ namespace epi {
 
   template <typename limb_t, typename cast_t, size_t limb_n>
   class whole_number {
-
-    private:
-
-    limb_t limbs[limb_n];
-
-    /// @brief whole_Number base use to represent the integer.
-    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
-    static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
-
-    /// @brief Total bytes of the whole_number<> type.
-    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
-
-    /// @brief Total bits of the whole_number<> type.
-    static constexpr size_t BITS = BYTES * 8;
-
-    static constexpr int LESS = -1;
-    static constexpr int GREAT = 1;
-    static constexpr int EQUAL = 0;
-
-    static constexpr int LIMB_OCCUPATION_ZERO = 0;
-    static constexpr int LIMB_OCCUPATION_ONE = 1;
-    static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
-
-    static constexpr int compare(whole_number const &l, whole_number const &r) noexcept {
-      int comparison_result = EQUAL;
-
-      for (size_t i = 0; i < limb_n; ++i) {
-        if (l.limbs[limb_n - 1 - i] < r.limbs[limb_n - 1 - i]) {
-          comparison_result = LESS;
-          break;
-        } else if (l.limbs[limb_n - 1 - i] > r.limbs[limb_n - 1 - i]) {
-          comparison_result = GREAT;
-          break;
-        }
-      }
-
-      return comparison_result;
-    }
-
-    /// @return 0 - if a zero integer, return 1 - if has one limb, return 2 - if has higher limb value occupations.
-    constexpr int is_one_limb() const noexcept {
-      limb_t upper_values = 0;
-      for (size_t i = 1; i < limb_n; ++i) {
-        upper_values |= limbs[i];
-      }
-
-      if (upper_values) {
-        return 2; // has multiple limbs occupied by some value.
-      }
-
-      return (false ^ limbs[0]); // 0 or 1
-    }
-
-    // divs
-
-    constexpr whole_number bit_long_div(whole_number const &divisor) const noexcept {
-      constexpr size_t MS_LIMB = limb_n - 1;
-      whole_number     quotient = {0}, remainder = {0};
-      limb_t           remainder_bit = 0, one_bit = 1;
-      size_t           index = 0, shift_value = 0;
-
-      for (size_t i = 0; i < BITS; ++i) {
-        index = MS_LIMB - i / LIMB_BITS;
-        shift_value = i % LIMB_BITS;
-
-        remainder = remainder << 1;
-        remainder_bit = limbs[index] << shift_value;
-        remainder_bit >>= LIMB_BITS - 1;
-
-        remainder.limbs[0] |= remainder_bit;
-
-        if (remainder >= divisor) {
-          remainder -= divisor;
-          quotient.limbs[index] |= (one_bit << ((LIMB_BITS - 1) - shift_value));
-        }
-      }
-
-      return quotient;
-    }
-
-    constexpr whole_number &self_bit_long_div(whole_number const &divisor) noexcept {
-      constexpr size_t MS_LIMB = limb_n - 1;
-      whole_number     remainder = {0};
-      limb_t           remainder_bit = 0, one_bit = 1;
-      size_t           index = 0, shift_value = 0;
-
-      limb_t partial_quotient = 0;
-      size_t prev_index = MS_LIMB - 0 / LIMB_BITS;
-
-      for (size_t i = 0; i < BITS; ++i) {
-        index = MS_LIMB - i / LIMB_BITS;
-        shift_value = i % LIMB_BITS;
-
-        remainder = remainder << 1;
-        remainder_bit = limbs[index] << shift_value;
-        remainder_bit >>= LIMB_BITS - 1;
-
-        remainder.limbs[0] |= remainder_bit;
-
-        if (prev_index != index) {
-          limbs[prev_index] = partial_quotient;
-          partial_quotient = 0;
-          prev_index = index;
-        }
-
-        if (remainder >= divisor) {
-          remainder -= divisor;
-          partial_quotient |= (one_bit << ((LIMB_BITS - 1) - shift_value));
-        }
-      }
-
-      limbs[prev_index] = partial_quotient;
-
-      return *this;
-    }
-
-    constexpr whole_number div_by_1limb(limb_t divisor) const noexcept {
-      whole_number quotient;
-      cast_t       remainder = 0;
-
-      remainder = limbs[limb_n - 1] % divisor;
-      remainder <<= LIMB_BITS;
-      quotient.limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
-
-      for (size_t i = 1; i < limb_n; ++i) {
-        remainder |= limbs[limb_n - 1 - i];
-        quotient.limbs[limb_n - 1 - i] = remainder / divisor;
-        remainder = (remainder % divisor) << LIMB_BITS;
-      }
-
-      return quotient;
-    }
-
-    constexpr whole_number &self_div_by_1limb(limb_t divisor) noexcept {
-      cast_t remainder = 0;
-
-      remainder = limbs[limb_n - 1] % divisor;
-      remainder <<= LIMB_BITS;
-      limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
-
-      for (size_t i = 1; i < limb_n; ++i) {
-        remainder |= limbs[limb_n - 1 - i];
-        limbs[limb_n - 1 - i] = remainder / divisor;
-        remainder = (remainder % divisor) << LIMB_BITS;
-      }
-
-      return *this;
-    }
-
-    // mods
-
-    constexpr whole_number bit_long_mod(whole_number const &divisor) const noexcept {
-      constexpr size_t MS_LIMB = limb_n - 1;
-      whole_number     remainder = {0};
-      limb_t           remainder_bit = 0;
-
-      for (size_t i = 0; i < BITS; ++i) {
-        remainder = remainder << 1;
-        remainder_bit = limbs[MS_LIMB - i / LIMB_BITS] << i % LIMB_BITS;
-        remainder_bit >>= LIMB_BITS - 1;
-
-        remainder.limbs[0] |= remainder_bit;
-
-        if (remainder >= divisor) {
-          remainder -= divisor;
-        }
-      }
-
-      return remainder;
-    }
-
-    constexpr limb_t mod_by_1limb(limb_t divisor) const noexcept {
-      cast_t remainder = 0;
-
-      remainder = limbs[limb_n - 1] % divisor;
-      remainder <<= LIMB_BITS;
-
-      for (size_t i = 1; i < limb_n; ++i) {
-        remainder |= limbs[limb_n - 1 - i];
-        remainder = (remainder % divisor) << LIMB_BITS;
-      }
-
-      return remainder >> LIMB_BITS;
-    }
-
     public:
 
     /// default constuctor.
@@ -246,13 +75,84 @@ namespace epi {
       }
     }
 
-    /// integral constructor.
-    template <typename T>
-    constexpr whole_number(T num) noexcept : whole_number() {
-      constexpr bool invalid_type = std::is_integral_v<T>;
-      static_assert(invalid_type, "literal should be of integral type");
+    constexpr whole_number(std::string_view const &num) : whole_number() {
+      if (num.empty()) {
+        throw std::length_error("empty char*/string constructor are not allowed");
+      }
 
-      constexpr size_t partition = sizeof(T) / sizeof(limb_t);
+      number_base_t number_base = number_base_t::invalid;
+
+      bool is_all_digit = true;
+
+      for (auto c: num) {
+        if (!(c >= '0' && c <= '9')) {
+          is_all_digit = false;
+          break;
+        }
+      }
+
+      if (is_all_digit) {
+        constexpr size_t base10_max_digits = BASE10_MAX_NUM_OF_DIGITS;
+        if (num.size() > base10_max_digits) {
+          throw std::length_error("base 10 number string exceed the max number of digits");
+        } else if (!valid_base10(num)) {
+          throw std::length_error("invalid digit character detected");
+        }
+        number_base = number_base_t::dec;
+      } else {
+        if (num.size() >= 3 && num.front() == '0') {
+          if (num[1] == 'b') {
+            constexpr size_t base2_max_digits = BITS;
+            if ((num.size() - 2) > base2_max_digits) {
+              throw std::length_error("binary string exceed the max number of digits");
+            } else if (!valid_base2(num)) {
+              throw std::length_error("invalid binary character detected");
+            }
+            number_base = number_base_t::bin;
+          } else if (num[1] == 'o') {
+            constexpr size_t base8_max_digits = BASE8_MAX_NUM_OF_DIGITS;
+            if ((num.size() - 2) > base8_max_digits) {
+              throw std::length_error("octal string exceed the max number of digits");
+            } else if (!valid_base8(num)) {
+              throw std::length_error("invalid octal character detected");
+            }
+            number_base = number_base_t::oct;
+          } else if (num[1] == 'x') {
+            constexpr size_t base16_max_digits = limb_n * sizeof(limb_t) * 2;
+            if ((num.size() - 2) > base16_max_digits) {
+              throw std::length_error("hex string exceed the max number of digits");
+            } else if (!valid_base16(num)) {
+              throw std::length_error("invalid hex character detected");
+            }
+            number_base = number_base_t::hex;
+          }
+        }
+      }
+
+      if (number_base == number_base_t::dec) {
+
+      } else if (number_base == number_base_t::bin) {
+        for (size_t i = 0; i < num.size() - 2; ++i) {
+          limb_t hex_char = num[num.size() - 1 - i] - '0';
+          constexpr size_t BIN_CHAR_BITS = 1;
+          limbs[i / (sizeof(limb_t) * 8)] |= (hex_char << (BIN_CHAR_BITS * (i % (sizeof(limb_t) * 8))));
+        }
+      } else if (number_base == number_base_t::oct) {
+
+      } else if (number_base == number_base_t::hex) {
+        for (size_t i = 0; i < num.size() - 2; ++i) {
+          limb_t hex_char = CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
+          constexpr size_t HEX_CHAR_BITS = 4;
+          limbs[i / (sizeof(limb_t) * 2)] |= (hex_char << (HEX_CHAR_BITS * (i % (sizeof(limb_t) * 2))));
+        }
+      } else {
+        throw std::invalid_argument("char*/string should be in a proper number base format");
+      }
+    }
+
+    /// integral constructor.
+    constexpr whole_number(size_t num) noexcept : whole_number() {
+      constexpr size_t partition = sizeof(size_t) / sizeof(limb_t);
 
       if constexpr (partition) {
         for (size_t i = 0; i < partition; ++i) {
@@ -713,6 +613,286 @@ namespace epi {
 
     // shift operators : end
 
+    private:
+
+    /// @brief get the maximum number of digits for the whole_number<> if it was
+    /// represented in base10 for any arbitrary 2^n whole_number<> type, a replacement
+    /// for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since it can't
+    /// calculate past 2^128 - 1, or the max value of a `uint128_t`.
+    static constexpr size_t get_base10_max_digit() noexcept {
+      // when we get the series of maximum digits for each of the number in the series
+      // of powers of 2 raised to increasing multiples of 8, we can get the repeating
+      // series below by repeatedly subtracting a previous maximum digit to its next
+      // corresponding maximum digit. we repeat the same thing for the next maximum
+      // then to the next one, if we do this repeatedly we will see a repeating
+      // sequence of ... 2, 3, 2, 3, 2, ... will emerge.
+      constexpr size_t base10_diff_series[5] = {2, 3, 2, 3, 2};
+
+      /// initial base 2^8 starting max number of digit when represented in base 10.
+      size_t base10_max_digits = 3;
+
+      // we then use the repeating sequence to get the maximum possible numbers of
+      // digit that the current whole_number<> class can hold in a base10 representation.
+      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+        base10_max_digits += base10_diff_series[i % 5];
+      }
+
+      return base10_max_digits;
+    }
+
+    /// @brief get the maximum number of digits for the whole_number<> if it was
+    /// represented in base8 for any arbitrary 2^n whole_number<> type.
+    static constexpr size_t get_base8_max_digit() noexcept {
+      // uses the same technique in `get_base10_max_digit`.
+
+      constexpr size_t base8_diff_series[3] = {3, 2, 3};
+
+      size_t base8_max_digits = 3;
+
+      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+        base8_max_digits += base8_diff_series[i % 3];
+      }
+
+      return base8_max_digits;
+    }
+
+    static constexpr size_t BASE10_MAX_NUM_OF_DIGITS = get_base10_max_digit();
+    static constexpr size_t BASE8_MAX_NUM_OF_DIGITS = get_base8_max_digit();
+
+    static constexpr bool valid_base16(std::string_view const &num) {
+      for (size_t i = 2; i < num.size(); ++i) {
+        if (!((num[i] >= '0' && num[i] <= '9') || (num[i] >= 'a' && num[i] <= 'f'))) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    static constexpr bool valid_base10(std::string_view const &num) {
+      for (size_t i = 0; i < num.size(); ++i) {
+        if (!(num[i] >= '0' && num[i] <= '9')) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    static constexpr bool valid_base8(std::string_view const &num) {
+      for (size_t i = 2; i < num.size(); ++i) {
+        if (!(num[i] >= '0' && num[i] <= '7')) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    static constexpr bool valid_base2(std::string_view const &num) {
+      for (size_t i = 2; i < num.size(); ++i) {
+        if (!(num[i] == '0' || num[i] == '1')) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    static constexpr int compare(whole_number const &l, whole_number const &r) noexcept {
+      int comparison_result = EQUAL;
+
+      for (size_t i = 0; i < limb_n; ++i) {
+        if (l.limbs[limb_n - 1 - i] < r.limbs[limb_n - 1 - i]) {
+          comparison_result = LESS;
+          break;
+        } else if (l.limbs[limb_n - 1 - i] > r.limbs[limb_n - 1 - i]) {
+          comparison_result = GREAT;
+          break;
+        }
+      }
+
+      return comparison_result;
+    }
+
+    /// @return 0 - if a zero integer, return 1 - if has one limb, return 2 - if has higher limb value occupations.
+    constexpr int is_one_limb() const noexcept {
+      limb_t upper_values = 0;
+      for (size_t i = 1; i < limb_n; ++i) {
+        upper_values |= limbs[i];
+      }
+
+      if (upper_values) {
+        return 2; // has multiple limbs occupied by some value.
+      }
+
+      return (false ^ limbs[0]); // 0 or 1
+    }
+
+    // divs
+
+    constexpr whole_number bit_long_div(whole_number const &divisor) const noexcept {
+      constexpr size_t MS_LIMB = limb_n - 1;
+      whole_number     quotient = {0}, remainder = {0};
+      limb_t           remainder_bit = 0, one_bit = 1;
+      size_t           index = 0, shift_value = 0;
+
+      for (size_t i = 0; i < BITS; ++i) {
+        index = MS_LIMB - i / LIMB_BITS;
+        shift_value = i % LIMB_BITS;
+
+        remainder = remainder << 1;
+        remainder_bit = limbs[index] << shift_value;
+        remainder_bit >>= LIMB_BITS - 1;
+
+        remainder.limbs[0] |= remainder_bit;
+
+        if (remainder >= divisor) {
+          remainder -= divisor;
+          quotient.limbs[index] |= (one_bit << ((LIMB_BITS - 1) - shift_value));
+        }
+      }
+
+      return quotient;
+    }
+
+    constexpr whole_number &self_bit_long_div(whole_number const &divisor) noexcept {
+      constexpr size_t MS_LIMB = limb_n - 1;
+      whole_number     remainder = {0};
+      limb_t           remainder_bit = 0, one_bit = 1;
+      size_t           index = 0, shift_value = 0;
+
+      limb_t partial_quotient = 0;
+      size_t prev_index = MS_LIMB - 0 / LIMB_BITS;
+
+      for (size_t i = 0; i < BITS; ++i) {
+        index = MS_LIMB - i / LIMB_BITS;
+        shift_value = i % LIMB_BITS;
+
+        remainder = remainder << 1;
+        remainder_bit = limbs[index] << shift_value;
+        remainder_bit >>= LIMB_BITS - 1;
+
+        remainder.limbs[0] |= remainder_bit;
+
+        if (prev_index != index) {
+          limbs[prev_index] = partial_quotient;
+          partial_quotient = 0;
+          prev_index = index;
+        }
+
+        if (remainder >= divisor) {
+          remainder -= divisor;
+          partial_quotient |= (one_bit << ((LIMB_BITS - 1) - shift_value));
+        }
+      }
+
+      limbs[prev_index] = partial_quotient;
+
+      return *this;
+    }
+
+    constexpr whole_number div_by_1limb(limb_t divisor) const noexcept {
+      whole_number quotient;
+      cast_t       remainder = 0;
+
+      remainder = limbs[limb_n - 1] % divisor;
+      remainder <<= LIMB_BITS;
+      quotient.limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
+
+      for (size_t i = 1; i < limb_n; ++i) {
+        remainder |= limbs[limb_n - 1 - i];
+        quotient.limbs[limb_n - 1 - i] = remainder / divisor;
+        remainder = (remainder % divisor) << LIMB_BITS;
+      }
+
+      return quotient;
+    }
+
+    constexpr whole_number &self_div_by_1limb(limb_t divisor) noexcept {
+      cast_t remainder = 0;
+
+      remainder = limbs[limb_n - 1] % divisor;
+      remainder <<= LIMB_BITS;
+      limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
+
+      for (size_t i = 1; i < limb_n; ++i) {
+        remainder |= limbs[limb_n - 1 - i];
+        limbs[limb_n - 1 - i] = remainder / divisor;
+        remainder = (remainder % divisor) << LIMB_BITS;
+      }
+
+      return *this;
+    }
+
+    // mods
+
+    constexpr whole_number bit_long_mod(whole_number const &divisor) const noexcept {
+      constexpr size_t MS_LIMB = limb_n - 1;
+      whole_number     remainder = {0};
+      limb_t           remainder_bit = 0;
+
+      for (size_t i = 0; i < BITS; ++i) {
+        remainder = remainder << 1;
+        remainder_bit = limbs[MS_LIMB - i / LIMB_BITS] << i % LIMB_BITS;
+        remainder_bit >>= LIMB_BITS - 1;
+
+        remainder.limbs[0] |= remainder_bit;
+
+        if (remainder >= divisor) {
+          remainder -= divisor;
+        }
+      }
+
+      return remainder;
+    }
+
+    constexpr limb_t mod_by_1limb(limb_t divisor) const noexcept {
+      cast_t remainder = 0;
+
+      remainder = limbs[limb_n - 1] % divisor;
+      remainder <<= LIMB_BITS;
+
+      for (size_t i = 1; i < limb_n; ++i) {
+        remainder |= limbs[limb_n - 1 - i];
+        remainder = (remainder % divisor) << LIMB_BITS;
+      }
+
+      return remainder >> LIMB_BITS;
+    }
+
+    /// @brief whole_Number base use to represent the integer.
+    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
+    static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
+
+    /// @brief Total bytes of the whole_number<> type.
+    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
+
+    /// @brief Total bits of the whole_number<> type.
+    static constexpr size_t BITS = BYTES * 8;
+
+    static constexpr size_t BIN_CHAR_PER_LIMB = BYTES * 8;
+    static constexpr size_t HEX_CHAR_PER_LIMB = BYTES * 2;
+
+    static constexpr int LESS = -1;
+    static constexpr int GREAT = 1;
+    static constexpr int EQUAL = 0;
+
+    static constexpr int LIMB_OCCUPATION_ZERO = 0;
+    static constexpr int LIMB_OCCUPATION_ONE = 1;
+    static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
+
+    static constexpr unsigned char HEX_TO_CHAR[16] = {
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+    };
+
+    static constexpr unsigned char CHAR_TO_HEX[127] = {
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+      0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff,
+      0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    };
+
+    limb_t limbs[limb_n];
   }; // whole_number class : end
 
   template <typename limb_t, typename cast_t, size_t limb_n>
