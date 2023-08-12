@@ -1,3 +1,4 @@
+CC=clang
 CXX=clang++
 CXX_STANDARD=-std=c++20
 WARNING_FLAGS=-Wall -Wextra -Wno-shift-count-negative -Wno-shift-count-overflow
@@ -23,7 +24,7 @@ default:
 	@echo extended-precision-integers : written by @mrdcvlsc
 	@echo OS : $(OS)
 	@echo Compiler :
-	@$(CXX) --version
+	@$(CC) --version
 
 test:
 	@echo compiling test program...
