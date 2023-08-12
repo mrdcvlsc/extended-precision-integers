@@ -17,7 +17,9 @@ endif
 OS_COMPILER=$(OS)$(CXX)
 
 ifeq ($(OS_COMPILER), Linuxclang++)
-SANITIZER_FLAG+=-fsanitize=address
+SANITIZER_FLAG+=-g3 -fsanitize=address
+else
+SANITIZER_FLAG+=-g -fsanitize=address
 endif
 
 default:
@@ -30,16 +32,12 @@ test:
 	@echo compiling test program...
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
-	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) -g3 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:
 	@echo running test program...
-ifeq ($(OS), Linux)
 	./tests/$(OUTPUT_NAME).$(EXTENSION)
-else
-	tests/$(OUTPUT_NAME).$(EXTENSION)
-endif
 	@echo done running test program.
 
 style:
