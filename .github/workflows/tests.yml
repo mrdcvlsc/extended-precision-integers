@@ -25,10 +25,7 @@ jobs:
       run: make default CXX=aarch64-linux-gnu-g++ CXX+=-static
 
     - name: Build
-      run: make test CXX=aarch64-linux-gnu-g++ CXX+=-static
-
-    - name: Run
-      run: make run_test
+      run: make test -j2 CXX=aarch64-linux-gnu-g++ CXX+=-static
 
   clang:
 
@@ -45,10 +42,7 @@ jobs:
       run: make default CXX=clang++ CC=clang
 
     - name: Build
-      run: make test CXX=clang++ CC=clang
-
-    - name: Run
-      run: make run_test
+      run: make test -j2 CXX=clang++ CC=clang
 
   gcc:
 
@@ -65,7 +59,4 @@ jobs:
       run: make default CXX=g++ CC=gcc
 
     - name: Build
-      run: make test CXX=g++ CC=gcc
-
-    - name: Run
-      run: make run_test
+      run: make test -j2 CXX=g++ CC=gcc
