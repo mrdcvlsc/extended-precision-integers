@@ -212,9 +212,9 @@ namespace epi {
 
       if (number_base == number_base_t::dec) {
         constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
-        size_t offset = output_len - num.size();
+        size_t           offset = output_len - num.size();
 
-        std::uint8_t     output[output_len] = {};
+        std::uint8_t output[output_len] = {};
 
         constexpr size_t NUMBER_BASE = 10;
 
@@ -231,9 +231,10 @@ namespace epi {
         /// In one byte we have a max of 2 hex character, where each char is 4 bit.
         constexpr size_t HEX_CHAR_BITS = 4;
         constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
-        
+
         for (size_t i = 0; i < limb_n * HEX_CHAR_PER_LIMB; ++i) {
-          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i]) << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
+          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
+                                          << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
       } else if (number_base == number_base_t::bin) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
@@ -243,9 +244,9 @@ namespace epi {
         }
       } else if (number_base == number_base_t::oct) {
         constexpr size_t output_len = BASE8_MAX_NUM_DIGITS;
-        size_t offset = output_len - (num.size() - 2);
+        size_t           offset = output_len - (num.size() - 2);
 
-        std::uint8_t     output[output_len] = {};
+        std::uint8_t output[output_len] = {};
 
         constexpr size_t NUMBER_BASE = 8;
 
@@ -264,7 +265,8 @@ namespace epi {
         constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
 
         for (size_t i = 0; i < limb_n * HEX_CHAR_PER_LIMB; ++i) {
-          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i]) << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
+          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
+                                          << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
       } else if (number_base == number_base_t::hex) {
         for (size_t i = 0; i < num.size() - 2; ++i) {

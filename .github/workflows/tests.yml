@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, gcc-test-windows-executable-fix ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, gcc-test-windows-executable-fix ]
 
 jobs:
 
@@ -21,11 +21,11 @@ jobs:
     - name: Install essentials
       run: sudo apt-get install qemu-user qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu binutils-aarch64-linux-gnu-dbg build-essential
 
-    - name: Build
-      run: make test CXX=aarch64-linux-gnu-g++ CXX+=-static
+    - name: System Info
+      run: make default CXX=aarch64-linux-gnu-g++ CXX+=-static
 
-    - name: Run
-      run: make run_test
+    - name: Build
+      run: make test -j2 CXX=aarch64-linux-gnu-g++ CXX+=-static
 
   clang:
 
@@ -39,13 +39,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: System Info
-      run: make default
+      run: make default CXX=clang++ CC=clang
 
     - name: Build
-      run: make test CXX=clang++ CC=clang
-
-    - name: Run
-      run: make run_test
+      run: make test -j2 CXX=clang++ CC=clang
 
   gcc:
 
@@ -59,10 +56,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: System Info
-      run: make default
+      run: make default CXX=g++ CC=gcc
 
     - name: Build
-      run: make test CXX=g++ CC=clang
-
-    - name: Run
-      run: make run_test
+      run: make test -j2 CXX=g++ CC=gcc

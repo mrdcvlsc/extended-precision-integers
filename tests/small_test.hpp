@@ -18,140 +18,92 @@ namespace smlts {
 
     private:
 
-    std::vector<size_t> test_results;
-    std::vector<size_t> failed_cases;
-    size_t              test_number;
-    int                 final_verdict;
-
-    template <typename T1, typename T2>
-    void print_passed_failed(int result, T1 a, T2 b, std::string const &test_name);
+    std::vector<std::string> file;
+    std::vector<size_t>      line;
+    std::vector<size_t>      test_results;
+    int                      final_verdict;
 
     public:
 
-    test() : test_number(0), final_verdict(0) {
+    test() : file{}, line{}, test_results{}, final_verdict(0) {
     }
 
     template <typename T1, typename T2>
-    void cmp_eq(T1 a, T2 b, size_t numBytes, std::string const &test_name = "");
+    void cmp_eq(T1 a, T2 b, size_t numBytes, std::string const &file_name, size_t file_line);
 
     /// @brief  compare type sizes.
     template <typename T1, typename T2>
-    void cmp_ts(std::string const &test_name = "");
+    void cmp_ts(std::string const &file_name, size_t file_line);
 
-    void cmp_exp(bool A, bool B, std::string const &test_name = "");
+    void cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line);
 
-    void pass(std::string const &test_name);
-    void fail(std::string const &test_name);
+    void pass(std::string const &, size_t );
+    void fail(std::string const &file_name, size_t file_line);
 
     /** @brief To make the output cleaner you can use these -D compilation flags :
      * `_DISABLE_PRINT_RESULTS`, `_DISABLE_PRINT_TEST_NAMES` and/or `_DISABLE_PRINT_SUBJECTS`.
      */
-    int get_final_verdict();
+    int get_final_verdict(std::string const&);
     int get_final_verdict_silent();
   };
 
-  // method declarations
+  void test::pass(std::string const &, size_t) {
+    test_results.push_back(0);
+    final_verdict |= 0;
+  }
 
-  template <typename T1, typename T2>
-  void test::print_passed_failed(int result, T1 a, T2 b, std::string const &test_name) {
-
-#ifndef _DISABLE_PRINT_TEST_NAMES
-    std::string internal_test_name = test_name;
-#else
-    std::string internal_test_name = "";
-#endif
-
-#ifndef _DISABLE_PRINT_RESULTS
-    if (!result) {
-  #ifndef _NO_PRINT_PASS
-      std::cout << "PASSED : "
-                << "test " << std::dec << test_number << " (" << internal_test_name << ")";
-  #endif
-    } else {
-      std::cout << "!!! FAILED : "
-                << "test " << std::dec << test_number << " (" << internal_test_name << ")";
-      failed_cases.push_back(test_number);
-    }
-#endif
-
-#ifndef _DISABLE_PRINT_SUBJECTS
-    std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
-
-  #if !defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS)
-    std::cout << "\n";
-  #endif
-#endif
-
-    // just fail this to remove unused warning
-    if (false) {
-      std::cout << std::hex << "  ->  " << a << " <=> " << std::hex << b;
-    }
-
-#if !defined(_NO_PRINT_PASS) || !defined(_DISABLE_PRINT_SUBJECTS) || !defined(_DISABLE_PRINT_RESULTS)
-  #if !(!defined(_DISABLE_PRINT_RESULTS) && defined(_NO_PRINT_PASS))
-    std::cout << "\n";
-  #endif
-#endif
+  void test::fail(std::string const &file_name, size_t file_line) {
+    test_results.push_back(1);
+    file.push_back(file_name);
+    line.push_back(file_line);
+    final_verdict |= 1;
   }
 
   template <typename T1, typename T2>
-  void test::cmp_eq(T1 a, T2 b, size_t numBytes, std::string const &test_name) {
-    test_number++;
+  void test::cmp_eq(T1 a, T2 b, size_t numBytes, std::string const &file_name, size_t file_line) {
     int result = memcmp(&a, &b, numBytes);
     test_results.push_back(result);
+    if (result) {
+      file.push_back(file_name);
+      line.push_back(file_line);
+    }
     final_verdict |= result;
-
-    print_passed_failed(result, a, b, test_name);
   }
 
   /// @brief  compare type sizes.
   template <typename T1, typename T2>
-  void test::cmp_ts(std::string const &test_name) {
-    test_number++;
+  void test::cmp_ts(std::string const &file_name, size_t file_line) {
     bool result = sizeof(T1) != sizeof(T2);
     test_results.push_back(result);
+    if (result) {
+      file.push_back(file_name);
+      line.push_back(file_line);
+    }
     final_verdict |= result;
-
-    print_passed_failed(result, 0, 0, test_name);
   }
 
-  void test::cmp_exp(bool A, bool B, std::string const &test_name) {
-    test_number++;
+  void test::cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line) {
     bool result = A != B;
     test_results.push_back(result);
+    if (result) {
+      file.push_back(file_name);
+      line.push_back(file_line);
+    }
     final_verdict |= result;
-
-    print_passed_failed(result, A, B, test_name);
   }
 
-  void test::pass(std::string const &test_name) {
-    test_number++;
-    print_passed_failed(0, 0, 0, test_name);
-    test_results.push_back(0);
-  }
-
-  void test::fail(std::string const &test_name) {
-    test_number++;
-    print_passed_failed(1, 0, 0, test_name);
-    test_results.push_back(1);
-    failed_cases.push_back(test_number);
-  }
-
-  int test::get_final_verdict() {
+  int test::get_final_verdict(std::string const& test_name = "") {
     if (!final_verdict) {
-      std::cout << "\nFINAL VERDICT : PASSED\n";
+      std::cout << "\nFINAL VERDICT ALL [" << test_name << "] : PASSED\n";
       return 0;
     }
 
     std::cout << "\nFINAL VERDICT : FAILED\n\n";
     std::cout << "Failed on test cases :\n";
 
-    for (auto e: failed_cases) {
-      std::cout << std::dec << e << " ";
+    for (size_t i = 0; i < file.size(); ++i) {
+      std::cout << "\tfile : " << file[i] << " | line : " << line[i] << "\n";
     }
-
-    std::cout << "\nNumber of failed test cases : " << failed_cases.size() << "\n";
-    std::cout << "\n";
 
     return 1;
   }
