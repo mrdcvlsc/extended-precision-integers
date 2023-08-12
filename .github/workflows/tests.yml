@@ -21,6 +21,9 @@ jobs:
     - name: Install essentials
       run: sudo apt-get install qemu-user qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu binutils-aarch64-linux-gnu-dbg build-essential
 
+    - name: System Info
+      run: make default CXX=aarch64-linux-gnu-g++ CXX+=-static
+
     - name: Build
       run: make test CXX=aarch64-linux-gnu-g++ CXX+=-static
 
@@ -39,7 +42,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: System Info
-      run: make default
+      run: make default CXX=clang++ CC=clang
 
     - name: Build
       run: make test CXX=clang++ CC=clang
@@ -59,7 +62,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: System Info
-      run: make default
+      run: make default CXX=g++ CC=gcc
 
     - name: Build
       run: make test CXX=g++ CC=gcc
