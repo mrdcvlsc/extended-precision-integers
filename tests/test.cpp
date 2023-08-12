@@ -1,17 +1,15 @@
-#include "../epi.hpp"
-#include "small_test.hpp"
 #include <iostream>
 #include <string>
 
+#include "small_test.hpp"
 #include "../epi.hpp"
 
 typedef epi::whole_number<uint8_t, uint16_t, 64>  uint64_8t;
 typedef epi::whole_number<uint16_t, uint32_t, 64> uint64_16t;
 typedef epi::whole_number<uint32_t, uint64_t, 64> uint64_32t;
 
-#include "../epi.hpp"
-
 int main() {
+  std::cout << "main() start\n";
   smlts::test t;
 
   std::cout << "----------------------------------------------\n";
