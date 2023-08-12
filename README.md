@@ -15,17 +15,19 @@ A C++ header file that provides extended precision data types, Types that have *
 This library already provides default synthesized integer types like; `epi::uint128_t`, `epi::uint256_t`, `epi::uint320_t`, etc. To use them just include the `epi.hpp` header file in your project, then you can treat them like a normal integral type e.g. `unsigned int`, `unsigned short`, etc.
 
 ```c++
+// example.cpp - get 3^600
 #include <iostream>
 #include "path/to/epi/epi.hpp"
 
 int main() {
-  epi::uint1024_t bigint = 2;
+  epi::uint1024_t a = 3;
+  epi::uint1024_t b = a;
 
-  for (size_t i = 0; i < 1000; ++i) {
-    bigint *= bigint;
+  for (size_t i = 1; i < 600; ++i) {
+    a *= b;
   }
 
-  std::cout << std::hex << bigint << '\n';
+  std::cout << "0x" << std::hex << a << '\n';
 
   return 0;
 }

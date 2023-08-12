@@ -8,11 +8,11 @@ Implementation of different functions, methods, constructors, and operators that
 should be `constexpr` and should follow the [guidelines](https://en.cppreference.com/w/cpp/language/constexpr)
 when implementing with the `constexpr` specifier.
 
-- [ ] Constructors
+- [X] Constructors
     - [X] no argument constructor
     - [X] initializer list constructor
-    - [ ] unsigned integral constructor
-    - [ ] string/char* constructor
+    - [X] unsigned integral constructor
+    - [X] string/char* constructor
     - [X] copy constructor
     - [X] copy assignment
 
@@ -62,15 +62,11 @@ when implementing with the `constexpr` specifier.
     - [X] `operator^(limb_t) const;`
     - [X] `operator~() const;`
 
-- [ ] Shift Operators
+- [X] Shift Operators
     - [X] `&operator<<=(size_t bits);`
     - [X] `&operator>>=(size_t bits);`
     - [X] `operator<<(size_t bits) const;`
     - [X] `operator>>(size_t bits) const;`
-    - [ ] `&operator<<=(own_type bits);`
-    - [ ] `&operator>>=(own_type bits);`
-    - [ ] `operator<<(own_type bits) const;`
-    - [ ] `operator>>(own_type bits) const;`
 
 - [ ] Output Stream Operator
     - [X] ostream operator (HEX)

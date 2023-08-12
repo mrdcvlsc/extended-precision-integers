@@ -39,16 +39,20 @@ namespace epi {
   /// @tparam limb_t any unsigned integral types.
   /// @tparam cast_t unsigned integral types that is exactly two times bigger than limb_t.
   /// @tparam limb_n number of limbs a whole number representation will have.
-  template <typename limb_t, typename cast_t, size_t limb_n>
+  template <typename limb_t, typename cast_t, size_t bits_n>
   class whole_number;
 
-  template <typename limb_t, typename cast_t, size_t limb_n>
-  std::ostream &operator<<(std::ostream &, const whole_number<limb_t, cast_t, limb_n> &);
+  // template <typename limb_t, typename cast_t, size_t bits_n>
+  // std::ostream &operator<<(std::ostream &, const whole_number<limb_t, cast_t, bits_n> &);
 
-  template <typename limb_t, typename cast_t, size_t limb_n>
+  template <typename limb_t, typename cast_t, size_t bits_n>
   class whole_number {
 
     private:
+
+    static constexpr bool incompatible_limb_t_for_bits_n = bits_n % (sizeof(limb_t) * 8) == 0;
+    static_assert(incompatible_limb_t_for_bits_n, "`bits_n` should be divisible by the `sizeof(limb_t)`");
+    static constexpr size_t limb_n = bits_n / (sizeof(limb_t) * 8);
 
     limb_t limbs[limb_n];
 
@@ -58,9 +62,6 @@ namespace epi {
 
     /// @brief Total bytes of the whole_number<> type.
     static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
-
-    /// @brief Total bits of the whole_number<> type.
-    static constexpr size_t BITS = BYTES * 8;
 
     static constexpr int LESS = -1;
     static constexpr int GREAT = 1;
@@ -88,7 +89,7 @@ namespace epi {
 
       // we then use the repeating sequence to get the maximum possible numbers of
       // digit that the current whole_number<> class can hold in a base10 representation.
-      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+      for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
         base10_max_digits += base10_diff_series[i % 5];
       }
 
@@ -100,9 +101,9 @@ namespace epi {
     static constexpr size_t get_base8_max_digit() {
       // uses the same technique in `get_base10_max_digit`.
       constexpr size_t base8_diff_series[3] = {3, 2, 3};
-      size_t base8_max_digits = 3;
-      
-      for (size_t i = 0; ((i + 2) * 8) <= BITS; ++i) {
+      size_t           base8_max_digits = 3;
+
+      for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
         base8_max_digits += base8_diff_series[i % 3];
       }
 
@@ -182,7 +183,7 @@ namespace epi {
       } else {
         if (num.size() >= 3 && num.front() == '0') {
           if (num[1] == 'b') {
-            constexpr size_t base2_max_digits = BITS;
+            constexpr size_t base2_max_digits = bits_n;
             if ((num.size() - 2) > base2_max_digits) {
               throw std::length_error("binary string exceed the max number of digits");
             } else if (!valid_base2(num)) {
@@ -211,58 +212,63 @@ namespace epi {
 
       if (number_base == number_base_t::dec) {
         constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
-        std::uint8_t output[output_len] = {};
+        size_t offset = output_len - num.size();
+
+        std::uint8_t     output[output_len] = {};
 
         constexpr size_t NUMBER_BASE = 10;
 
         for (size_t i = 0; i < num.size(); ++i) {
           uint8_t carry = num[i] - '0';
-          size_t j = num.size();
+          size_t  j = num.size();
           while (j--) {
-            uint8_t tmp = output[j] * NUMBER_BASE + carry;
-            output[j] = tmp % 16;
+            uint8_t tmp = output[j + offset] * NUMBER_BASE + carry;
+            output[j + offset] = tmp % 16;
             carry = tmp / 16;
           }
         }
 
-        size_t offset = output_len - num.size();
-
-        for (size_t i = offset; i < output_len; ++i) {
-          // limb_t multiplier = std::pow(0x10, (i - offset) % (sizeof(limb_t) * 2));
-          limb_t multiplier = (limb_t) 0x1 << (4 * ((i - offset) % (sizeof(limb_t) * 2)));
-          limbs[(i - offset) / (sizeof(limb_t) * 2)] |= (limb_t) output[output_len - 1 - i] * multiplier;
+        /// In one byte we have a max of 2 hex character, where each char is 4 bit.
+        constexpr size_t HEX_CHAR_BITS = 4;
+        constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
+        
+        for (size_t i = 0; i < limb_n * HEX_CHAR_PER_LIMB; ++i) {
+          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i]) << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
       } else if (number_base == number_base_t::bin) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
-          limb_t hex_char = num[num.size() - 1 - i] - '0';
+          limb_t           hex_char = num[num.size() - 1 - i] - '0';
           constexpr size_t BIN_CHAR_BITS = 1;
           limbs[i / (sizeof(limb_t) * 8)] |= (hex_char << (BIN_CHAR_BITS * (i % (sizeof(limb_t) * 8))));
         }
       } else if (number_base == number_base_t::oct) {
-        constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
-        std::uint8_t output[output_len] = {};
+        constexpr size_t output_len = BASE8_MAX_NUM_DIGITS;
+        size_t offset = output_len - (num.size() - 2);
+
+        std::uint8_t     output[output_len] = {};
 
         constexpr size_t NUMBER_BASE = 8;
 
-        for (size_t i = 2; i < num.size(); ++i) {
-          uint8_t carry = num[i] - '0';
-          size_t j = (num.size() - 2);
+        for (size_t i = 0; i < (num.size() - 2); ++i) {
+          uint8_t carry = num[i + 2] - '0';
+          size_t  j = (num.size() - 2);
           while (j--) {
-            uint8_t tmp = output[j] * NUMBER_BASE + carry;
-            output[j] = tmp % 16;
+            uint8_t tmp = output[j + offset] * NUMBER_BASE + carry;
+            output[j + offset] = tmp % 16;
             carry = tmp / 16;
           }
         }
 
-        size_t offset = output_len - (num.size() - 2);
-        
-        for (size_t i = offset; i < output_len; ++i) {
-          limb_t multiplier = (limb_t) 0x1 << (4 * ((i - offset) % (sizeof(limb_t) * 2)));
-          limbs[(i - offset) / (sizeof(limb_t) * 2)] |= (limb_t) output[output_len - 1 - i] * multiplier;
+        /// In one byte we have a max of 2 hex character, where each char is 4 bit.
+        constexpr size_t HEX_CHAR_BITS = 4;
+        constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
+
+        for (size_t i = 0; i < limb_n * HEX_CHAR_PER_LIMB; ++i) {
+          limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i]) << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
       } else if (number_base == number_base_t::hex) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
-          limb_t hex_char = CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
+          limb_t           hex_char = CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
           constexpr size_t HEX_CHAR_BITS = 4;
           limbs[i / (sizeof(limb_t) * 2)] |= (hex_char << (HEX_CHAR_BITS * (i % (sizeof(limb_t) * 2))));
         }
@@ -302,8 +308,56 @@ namespace epi {
       return *this;
     }
 
-    friend std::ostream &operator<< <
-      limb_t, cast_t, limb_n>(std::ostream &, const whole_number<limb_t, cast_t, limb_n> &);
+    // friend std::ostream &operator<< <limb_t, cast_t, limb_n>(std::ostream &);
+    friend std::ostream &operator<<(std::ostream &out, const whole_number &num) {
+      if (out.flags() & std::ios_base::hex) {
+        auto             prev_ios_width = out.width();
+        auto             prev_ios_fill = out.fill();
+        constexpr size_t padding = sizeof(limb_t) * 2;
+
+        if constexpr (std::is_same<limb_t, char>::value || std::is_same<limb_t, unsigned char>::value) {
+          size_t i = 0;
+          for (; i < limb_n; ++i) {
+            if (num.limbs[limb_n - 1 - i]) {
+              out << (unsigned int) num.limbs[limb_n - 1 - i];
+              i++;
+              break;
+            } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
+              out << 0x0;
+            }
+          }
+
+          for (; i < limb_n; ++i) {
+            out << std::setfill('0') << std::setw(padding) << std::right << (unsigned int) num.limbs[limb_n - 1 - i];
+          }
+          out << std::setfill(prev_ios_fill) << std::setw(prev_ios_width) << std::dec;
+        } else {
+          size_t i = 0;
+          for (; i < limb_n; ++i) {
+            if (num.limbs[limb_n - 1 - i]) {
+              out << num.limbs[limb_n - 1 - i];
+              i++;
+              break;
+            } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
+              out << 0x0;
+            }
+          }
+
+          for (; i < limb_n; ++i) {
+            out << std::setfill('0') << std::setw(padding) << std::right << num.limbs[limb_n - 1 - i];
+          }
+          out << std::setfill(prev_ios_fill) << std::setw(prev_ios_width) << std::dec;
+        }
+      } else if (out.flags() & std::ios_base::oct) {
+        // print oct
+        std::cout << "printing to oct is not supported yet\n";
+      } else {
+        // print dec
+        std::cout << "printing to dec is not supported yet\n";
+      }
+
+      return out;
+    }
 
     // arithmetic operators : start
     constexpr whole_number operator+(whole_number const &add) const noexcept {
@@ -673,7 +727,7 @@ namespace epi {
     constexpr whole_number operator<<(size_t lshift) const noexcept {
       whole_number result;
 
-      size_t lshift_internal = lshift % BITS;
+      size_t lshift_internal = lshift % bits_n;
       size_t limb_shifts = lshift_internal / LIMB_BITS;
       size_t bit_shifts = lshift_internal % LIMB_BITS;
       size_t i = 0;
@@ -706,7 +760,7 @@ namespace epi {
     constexpr whole_number operator>>(size_t rshift) const noexcept {
       whole_number result;
 
-      size_t rshift_internal = rshift % BITS;
+      size_t rshift_internal = rshift % bits_n;
       size_t limb_shifts = rshift_internal / LIMB_BITS;
       size_t bit_shifts = rshift_internal % LIMB_BITS;
       size_t i = 0;
@@ -810,7 +864,7 @@ namespace epi {
       limb_t           remainder_bit = 0, one_bit = 1;
       size_t           index = 0, shift_value = 0;
 
-      for (size_t i = 0; i < BITS; ++i) {
+      for (size_t i = 0; i < bits_n; ++i) {
         index = MS_LIMB - i / LIMB_BITS;
         shift_value = i % LIMB_BITS;
 
@@ -838,7 +892,7 @@ namespace epi {
       limb_t partial_quotient = 0;
       size_t prev_index = MS_LIMB - 0 / LIMB_BITS;
 
-      for (size_t i = 0; i < BITS; ++i) {
+      for (size_t i = 0; i < bits_n; ++i) {
         index = MS_LIMB - i / LIMB_BITS;
         shift_value = i % LIMB_BITS;
 
@@ -905,7 +959,7 @@ namespace epi {
       whole_number     remainder = {0};
       limb_t           remainder_bit = 0;
 
-      for (size_t i = 0; i < BITS; ++i) {
+      for (size_t i = 0; i < bits_n; ++i) {
         remainder = remainder << 1;
         remainder_bit = limbs[MS_LIMB - i / LIMB_BITS] << i % LIMB_BITS;
         remainder_bit >>= LIMB_BITS - 1;
@@ -935,101 +989,40 @@ namespace epi {
     }
   }; // whole_number class : end
 
-  template <typename limb_t, typename cast_t, size_t limb_n>
-  std::ostream &operator<<(std::ostream &out, const whole_number<limb_t, cast_t, limb_n> &num) {
-
-    if (out.flags() & std::ios_base::hex) {
-      auto             prev_ios_width = out.width();
-      auto             prev_ios_fill = out.fill();
-      constexpr size_t padding = sizeof(limb_t) * 2;
-
-      if constexpr (std::is_same<limb_t, char>::value || std::is_same<limb_t, unsigned char>::value) {
-        size_t i = 0;
-        for (; i < limb_n; ++i) {
-          if (num.limbs[limb_n - 1 - i]) {
-            out << (unsigned int) num.limbs[limb_n - 1 - i];
-            i++;
-            break;
-          } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
-            out << 0x0;
-          }
-        }
-
-        for (; i < limb_n; ++i) {
-          out << std::setfill('0') << std::setw(padding) << std::right << (unsigned int) num.limbs[limb_n - 1 - i];
-        }
-        out << std::setfill(prev_ios_fill) << std::setw(prev_ios_width) << std::dec;
-      } else {
-        size_t i = 0;
-        for (; i < limb_n; ++i) {
-          if (num.limbs[limb_n - 1 - i]) {
-            out << num.limbs[limb_n - 1 - i];
-            i++;
-            break;
-          } else if (i == limb_n - 1 && !num.limbs[limb_n - 1 - i]) {
-            out << 0x0;
-          }
-        }
-
-        for (; i < limb_n; ++i) {
-          out << std::setfill('0') << std::setw(padding) << std::right << num.limbs[limb_n - 1 - i];
-        }
-        out << std::setfill(prev_ios_fill) << std::setw(prev_ios_width) << std::dec;
-      }
-    } else if (out.flags() & std::ios_base::oct) {
-      // print oct
-      std::cout << "printing to oct is not supported yet\n";
-    } else {
-      // print dec
-      std::cout << "printing to dec is not supported yet\n";
-    }
-
-    return out;
-  }
-
   // predefined types
   #if defined(ENV_64BIT_EXTENDED)
 
-  typedef whole_number<uint64_t, __uint128_t, 2>   uint128_t;
-  typedef whole_number<uint64_t, __uint128_t, 3>   uint192_t;
-  typedef whole_number<uint64_t, __uint128_t, 4>   uint256_t;
-  typedef whole_number<uint64_t, __uint128_t, 5>   uint320_t;
-  typedef whole_number<uint64_t, __uint128_t, 8>   uint512_t;
-  typedef whole_number<uint64_t, __uint128_t, 16>  uint1024_t;
-  typedef whole_number<uint64_t, __uint128_t, 32>  uint2048_t;
-  typedef whole_number<uint64_t, __uint128_t, 64>  uint4096_t;
-  typedef whole_number<uint64_t, __uint128_t, 128> uint8192_t;
-  typedef whole_number<uint64_t, __uint128_t, 256> uint16384_t;
-  typedef whole_number<uint64_t, __uint128_t, 512> uint32768_t;
+  typedef whole_number<uint64_t, __uint128_t, 128>  uint128_t;
+  typedef whole_number<uint64_t, __uint128_t, 192>  uint192_t;
+  typedef whole_number<uint64_t, __uint128_t, 256>  uint256_t;
+  typedef whole_number<uint64_t, __uint128_t, 320>  uint320_t;
+  typedef whole_number<uint64_t, __uint128_t, 512>  uint512_t;
+  typedef whole_number<uint64_t, __uint128_t, 1024> uint1024_t;
+  typedef whole_number<uint64_t, __uint128_t, 2048> uint2048_t;
+  typedef whole_number<uint64_t, __uint128_t, 4096> uint4096_t;
 
   #elif defined(ENV_64BIT)
 
-  typedef whole_number<uint32_t, uint64_t, 4>    uint128_t;
-  typedef whole_number<uint32_t, uint64_t, 6>    uint192_t;
-  typedef whole_number<uint32_t, uint64_t, 8>    uint256_t;
-  typedef whole_number<uint32_t, uint64_t, 10>   uint320_t;
-  typedef whole_number<uint32_t, uint64_t, 16>   uint512_t;
-  typedef whole_number<uint32_t, uint64_t, 32>   uint1024_t;
-  typedef whole_number<uint32_t, uint64_t, 64>   uint2048_t;
-  typedef whole_number<uint32_t, uint64_t, 128>  uint4096_t;
-  typedef whole_number<uint32_t, uint64_t, 256>  uint8192_t;
-  typedef whole_number<uint32_t, uint64_t, 512>  uint16384_t;
-  typedef whole_number<uint32_t, uint64_t, 1024> uint32768_t;
+  typedef whole_number<uint32_t, uint64_t, 128>  uint128_t;
+  typedef whole_number<uint32_t, uint64_t, 192>  uint192_t;
+  typedef whole_number<uint32_t, uint64_t, 256>  uint256_t;
+  typedef whole_number<uint32_t, uint64_t, 320>  uint320_t;
+  typedef whole_number<uint32_t, uint64_t, 512>  uint512_t;
+  typedef whole_number<uint32_t, uint64_t, 1024> uint1024_t;
+  typedef whole_number<uint32_t, uint64_t, 2048> uint2048_t;
+  typedef whole_number<uint32_t, uint64_t, 4096> uint4096_t;
 
   #elif defined(ENV_32BIT)
 
-  typedef whole_number<uint16_t, uint32_t, 4>    uint64_t;
-  typedef whole_number<uint16_t, uint32_t, 8>    uint128_t;
-  typedef whole_number<uint16_t, uint32_t, 12>   uint192_t;
-  typedef whole_number<uint16_t, uint32_t, 16>   uint256_t;
-  typedef whole_number<uint16_t, uint32_t, 20>   uint320_t;
-  typedef whole_number<uint16_t, uint32_t, 32>   uint512_t;
-  typedef whole_number<uint16_t, uint32_t, 64>   uint1024_t;
-  typedef whole_number<uint16_t, uint32_t, 128>  uint2048_t;
-  typedef whole_number<uint16_t, uint32_t, 256>  uint4096_t;
-  typedef whole_number<uint16_t, uint32_t, 512>  uint8192_t;
-  typedef whole_number<uint16_t, uint32_t, 1024> uint16384_t;
-  typedef whole_number<uint16_t, uint32_t, 2048> uint32768_t;
+  typedef whole_number<uint16_t, uint32_t, 64>   uint64_t;
+  typedef whole_number<uint16_t, uint32_t, 128>  uint128_t;
+  typedef whole_number<uint16_t, uint32_t, 192>  uint192_t;
+  typedef whole_number<uint16_t, uint32_t, 256>  uint256_t;
+  typedef whole_number<uint16_t, uint32_t, 320>  uint320_t;
+  typedef whole_number<uint16_t, uint32_t, 512>  uint512_t;
+  typedef whole_number<uint16_t, uint32_t, 1024> uint1024_t;
+  typedef whole_number<uint16_t, uint32_t, 2048> uint2048_t;
+  typedef whole_number<uint16_t, uint32_t, 4096> uint4096_t;
 
   #endif
 
@@ -1039,13 +1032,15 @@ namespace epi {
 
 #if (__cplusplus >= 201703L)
 namespace std {
-  template <typename limb_t, typename cast_t, size_t limb_n>
-  struct numeric_limits<epi::whole_number<limb_t, cast_t, limb_n>> {
+  template <typename limb_t, typename cast_t, size_t bits_n>
+  struct numeric_limits<epi::whole_number<limb_t, cast_t, bits_n>> {
     // static constexpr bool is_specialized = true;
 
-    constexpr static epi::whole_number<limb_t, cast_t, limb_n> max() {
-      constexpr size_t                          limb_bits = sizeof(limb_t) * 8;
-      constexpr limb_t                          max_limb = std::numeric_limits<limb_t>::max();
+    constexpr static epi::whole_number<limb_t, cast_t, bits_n> max() {
+      constexpr size_t limb_bits = sizeof(limb_t) * 8;
+      constexpr limb_t max_limb = std::numeric_limits<limb_t>::max();
+      constexpr size_t limb_n = epi::whole_number<limb_t, cast_t, bits_n>::limb_n;
+
       epi::whole_number<limb_t, cast_t, limb_n> max_value = max_limb;
       for (size_t i = 0; i < limb_n - 1; ++i) {
         max_value <<= limb_bits;
@@ -1054,9 +1049,11 @@ namespace std {
       return max_value;
     }
 
-    constexpr static epi::whole_number<limb_t, cast_t, limb_n> min() {
-      constexpr size_t                          limb_bits = sizeof(limb_t) * 8;
-      constexpr limb_t                          min_limb = std::numeric_limits<limb_t>::min();
+    constexpr static epi::whole_number<limb_t, cast_t, bits_n> min() {
+      constexpr limb_t min_limb = std::numeric_limits<limb_t>::min();
+      constexpr size_t limb_bits = sizeof(limb_t) * 8;
+      constexpr size_t limb_n = epi::whole_number<limb_t, cast_t, bits_n>::limb_n;
+
       epi::whole_number<limb_t, cast_t, limb_n> min_value = min_limb;
       for (size_t i = 0; i < limb_n - 1; ++i) {
         min_value <<= limb_bits;

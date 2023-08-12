@@ -29,14 +29,12 @@ test:
 	@echo compiling test program...
 	@echo OS : $(OS)
 	@echo Compiler : $(CXX)
-	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)1.$(EXTENSION) $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
-	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)2.$(EXTENSION) -O2 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
-	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME)3.$(EXTENSION) -O3 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
+	$(CXX) $(CXX_STANDARD) tests/test.cpp -o tests/$(OUTPUT_NAME).$(EXTENSION) -g3 $(WARNING_FLAGS) $(SANITIZER_FLAG) $(DFLAGS)
 	@echo done compiling test program.
 
 run_test:
 	@echo running test program...
-	./tests/$(OUTPUT_NAME)1.$(EXTENSION) && ./tests/$(OUTPUT_NAME)2.$(EXTENSION) && ./tests/$(OUTPUT_NAME)3.$(EXTENSION)
+	./tests/$(OUTPUT_NAME).$(EXTENSION)
 	@echo done running test program.
 
 style:
