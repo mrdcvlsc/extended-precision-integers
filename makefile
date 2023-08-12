@@ -19,7 +19,7 @@ OS_COMPILER=$(OS)$(CXX)
 ifeq ($(OS_COMPILER), Linuxclang++)
 SANITIZER_FLAG+=-g3 -fsanitize=address
 else
-SANITIZER_FLAG+=-g -fsanitize=address
+SANITIZER_FLAG+=-g
 endif
 
 default:
