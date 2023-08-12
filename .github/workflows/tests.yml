@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, gcc-test-windows-executable-fix ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, gcc-test-windows-executable-fix ]
 
 jobs:
 
@@ -62,7 +62,7 @@ jobs:
       run: make default
 
     - name: Build
-      run: make test CXX=g++ CC=clang
+      run: make test CXX=g++ CC=gcc
 
     - name: Run
       run: make run_test

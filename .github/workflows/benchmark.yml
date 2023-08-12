@@ -29,7 +29,7 @@ jobs:
         run: git status
 
       - name: Run Benchmark
-        run: make -C benchmark run CXX=clang++
+        run: make -C benchmark run CXX=clang++ CC=clang
 
       - name: Stash Benchmark Results
         run: git add benchmark/benchmark-and-comparison-Linux-clang++.md
