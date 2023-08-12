@@ -34,7 +34,11 @@ test:
 
 run_test:
 	@echo running test program...
+ifeq ($(OS), Linux)
 	./tests/$(OUTPUT_NAME).$(EXTENSION)
+else
+	tests/$(OUTPUT_NAME).$(EXTENSION)
+endif
 	@echo done running test program.
 
 style:

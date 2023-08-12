@@ -42,6 +42,3 @@ int main() {
 ## **Requirements**
 - Little Endian System
 - C++20 or Above
-
-
-$\lfloor log_{10}(2^n - 1) \rfloor + 1$
