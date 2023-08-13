@@ -50,7 +50,7 @@ run: $(EXECUTABLES)
 
 # // _ARITHMETIC, _ASSIGNED_BLOCK1, _SHIFTS
 
-%.out: benchmark.cpp ../epi.hpp wide-integer.dlrc boost-mp.dlrc
+%.out: benchmark.cpp ../include/epi/epi.hpp wide-integer.dlrc boost-mp.dlrc
 	@echo "Compiling Benchmark Program"
 	$(foreach wide, $(WIDENESS), \
 		$(foreach block, $(BLOCKS), \

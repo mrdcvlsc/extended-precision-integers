@@ -1,5 +1,5 @@
 OS:=$(shell uname)
-HEADERS:=$(wildcard ../*.hpp)
+HEADERS:=$(wildcard ../include/epi/*.hpp)
 TEST_EXECUTABLES:=$(subst .cpp,.out,$(wildcard *.cpp))
 LINKING:=
 
