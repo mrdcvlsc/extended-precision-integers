@@ -2,6 +2,7 @@
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
 #include <algorithm>
+#include <bitset>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -11,7 +12,9 @@
 #include <math.h>
 #include <ostream>
 #include <random>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 #include <type_traits>
 
@@ -47,11 +50,17 @@ namespace epi {
     static constexpr int GREAT = 1;
     static constexpr int EQUAL = 0;
 
-    /// @brief The maximum base 10 digit count.
+    /// @brief The maximum base 2 (binary) digit count.
+    static constexpr size_t BASE2_DIGIT_CAP = LIMB_BITS * limb_n;
+
+    /// @brief The maximum base 8 (octadecimal) digit count.
+    static constexpr size_t BASE8_DIGIT_CAP = compile_time::base8_digit_capacity<bits_n>::value;
+
+    /// @brief The maximum base 10 (decimal) digit count.
     static constexpr size_t BASE10_DIGIT_CAP = compile_time::base10_digit_capacity<bits_n>::value;
 
-    /// @brief The maximum base 8 digit count.
-    static constexpr size_t BASE8_DIGIT_CAP = compile_time::base8_digit_capacity<bits_n>::value;
+    /// @brief The maximum base 16 (hexadecimal) digit count.
+    static constexpr size_t BASE16_DIGIT_CAP = sizeof(limb_t) * 2 * limb_n;
 
     limb_t limbs[limb_n];
 
@@ -283,11 +292,9 @@ namespace epi {
           out << std::setfill(prev_ios_fill) << std::setw(prev_ios_width) << std::dec;
         }
       } else if (out.flags() & std::ios_base::oct) {
-        // print oct
-        std::cout << "printing to oct is not supported yet\n";
+        out << std::move(num.to_string_base8());
       } else {
-        // print dec
-        std::cout << "printing to dec is not supported yet\n";
+        out << std::move(num.to_string_base10());
       }
 
       return out;
@@ -559,7 +566,7 @@ namespace epi {
     constexpr explicit operator bool() const noexcept {
       // TODO: optimize this by detecting constexpr keyword then
       // return true if value is not constexpr zero and vice-versa.
-      
+
       // constant cryptographic time comparison
       limb_t result = 0;
       for (size_t i = 0; i < limb_n; ++i) {
@@ -742,28 +749,68 @@ namespace epi {
 
     // shift operators : end
 
-    std::string to_string_base2() const noexcept {
+    std::string to_string_base2(bool no_leading_zero = true) const noexcept {
+      std::string num_str;
+      num_str.reserve(BASE2_DIGIT_CAP);
 
+      for (size_t i = 0; i < limb_n; ++i) {
+        num_str.append(std::bitset<LIMB_BITS>(limbs[limb_n - 1 - i]).to_string());
+      }
+
+      if (no_leading_zero) {
+        size_t leading_zeros = 0;
+        size_t i = 0;
+        for (; i < num_str.size() - 1; ++i) {
+          if (num_str[i] != '0') {
+            leading_zeros = i;
+            break;
+          }
+        }
+
+        if (i == num_str.size() - 1 && !leading_zeros) {
+          num_str = num_str.back();
+        } else {
+          num_str = num_str.substr(leading_zeros, num_str.size() - leading_zeros);
+        }
+      }
+
+      return num_str;
     }
 
     std::string to_string_base8() const noexcept {
-      
-    }
-
-    std::string to_string_base10() const noexcept {
-
       std::string num_str;
       num_str.reserve(BASE10_DIGIT_CAP);
 
-      whole_number quotient = *this, remainder = 0;
-      constexpr whole_number TEN = 10;
+      whole_number           quotient = *this, remainder = 0;
+      constexpr whole_number BASE8 = 8;
 
       if (!quotient) {
         return "0";
       }
 
       while (quotient) {
-        self_div_and_mod_by_1limb(quotient, TEN.limbs[0], remainder);
+        self_div_and_mod_by_1limb(quotient, BASE8.limbs[0], remainder);
+        num_str.push_back('0' + remainder.limbs[0]);
+      }
+
+      std::reverse(num_str.begin(), num_str.end());
+
+      return num_str;
+    }
+
+    std::string to_string_base10() const noexcept {
+      std::string num_str;
+      num_str.reserve(BASE10_DIGIT_CAP);
+
+      whole_number           quotient = *this, remainder = 0;
+      constexpr whole_number BASE10 = 10;
+
+      if (!quotient) {
+        return "0";
+      }
+
+      while (quotient) {
+        self_div_and_mod_by_1limb(quotient, BASE10.limbs[0], remainder);
         num_str.push_back('0' + remainder.limbs[0]);
       }
 
@@ -773,7 +820,9 @@ namespace epi {
     }
 
     std::string to_string_base16() const noexcept {
-
+      std::stringstream out;
+      out << std::hex << *this;
+      return out.str();
     }
 
     private:
@@ -940,7 +989,9 @@ namespace epi {
       return *this;
     }
 
-    static constexpr void self_div_and_mod_by_1limb(whole_number &quotient, limb_t divisor, whole_number &remainder) noexcept {
+    static constexpr void self_div_and_mod_by_1limb(
+      whole_number &quotient, limb_t divisor, whole_number &remainder
+    ) noexcept {
       cast_t remainder_single_limb = 0;
 
       remainder_single_limb = quotient.limbs[limb_n - 1] % divisor;
