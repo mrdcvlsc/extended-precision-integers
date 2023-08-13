@@ -1,6 +1,7 @@
 #ifndef MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstring>
@@ -556,12 +557,24 @@ namespace epi {
 
     /// @brief automatically resolve the logical &&, ||, and ! operators.
     constexpr explicit operator bool() const noexcept {
+      // TODO: optimize this by detecting constexpr keyword then
+      // return true if value is not constexpr zero and vice-versa.
+      
+      // constant cryptographic time comparison
       limb_t result = 0;
       for (size_t i = 0; i < limb_n; ++i) {
         result |= limbs[i];
       }
-
       return result;
+
+      // not-constant cryptographic time comparison
+      // constexpr whole_number ZERO = 0;
+      // for (size_t i = 0; i < limb_n; ++i) {
+      //   if (limbs[i] != ZERO.limbs[i]) {
+      //     return true;
+      //   }
+      // }
+      // return false;
     }
 
     // bitwise logical operators : start
@@ -729,6 +742,40 @@ namespace epi {
 
     // shift operators : end
 
+    std::string to_string_base2() const noexcept {
+
+    }
+
+    std::string to_string_base8() const noexcept {
+      
+    }
+
+    std::string to_string_base10() const noexcept {
+
+      std::string num_str;
+      num_str.reserve(BASE10_DIGIT_CAP);
+
+      whole_number quotient = *this, remainder = 0;
+      constexpr whole_number TEN = 10;
+
+      if (!quotient) {
+        return "0";
+      }
+
+      while (quotient) {
+        self_div_and_mod_by_1limb(quotient, TEN.limbs[0], remainder);
+        num_str.push_back('0' + remainder.limbs[0]);
+      }
+
+      std::reverse(num_str.begin(), num_str.end());
+
+      return num_str;
+    }
+
+    std::string to_string_base16() const noexcept {
+
+    }
+
     private:
 
     static constexpr bool valid_base16(std::string_view const &num) {
@@ -891,6 +938,22 @@ namespace epi {
       }
 
       return *this;
+    }
+
+    static constexpr void self_div_and_mod_by_1limb(whole_number &quotient, limb_t divisor, whole_number &remainder) noexcept {
+      cast_t remainder_single_limb = 0;
+
+      remainder_single_limb = quotient.limbs[limb_n - 1] % divisor;
+      remainder_single_limb <<= LIMB_BITS;
+      quotient.limbs[limb_n - 1] = quotient.limbs[limb_n - 1] / divisor;
+
+      for (size_t i = 1; i < limb_n; ++i) {
+        remainder_single_limb |= quotient.limbs[limb_n - 1 - i];
+        quotient.limbs[limb_n - 1 - i] = remainder_single_limb / divisor;
+        remainder_single_limb = (remainder_single_limb % divisor) << LIMB_BITS;
+      }
+
+      remainder = remainder_single_limb >> LIMB_BITS;
     }
 
     // mods

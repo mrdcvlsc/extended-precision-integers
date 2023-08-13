@@ -7,6 +7,8 @@
 
 #include "../include/epi/epi.hpp"
 
+#define ASSERT_EQ_SMLTS(TEST, A, B, BYTES) (TEST).cmp_eq((A), (B), (BYTES), __FILE__, __LINE__);
+
 namespace smlts {
 
   // class definition
@@ -36,6 +38,8 @@ namespace smlts {
     void cmp_ts(std::string const &file_name, size_t file_line);
 
     void cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line);
+
+    void assertion(bool expression, std::string const &file_name, size_t file_line);
 
     void pass(std::string const &, size_t);
     void fail(std::string const &file_name, size_t file_line);
@@ -84,6 +88,16 @@ namespace smlts {
 
   void test::cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line) {
     bool result = A != B;
+    test_results.push_back(result);
+    if (result) {
+      file.push_back(file_name);
+      line.push_back(file_line);
+    }
+    final_verdict |= result;
+  }
+
+  void test::assertion(bool expression, std::string const &file_name, size_t file_line) {
+    bool result = !expression;
     test_results.push_back(result);
     if (result) {
       file.push_back(file_name);
