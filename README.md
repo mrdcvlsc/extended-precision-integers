@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ![tests](https://github.com/mrdcvlsc/extended-precision-integers/actions/workflows/tests.yml/badge.svg)
 
-A C++ header file that provides extended precision data types, Types that have **Fixed sizes** and can hold larger numbers than **Plain Old Data** types (POD eg. `int`, `uint8_t` `unsigned long`, & etc.).
+A C++ header only library that provides extended precision data types, number types that have **Fixed sizes** and can hold larger values than **Plain Old Data** types (POD eg. `int`, `uint8_t` `unsigned long`, & etc.).
 
 **Notes:**
 - using the result of shifting bits greater than a `whole_number<>`'s width is strongly discouraged.
@@ -17,7 +17,7 @@ This library already provides default synthesized integer types like; `epi::uint
 ```c++
 // example.cpp - get 3^600
 #include <iostream>
-#include "path/to/epi/epi.hpp"
+#include "path/to/epi/include/epi/epi.hpp"
 
 int main() {
   epi::uint1024_t a = 3;

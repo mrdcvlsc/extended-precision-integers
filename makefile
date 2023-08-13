@@ -22,5 +22,5 @@ clean:
 
 style:
 	@echo fixing code format and code style...
-	@clang-format -i -style=file *.cpp *.hpp tests/*.cpp tests/*.hpp benchmark/*.cpp benchmark/*.hpp
+	@clang-format -i -style=file include/epi/*.hpp tests/*.cpp tests/*.hpp benchmark/*.cpp
 	@echo done fixing style format.

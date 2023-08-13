@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include "../epi.hpp"
 #include "small_test.hpp"
 
 typedef epi::whole_number<uint8_t, uint16_t, 64>  uint64_8t;

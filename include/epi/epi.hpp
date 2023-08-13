@@ -15,21 +15,14 @@
 #include <type_traits>
 
 #include "config.hpp"
+#include "constants.hpp"
+#include "meta-functions.hpp"
 
 namespace epi {
 
 #if (__cplusplus < 201703L)
   #error C++17 is needed
 #else
-
-  enum class number_base_t
-  {
-    bin,
-    oct,
-    dec,
-    hex,
-    invalid
-  };
 
   /// @brief Template Class for creating any fixed arbitrary sized whole numbers.
   ///
@@ -40,92 +33,26 @@ namespace epi {
   /// @tparam cast_t unsigned integral types that is exactly two times bigger than limb_t.
   /// @tparam limb_n number of limbs a whole number representation will have.
   template <typename limb_t, typename cast_t, size_t bits_n>
-  class whole_number;
-
-  // template <typename limb_t, typename cast_t, size_t bits_n>
-  // std::ostream &operator<<(std::ostream &, const whole_number<limb_t, cast_t, bits_n> &);
-
-  template <typename limb_t, typename cast_t, size_t bits_n>
   class whole_number {
 
-    private:
-
-    static constexpr bool incompatible_limb_t_for_bits_n = bits_n % (sizeof(limb_t) * 8) == 0;
-    static_assert(incompatible_limb_t_for_bits_n, "`bits_n` should be divisible by the `sizeof(limb_t)`");
-    static constexpr size_t limb_n = bits_n / (sizeof(limb_t) * 8);
-
-    limb_t limbs[limb_n];
-
-    /// @brief whole_Number base use to represent the integer.
-    static constexpr size_t LIMB_BASE = sizeof(limb_t) * 8;
+    /// @brief number of bits in a limb, or the number base of a limb.
     static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
 
-    /// @brief Total bytes of the whole_number<> type.
-    static constexpr size_t BYTES = sizeof(limb_t) * limb_n;
+    static constexpr bool incompatible_limb_t_for_bits_n = bits_n % (LIMB_BITS) == 0;
+    static_assert(incompatible_limb_t_for_bits_n, "`bits_n` should be divisible by the `sizeof(limb_t)`");
+    static constexpr size_t limb_n = bits_n / (LIMB_BITS);
 
     static constexpr int LESS = -1;
     static constexpr int GREAT = 1;
     static constexpr int EQUAL = 0;
 
-    static constexpr int LIMB_OCCUPATION_ZERO = 0;
-    static constexpr int LIMB_OCCUPATION_ONE = 1;
-    static constexpr int LIMB_OCCUPATION_MULTIPLE = 2;
+    /// @brief The maximum base 10 digit count.
+    static constexpr size_t BASE10_DIGIT_CAP = compile_time::base10_digit_capacity<bits_n>::value;
 
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base10 for any arbitrary 2^n whole_number<> type, a replacement
-    /// for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since it can't
-    /// calculate past 2^128 - 1, or the max value of a `uint128_t`.
-    static constexpr size_t get_base10_max_digit() {
-      // when we get the series of maximum digits for each of the number in the series
-      // of powers of 2 raised to increasing multiples of 8, we can get the repeating
-      // series below by repeatedly subtracting a previous maximum digit to its next
-      // corresponding maximum digit. we repeat the same thing for the next maximum
-      // then to the next one, if we do this repeatedly we will see a repeating
-      // sequence of ... 2, 3, 2, 3, 2, ... will emerge.
-      constexpr size_t base10_diff_series[5] = {2, 3, 2, 3, 2};
+    /// @brief The maximum base 8 digit count.
+    static constexpr size_t BASE8_DIGIT_CAP = compile_time::base8_digit_capacity<bits_n>::value;
 
-      /// initial base 2^8 starting max number of digit when represented in base 10.
-      size_t base10_max_digits = 3;
-
-      // we then use the repeating sequence to get the maximum possible numbers of
-      // digit that the current whole_number<> class can hold in a base10 representation.
-      for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
-        base10_max_digits += base10_diff_series[i % 5];
-      }
-
-      return base10_max_digits;
-    }
-
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base8 for any arbitrary 2^n whole_number<> type.
-    static constexpr size_t get_base8_max_digit() {
-      // uses the same technique in `get_base10_max_digit`.
-      constexpr size_t base8_diff_series[3] = {3, 2, 3};
-      size_t           base8_max_digits = 3;
-
-      for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
-        base8_max_digits += base8_diff_series[i % 3];
-      }
-
-      return base8_max_digits;
-    }
-
-    static constexpr size_t BASE10_MAX_NUM_DIGITS = get_base10_max_digit();
-    static constexpr size_t BASE8_MAX_NUM_DIGITS = get_base8_max_digit();
-
-    static constexpr unsigned char HEX_TO_CHAR[16] = {
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-    };
-
-    static constexpr unsigned char CHAR_TO_HEX[127] = {
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-      0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff,
-      0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    };
+    limb_t limbs[limb_n];
 
     public:
 
@@ -161,7 +88,7 @@ namespace epi {
         throw std::length_error("empty char*/string constructor are not allowed");
       }
 
-      number_base_t number_base = number_base_t::invalid;
+      constants::base_t base = constants::base_t::invalid;
 
       bool is_all_digit = true;
 
@@ -172,14 +99,17 @@ namespace epi {
         }
       }
 
+      // determine what number base representation does the input number string is in
+      // and check its validity after.
+
       if (is_all_digit) {
-        constexpr size_t base10_max_digits = BASE10_MAX_NUM_DIGITS;
+        constexpr size_t base10_max_digits = BASE10_DIGIT_CAP;
         if (num.size() > base10_max_digits) {
           throw std::length_error("base 10 number string exceed the max number of digits");
         } else if (!valid_base10(num)) {
           throw std::length_error("invalid digit character detected");
         }
-        number_base = number_base_t::dec;
+        base = constants::base_t::dec;
       } else {
         if (num.size() >= 3 && num.front() == '0') {
           if (num[1] == 'b') {
@@ -189,15 +119,15 @@ namespace epi {
             } else if (!valid_base2(num)) {
               throw std::length_error("invalid binary character detected");
             }
-            number_base = number_base_t::bin;
+            base = constants::base_t::bin;
           } else if (num[1] == 'o') {
-            constexpr size_t base8_max_digits = BASE8_MAX_NUM_DIGITS;
+            constexpr size_t base8_max_digits = BASE8_DIGIT_CAP;
             if ((num.size() - 2) > base8_max_digits) {
               throw std::length_error("octal string exceed the max number of digits");
             } else if (!valid_base8(num)) {
               throw std::length_error("invalid octal character detected");
             }
-            number_base = number_base_t::oct;
+            base = constants::base_t::oct;
           } else if (num[1] == 'x') {
             constexpr size_t base16_max_digits = limb_n * sizeof(limb_t) * 2;
             if ((num.size() - 2) > base16_max_digits) {
@@ -205,24 +135,26 @@ namespace epi {
             } else if (!valid_base16(num)) {
               throw std::length_error("invalid hex character detected");
             }
-            number_base = number_base_t::hex;
+            base = constants::base_t::hex;
           }
         }
       }
 
-      if (number_base == number_base_t::dec) {
-        constexpr size_t output_len = BASE10_MAX_NUM_DIGITS;
+      // convert the current number base string representation into it's actual in memory value.
+
+      if (base == constants::base_t::dec) {
+        constexpr size_t output_len = BASE10_DIGIT_CAP;
         size_t           offset = output_len - num.size();
 
         std::uint8_t output[output_len] = {};
 
-        constexpr size_t NUMBER_BASE = 10;
+        constexpr size_t base = 10;
 
         for (size_t i = 0; i < num.size(); ++i) {
           uint8_t carry = num[i] - '0';
           size_t  j = num.size();
           while (j--) {
-            uint8_t tmp = output[j + offset] * NUMBER_BASE + carry;
+            uint8_t tmp = output[j + offset] * base + carry;
             output[j + offset] = tmp % 16;
             carry = tmp / 16;
           }
@@ -236,25 +168,25 @@ namespace epi {
           limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
                                           << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
-      } else if (number_base == number_base_t::bin) {
+      } else if (base == constants::base_t::bin) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
           limb_t           hex_char = num[num.size() - 1 - i] - '0';
           constexpr size_t BIN_CHAR_BITS = 1;
-          limbs[i / (sizeof(limb_t) * 8)] |= (hex_char << (BIN_CHAR_BITS * (i % (sizeof(limb_t) * 8))));
+          limbs[i / (LIMB_BITS)] |= (hex_char << (BIN_CHAR_BITS * (i % (LIMB_BITS))));
         }
-      } else if (number_base == number_base_t::oct) {
-        constexpr size_t output_len = BASE8_MAX_NUM_DIGITS;
+      } else if (base == constants::base_t::oct) {
+        constexpr size_t output_len = BASE8_DIGIT_CAP;
         size_t           offset = output_len - (num.size() - 2);
 
         std::uint8_t output[output_len] = {};
 
-        constexpr size_t NUMBER_BASE = 8;
+        constexpr size_t base = 8;
 
         for (size_t i = 0; i < (num.size() - 2); ++i) {
           uint8_t carry = num[i + 2] - '0';
           size_t  j = (num.size() - 2);
           while (j--) {
-            uint8_t tmp = output[j + offset] * NUMBER_BASE + carry;
+            uint8_t tmp = output[j + offset] * base + carry;
             output[j + offset] = tmp % 16;
             carry = tmp / 16;
           }
@@ -268,9 +200,9 @@ namespace epi {
           limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
                                           << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
         }
-      } else if (number_base == number_base_t::hex) {
+      } else if (base == constants::base_t::hex) {
         for (size_t i = 0; i < num.size() - 2; ++i) {
-          limb_t           hex_char = CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
+          limb_t           hex_char = constants::CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
           constexpr size_t HEX_CHAR_BITS = 4;
           limbs[i / (sizeof(limb_t) * 2)] |= (hex_char << (HEX_CHAR_BITS * (i % (sizeof(limb_t) * 2))));
         }
@@ -285,7 +217,7 @@ namespace epi {
 
       if constexpr (partition) {
         for (size_t i = 0; i < partition; ++i) {
-          limbs[i] = num >> (i * sizeof(limb_t) * 8);
+          limbs[i] = num >> (i * LIMB_BITS);
         }
       } else if constexpr (!partition) {
         limbs[0] = num;
@@ -369,7 +301,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
         sum.limbs[i] = index_sum;
-        carry = index_sum >> LIMB_BASE;
+        carry = index_sum >> LIMB_BITS;
       }
 
       return sum;
@@ -381,7 +313,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
         limbs[i] = index_sum;
-        carry = index_sum >> LIMB_BASE;
+        carry = index_sum >> LIMB_BITS;
       }
 
       return *this;
@@ -394,7 +326,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
         diff.limbs[i] = index_diff;
-        carry = (index_diff >> LIMB_BASE) & 0x1;
+        carry = (index_diff >> LIMB_BITS) & 0x1;
       }
 
       return diff;
@@ -406,7 +338,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
         limbs[i] = index_diff;
-        carry = (index_diff >> LIMB_BASE) & 0x1;
+        carry = (index_diff >> LIMB_BITS) & 0x1;
       }
 
       return *this;
@@ -443,7 +375,7 @@ namespace epi {
       for (size_t i = 0; i < limb_n; ++i) {
         cast_t index_prod = (cast_t) limbs[i] * mul.limbs[0] + carry;
         prod.limbs[i] = index_prod;
-        carry = index_prod >> LIMB_BASE;
+        carry = index_prod >> LIMB_BITS;
       }
 
       for (size_t i = 1; i < limb_n; ++i) {
@@ -451,7 +383,7 @@ namespace epi {
         for (size_t j = 0; j < limb_n - i; ++j) {
           cast_t index_prod = (cast_t) limbs[j] * mul.limbs[i] + prod.limbs[i + j] + carry;
           prod.limbs[i + j] = index_prod;
-          carry = (index_prod >> LIMB_BASE);
+          carry = (index_prod >> LIMB_BITS);
         }
       }
 
@@ -471,7 +403,7 @@ namespace epi {
       constexpr whole_number CONSTEXPR_ONE = {1};
       constexpr whole_number CONSTEXPR_ZERO = {0};
 
-      int div_case = div.is_one_limb();
+      int limb_used = div.is_one_limb();
       int cmp_case = compare(*this, div);
 
       switch (cmp_case) {
@@ -481,9 +413,11 @@ namespace epi {
           return CONSTEXPR_ZERO;
       }
 
-      if (div_case == LIMB_OCCUPATION_ONE && div.limbs[0] == 1) {
+      constexpr int ONE_LIMB_ONLY = 1;
+
+      if (limb_used == ONE_LIMB_ONLY && div.limbs[0] == 1) {
         return *this;
-      } else if (div_case == LIMB_OCCUPATION_ONE) {
+      } else if (limb_used == ONE_LIMB_ONLY) {
         return div_by_1limb(div.limbs[0]);
       }
 
@@ -514,9 +448,11 @@ namespace epi {
           return *this;
       }
 
-      if (div_case == LIMB_OCCUPATION_ONE && div.limbs[0] == 1) {
+      constexpr int ONE_LIMB_ONLY = 1;
+
+      if (div_case == ONE_LIMB_ONLY && div.limbs[0] == 1) {
         return *this;
-      } else if (div_case == LIMB_OCCUPATION_ONE) {
+      } else if (div_case == ONE_LIMB_ONLY) {
         self_div_by_1limb(div.limbs[0]);
         return *this;
       }
@@ -542,9 +478,11 @@ namespace epi {
           return *this;
       }
 
-      if (mod_case == LIMB_OCCUPATION_ONE && mod.limbs[0] == 1) {
+      constexpr int ONE_LIMB_ONLY = 1;
+
+      if (mod_case == ONE_LIMB_ONLY && mod.limbs[0] == 1) {
         return CONSTEXPR_ZERO;
-      } else if (mod_case == LIMB_OCCUPATION_ONE) {
+      } else if (mod_case == ONE_LIMB_ONLY) {
         return mod_by_1limb(mod.limbs[0]);
       }
 
@@ -570,12 +508,14 @@ namespace epi {
           return *this;
       }
 
-      if (mod_case == LIMB_OCCUPATION_ONE && mod.limbs[0] == 1) {
+      constexpr int ONE_LIMB_ONLY = 1;
+
+      if (mod_case == ONE_LIMB_ONLY && mod.limbs[0] == 1) {
         for (size_t i = 0; i < limb_n; ++i) {
           limbs[i] = 0;
         }
         return *this;
-      } else if (mod_case == LIMB_OCCUPATION_ONE) {
+      } else if (mod_case == ONE_LIMB_ONLY) {
         limbs[0] = mod_by_1limb(mod.limbs[0]);
         for (size_t i = 1; i < limb_n; ++i) {
           limbs[i] = 0;

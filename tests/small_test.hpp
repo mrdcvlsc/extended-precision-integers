@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "../epi.hpp"
+#include "../include/epi/epi.hpp"
 
 namespace smlts {
 
@@ -37,13 +37,13 @@ namespace smlts {
 
     void cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line);
 
-    void pass(std::string const &, size_t );
+    void pass(std::string const &, size_t);
     void fail(std::string const &file_name, size_t file_line);
 
     /** @brief To make the output cleaner you can use these -D compilation flags :
      * `_DISABLE_PRINT_RESULTS`, `_DISABLE_PRINT_TEST_NAMES` and/or `_DISABLE_PRINT_SUBJECTS`.
      */
-    int get_final_verdict(std::string const&);
+    int get_final_verdict(std::string const &);
     int get_final_verdict_silent();
   };
 
@@ -92,13 +92,13 @@ namespace smlts {
     final_verdict |= result;
   }
 
-  int test::get_final_verdict(std::string const& test_name = "") {
+  int test::get_final_verdict(std::string const &test_name = "") {
     if (!final_verdict) {
-      std::cout << "\nFINAL VERDICT ALL [" << test_name << "] : PASSED\n";
+      std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : PASSED\n";
       return 0;
     }
 
-    std::cout << "\nFINAL VERDICT : FAILED\n\n";
+    std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : FAILED\n\n";
     std::cout << "Failed on test cases :\n";
 
     for (size_t i = 0; i < file.size(); ++i) {
