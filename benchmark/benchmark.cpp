@@ -31,15 +31,15 @@ constexpr size_t WIDENESS = 128;
 #ifdef _LIMBSIZE_U16
 using uint_t = uint16_t;
 using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint16_t>;
-using uint_tB = epi::whole_number<uint16_t, uint64_t, (WIDENESS / (sizeof(uint_t) * 8))>;
+using uint_tB = epi::whole_number<uint16_t, uint64_t, WIDENESS>;
 #elif defined(_LIMBSIZE_U32)
 using uint_t = uint32_t;
 using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint32_t>;
-using uint_tB = epi::whole_number<uint32_t, uint64_t, (WIDENESS / (sizeof(uint_t) * 8))>;
+using uint_tB = epi::whole_number<uint32_t, uint64_t, WIDENESS>;
 #elif defined(_LIMBSIZE_U64)
 using uint_t = uint64_t;
 using uint_tA = math::wide_integer::uintwide_t<WIDENESS, uint32_t>; // not supported uint64_t as limb?
-using uint_tB = epi::whole_number<uint64_t, __uint128_t, (WIDENESS / (sizeof(uint_t) * 8))>;
+using uint_tB = epi::whole_number<uint64_t, __uint128_t, WIDENESS>;
 #endif
 
 using uint_tC = boost::multiprecision::number<boost::multiprecision::cpp_int_backend<
