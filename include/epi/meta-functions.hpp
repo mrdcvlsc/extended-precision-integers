@@ -10,12 +10,13 @@ namespace epi::compile_time {
   struct base10_digit_capacity {
     private:
 
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base10 for any arbitrary 2^n whole_number<> type, a replacement
-    /// for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since it can't
-    /// calculate past 2^128 - 1, or the max value of a `uint128_t`.
+    /// @brief get the maximum number of digits for the whole_number<> if it were to be
+    /// represented in base10 for any arbitrary uint(2^n) whole_number<> type.
+    ///
+    /// A replacement for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$, since
+    /// it can't calculate past 2^64 - 1, or the max value of a `uint64_t`.
     static constexpr size_t get_base10_max_digit() {
-      // when we get the series of maximum digits for each of the number in the series
+      // when we get the series of maximum digits for each of the number base in the series
       // of powers of 2 raised to increasing multiples of 8, we can get the repeating
       // series below by repeatedly subtracting a previous maximum digit to its next
       // corresponding maximum digit. we repeat the same thing for the next maximum
@@ -40,14 +41,16 @@ namespace epi::compile_time {
     static constexpr size_t value = get_base10_max_digit();
   };
 
-  /// @brief get the maximum base 8 digits a number with a
-  /// certain bit width/size can hold.
+  /// @brief get the maximum base 8 digits a number with a certain bit width/size can hold.
   template <size_t bits_n>
   struct base8_digit_capacity {
     private:
 
-    /// @brief get the maximum number of digits for the whole_number<> if it was
-    /// represented in base8 for any arbitrary 2^n whole_number<> type.
+    /// @brief get the maximum number of digits for the whole_number<> if it were to be
+    /// represented in base8 for any arbitrary uint(2^n) whole_number<> type.
+    ///
+    /// A replacement for the formula : $\lfloor log_{8}(2^n - 1) \rfloor + 1$, since
+    /// it can't calculate past 2^64 - 1, or the max value of a `uint64_t`.
     static constexpr size_t get_base8_max_digit() {
       // uses the same technique in `get_base10_max_digit`.
       constexpr size_t base8_diff_series[3] = {3, 2, 3};

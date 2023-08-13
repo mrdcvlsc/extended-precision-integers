@@ -242,7 +242,6 @@ namespace epi {
       return *this;
     }
 
-    // friend std::ostream &operator<< <limb_t, cast_t, limb_n>(std::ostream &);
     friend std::ostream &operator<<(std::ostream &out, const whole_number &num) {
       if (out.flags() & std::ios_base::hex) {
         auto             prev_ios_width = out.width();
