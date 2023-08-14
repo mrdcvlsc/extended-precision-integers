@@ -1,5 +1,5 @@
-CC:=clang
-CXX:=clang++
+CC:=gcc
+CXX:=g++
 OS:=$(shell uname)
 
 .PHONY: default test clean style

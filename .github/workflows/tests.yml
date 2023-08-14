@@ -22,10 +22,10 @@ jobs:
       run: sudo apt-get install qemu-user qemu-user-static gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu binutils-aarch64-linux-gnu-dbg build-essential
 
     - name: System Info
-      run: make default CXX=aarch64-linux-gnu-g++ CXX+=-static
+      run: make default CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CXX+=-static
 
     - name: Build
-      run: make test -j2 CXX=aarch64-linux-gnu-g++ CXX+=-static
+      run: make test -j2 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CXX+=-static
 
   clang:
 

@@ -1,4 +1,7 @@
+CC:=gcc
+CXX:=g++
 OS:=$(shell uname)
+
 HEADERS:=$(wildcard ../include/epi/*.hpp)
 TEST_EXECUTABLES:=$(subst .cpp,.out,$(wildcard *.cpp))
 LINKING:=
@@ -8,10 +11,15 @@ CXX_LIB:=
 CXXFLAGS:=-Wall -Wextra -g3
 LIBFLAGS:=
 
-OS_COMPILER:=$(OS)-$(CXX)
+# disable asan if compiler is an arm compiler
+IS_ARM_COMPILER:=$(findstring arch,$(CC))$(findstring arm,$(CC))
 
-# ifeq ($(OS_COMPILER), Linux-clang++)
-ifeq ($(CXX), clang++)
+# disable asan if on a windows operating system
+IS_ON_WINDOWS:=$(findstring MSYS_NT,$(OS))$(findstring win,$(OS))$(findstring Win,$(OS))$(findstring WIN,$(OS))
+
+ENABLE_SANITIZER:=$(if $(strip $(IS_ARM_COMPILER)$(IS_ON_WINDOWS)),noasan)
+
+ifneq ($(ENABLE_SANITIZER),noasan)
 LIBFLAGS+=-fsanitize=address
 endif
 
