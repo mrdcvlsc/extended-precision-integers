@@ -1,3 +1,5 @@
+#include "../include/epi/core.hpp"
+
 #include <iostream>
 #include <string>
 

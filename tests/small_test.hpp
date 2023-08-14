@@ -2,10 +2,8 @@
 #define SMALL_TEST_HPP
 
 #include <iostream>
-#include <type_traits>
+#include <ostream>
 #include <vector>
-
-#include "../include/epi/epi.hpp"
 
 #define ASSERT_EQ_SMLTS(TEST, A, B, BYTES) (TEST).cmp_eq((A), (B), (BYTES), __FILE__, __LINE__);
 

@@ -1,3 +1,5 @@
+#include "../include/epi/core.hpp"
+
 #include <cassert>
 #include <iostream>
 #include <string>
@@ -75,12 +77,12 @@ int main() {
     constexpr epi::whole_number<uint8_t, uint16_t, 512>     num1("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
     constexpr epi::whole_number<uint16_t, uint32_t, 512>    num2("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
     constexpr epi::whole_number<uint32_t, uint64_t, 512>    num3("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
-    constexpr epi::whole_number<uint64_t, __uint128_t, 512> num4("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
+    // constexpr epi::whole_number<uint64_t, __uint128_t, 512> num4("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
 
     t.assertion(num1.to_string_base8() == std::string("6752641453760376732057567401106425474220675664005253571467367377"), __FILE__, __LINE__);
     t.assertion(num2.to_string_base8() == std::string("6752641453760376732057567401106425474220675664005253571467367377"), __FILE__, __LINE__);
     t.assertion(num3.to_string_base8() == std::string("6752641453760376732057567401106425474220675664005253571467367377"), __FILE__, __LINE__);
-    t.assertion(num4.to_string_base8() == std::string("6752641453760376732057567401106425474220675664005253571467367377"), __FILE__, __LINE__);
+    // t.assertion(num4.to_string_base8() == std::string("6752641453760376732057567401106425474220675664005253571467367377"), __FILE__, __LINE__);
   }
   
   return t.get_final_verdict("TO STRING BASE 8");

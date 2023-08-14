@@ -1,22 +1,15 @@
 #ifndef MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
+#include <type_traits>
 #include <algorithm>
 #include <bitset>
-#include <cmath>
-#include <cstdint>
 #include <cstring>
 #include <iomanip>
-#include <iostream>
 #include <limits>
-#include <math.h>
-#include <ostream>
-#include <random>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 #include <string_view>
-#include <type_traits>
 
 #include "config.hpp"
 #include "constants.hpp"
@@ -1047,37 +1040,31 @@ namespace epi {
   // predefined types
   #if defined(ENV_64BIT_EXTENDED)
 
-  typedef whole_number<uint64_t, __uint128_t, 128>  uint128_t;
-  typedef whole_number<uint64_t, __uint128_t, 192>  uint192_t;
-  typedef whole_number<uint64_t, __uint128_t, 256>  uint256_t;
-  typedef whole_number<uint64_t, __uint128_t, 320>  uint320_t;
-  typedef whole_number<uint64_t, __uint128_t, 512>  uint512_t;
-  typedef whole_number<uint64_t, __uint128_t, 1024> uint1024_t;
-  typedef whole_number<uint64_t, __uint128_t, 2048> uint2048_t;
-  typedef whole_number<uint64_t, __uint128_t, 4096> uint4096_t;
+  typedef whole_number<uint64_t, __uint128_t, 128>  unsigned_integer_128_bit_wide;
+  typedef whole_number<uint64_t, __uint128_t, 192>  unsigned_integer_192_bit_wide;
+  typedef whole_number<uint64_t, __uint128_t, 256>  unsigned_integer_256_bit_wide;
+  typedef whole_number<uint64_t, __uint128_t, 320>  unsigned_integer_320_bit_wide;
+  typedef whole_number<uint64_t, __uint128_t, 512>  unsigned_integer_512_bit_wide;
+  typedef whole_number<uint64_t, __uint128_t, 1024> unsigned_integer_1024_bit_wide;
 
-  #elif defined(ENV_64BIT)
+  #elif defined(ENV_64_BIT)
 
-  typedef whole_number<uint32_t, uint64_t, 128>  uint128_t;
-  typedef whole_number<uint32_t, uint64_t, 192>  uint192_t;
-  typedef whole_number<uint32_t, uint64_t, 256>  uint256_t;
-  typedef whole_number<uint32_t, uint64_t, 320>  uint320_t;
-  typedef whole_number<uint32_t, uint64_t, 512>  uint512_t;
-  typedef whole_number<uint32_t, uint64_t, 1024> uint1024_t;
-  typedef whole_number<uint32_t, uint64_t, 2048> uint2048_t;
-  typedef whole_number<uint32_t, uint64_t, 4096> uint4096_t;
+  typedef whole_number<uint32_t, uint64_t, 128>  unsigned_integer_128_bit_wide;
+  typedef whole_number<uint32_t, uint64_t, 192>  unsigned_integer_192_bit_wide;
+  typedef whole_number<uint32_t, uint64_t, 256>  unsigned_integer_256_bit_wide;
+  typedef whole_number<uint32_t, uint64_t, 320>  unsigned_integer_320_bit_wide;
+  typedef whole_number<uint32_t, uint64_t, 512>  unsigned_integer_512_bit_wide;
+  typedef whole_number<uint32_t, uint64_t, 1024> unsigned_integer_1024_bit_wide;
 
-  #elif defined(ENV_32BIT)
+  #elif defined(ENV_32_BIT)
 
-  typedef whole_number<uint16_t, uint32_t, 64>   uint64_t;
-  typedef whole_number<uint16_t, uint32_t, 128>  uint128_t;
-  typedef whole_number<uint16_t, uint32_t, 192>  uint192_t;
-  typedef whole_number<uint16_t, uint32_t, 256>  uint256_t;
-  typedef whole_number<uint16_t, uint32_t, 320>  uint320_t;
-  typedef whole_number<uint16_t, uint32_t, 512>  uint512_t;
-  typedef whole_number<uint16_t, uint32_t, 1024> uint1024_t;
-  typedef whole_number<uint16_t, uint32_t, 2048> uint2048_t;
-  typedef whole_number<uint16_t, uint32_t, 4096> uint4096_t;
+  typedef whole_number<uint16_t, uint32_t, 64>   unsigned_integer_64__bit_wide
+  typedef whole_number<uint16_t, uint32_t, 128>  unsigned_integer_128_bit_wide;
+  typedef whole_number<uint16_t, uint32_t, 192>  unsigned_integer_192_bit_wide;
+  typedef whole_number<uint16_t, uint32_t, 256>  unsigned_integer_256_bit_wide;
+  typedef whole_number<uint16_t, uint32_t, 320>  unsigned_integer_320_bit_wide;
+  typedef whole_number<uint16_t, uint32_t, 512>  unsigned_integer_512_bit_wide;
+  typedef whole_number<uint16_t, uint32_t, 1024> unsigned_integer_1024_bit_wide;
 
   #endif
 
