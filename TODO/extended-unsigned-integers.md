@@ -68,9 +68,9 @@ when implementing with the `constexpr` specifier.
     - [X] `operator<<(size_t bits) const;`
     - [X] `operator>>(size_t bits) const;`
 
-- [ ] Output Stream Operator
+- [X] Output Stream Operator
     - [X] ostream operator (HEX)
-    - [ ] ostream operator (OCT)
-    - [ ] ostream operator (DEC)
+    - [X] ostream operator (OCT)
+    - [X] ostream operator (DEC)
 
 [Go Back](../README.md)

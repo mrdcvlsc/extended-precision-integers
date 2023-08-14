@@ -35,7 +35,7 @@ int main() {
 
 ## **TO-DO**
 
-- [ ] - [Extended Unsigned Integers [WIP]](TODO/extended-unsigned-integers.md)
+- [X] - [Extended Unsigned Integers](TODO/extended-unsigned-integers.md)
 - [ ] - [Extended Signed Integers [N/A]](TODO/extended-signed-integers.md)
 - [ ] - [Extended Floating Point [N/A]](TODO/extended-floating-point.md)
 
