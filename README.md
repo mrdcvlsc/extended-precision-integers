@@ -50,7 +50,7 @@ epi::uint256_t AES256KEY("123456789101112131415");
 
 ## **Assigning With Different Base Representation**
 
-It's possible to assign values with different base representations using the appropriate post-fix format indicators: `0b` for binary, `0o` for octal, and `0x` for hexadecimal.
+It's possible to assign values with different base representations using the appropriate pre-fix format indicators: `0b` for binary, `0o` for octal, and `0x` for hexadecimal.
 
 **Hexadecimal:**
 ```c++
