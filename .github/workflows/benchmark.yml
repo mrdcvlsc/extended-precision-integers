@@ -53,7 +53,7 @@ jobs:
         run: git commit -m "run::$(date)"
 
       - name: Push Changes To Benchmark Branch
-        run: git push
+        run: git push --force
 
   run-benchmark-failed:
     runs-on: ubuntu-latest
