@@ -45,7 +45,7 @@ In such situations, the library offers an alternative way of initialization usin
 epi::uint256_t AES256KEY("123456789101112131415");
 ```
 
-> Note  
+> [!IMPORTANT]  
 > However, keep in mind that extended-precision types will throw an error during initialization if the input `string_view` value exceeds the type's bit width.
 
 ## **Assigning With Different Base Representation**
@@ -74,7 +74,7 @@ All of these initializations are equivalent to `epi::uint256_t AES256KEY("123456
 The library provides default types as shown below:
 
 | type | min | max |
-| --- | :---: | --- |
+| --- | :---: | :--- |
 | `epi::uint128_t` | 0 | 340282366920938463463374607431768211455 |
 | `epi::uint192_t` | 0 | 6277101735386680763835789423207666416102355444464034512895 |
 | `epi::uint256_t` | 0 | 115792089237316195423570985008687907853269984665640564039457584007913129639935 |
@@ -105,6 +105,16 @@ In the example above:
 
 The requirement is that the `cast_t` parameter should have a bit width exactly 2 times the bit width of `limb_t`. In the example, 32 x 2 = 64.
 
+> [!NOTE]  
+> Wider POD/primitive type as an argument for the limb_t template parameter, will equate to better performance.
+> Just **make sure that you are indeed passing a POD/primitive type** since it can also accept other types like shown below.
+
+```c++
+typedef epi::whole_number<epi::uint128_t, epi::uint256_t, 2048> uint2048_t;
+```
+
+> This is not recommended since its performance will be slow.
+
 ## **Compile Time Support (`constexpr`)**
 
 This library also supports compile-time calculations using the `constexpr` keyword.
@@ -129,10 +139,10 @@ int main() {
 // b3fdae4141a01eb87d7eef7be85b2081adb3d8455d37d503f972677dba3450455447b6f366c6e85568b196e3bb65397be2e31f13800000000000000000000000
 ```
 
-> Warning  
+> [!WARNING]  
 > However, be aware that large calculations at compile time could significantly increase compilation duration and resource usage, possibly leading to errors. For extremely large calculations, it's recommended not to use `constexpr`.
 
-> Important  
+> [!IMPORTANT]  
 >
 > Avoid using shifted bits beyond the width of a `whole_number<>`.
 >
