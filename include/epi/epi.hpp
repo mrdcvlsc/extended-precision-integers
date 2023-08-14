@@ -1,15 +1,17 @@
 #ifndef MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 #define MRDCVLSC_EXTENDED_PRECISION_INTEGERS_HPP
 
-#include <type_traits>
-#include <algorithm>
-#include <bitset>
-#include <cstring>
 #include <iomanip>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string_view>
+#include <type_traits>
+#include <algorithm>
+#include <bitset>
+
+#include <cstring>
+#include <cstdint>
 
 #include "config.hpp"
 #include "constants.hpp"
