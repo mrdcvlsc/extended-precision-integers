@@ -1,4 +1,4 @@
-#include "../include/epi/core.hpp"
+#include "../include/epi/epi.hpp"
 
 #include <cassert>
 #include <iostream>
