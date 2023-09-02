@@ -1,0 +1,8 @@
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+CompileFlags:
+  Add: [-std=c++20, -Iinclude, -I"benchmark/boost/include", -Wall, -Wextra]
+  Compiler: clang++
