@@ -154,6 +154,8 @@ namespace epi {
             // convert the current number base string representation into it's
             // actual in memory value.
 
+            constexpr size_t HEX_BASE = 16;
+
             if (base == constants::base_t::dec) {
                 constexpr size_t output_len = BASE10_DIGIT_CAP;
                 size_t           offset = output_len - num.size();
@@ -167,13 +169,12 @@ namespace epi {
                     size_t  j = num.size();
                     while (j--) {
                         uint8_t tmp = output[j + offset] * base + carry;
-                        output[j + offset] = tmp % 16;
-                        carry = tmp / 16;
+                        output[j + offset] = tmp % HEX_BASE;
+                        carry = tmp / HEX_BASE;
                     }
                 }
 
-                /// In one byte we have a max of 2 hex character, where each char is
-                /// 4 bit.
+                /// In one byte we have a max of 2 hex character, where each char is 4 bit.
                 constexpr size_t HEX_CHAR_BITS = 4;
                 constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
 
@@ -200,13 +201,12 @@ namespace epi {
                     size_t  backward_iterator = (num.size() - 2);
                     while (backward_iterator--) {
                         uint8_t tmp = output[backward_iterator + offset] * base + carry;
-                        output[backward_iterator + offset] = tmp % 16;
-                        carry = tmp / 16;
+                        output[backward_iterator + offset] = tmp % HEX_BASE;
+                        carry = tmp / HEX_BASE;
                     }
                 }
 
-                /// In one byte we have a max of 2 hex character, where each char is
-                /// 4 bit.
+                /// In one byte we have a max of 2 hex character, where each char is 4 bit.
                 constexpr size_t HEX_CHAR_BITS = 4;
                 constexpr size_t HEX_CHAR_PER_LIMB = sizeof(limb_t) * 2;
 
@@ -216,7 +216,7 @@ namespace epi {
                 }
             } else if (base == constants::base_t::hex) {
                 for (size_t i = 0; i < num.size() - 2; ++i) {
-                    limb_t           hex_char = constants::CHAR_TO_HEX[(unsigned char) num[num.size() - 1 - i]];
+                    limb_t hex_char = constants::CHAR_TO_HEX[static_cast<unsigned char>(num[num.size() - 1 - i])];
                     constexpr size_t HEX_CHAR_BITS = 4;
                     limbs[i / (sizeof(limb_t) * 2)] |= (hex_char << (HEX_CHAR_BITS * (i % (sizeof(limb_t) * 2))));
                 }
@@ -238,27 +238,9 @@ namespace epi {
             }
         }
 
-        // /// copy constructor.
-        // constexpr whole_number(whole_number const &src) noexcept : whole_number() {
-        //     for (size_t i = 0; i < limb_n; ++i) {
-        //         limbs[i] = src.limbs[i];
-        //     }
-        // }
-
-        // /// copy assignment.
-        // constexpr whole_number &operator=(whole_number const &src) noexcept {
-        //     if (this != &src) {
-        //         for (size_t i = 0; i < limb_n; ++i) {
-        //             limbs[i] = src.limbs[i];
-        //         }
-        //     }
-
-        //     return *this;
-        // }
-
         friend std::ostream &operator<<(std::ostream &out, const whole_number &num) {
             if (out.flags() & std::ios_base::hex) {
-                auto             prev_ios_width = out.width();
+                auto             prev_ios_width = static_cast<int>(out.width());
                 auto             prev_ios_fill = out.fill();
                 constexpr size_t padding = sizeof(limb_t) * 2;
 
@@ -844,11 +826,12 @@ namespace epi {
         }
 
         static constexpr bool valid_base10(std::string_view const &num) {
-            for (size_t i = 0; i < num.size(); ++i) {
-                if (!(num[i] >= '0' && num[i] <= '9')) {
+            for (auto digit: num) {
+                if (!(digit >= '0' && digit <= '9')) {
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -1086,7 +1069,6 @@ namespace epi {
     using uint1024_t = whole_number<uint16_t, uint32_t, 1024>;
 
     #endif
-
 #endif
 
 } // namespace epi

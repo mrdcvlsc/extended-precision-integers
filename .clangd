@@ -1,8 +1,17 @@
 InlayHints:
+  Designators: Yes
   Enabled: Yes
   ParameterNames: Yes
   DeducedTypes: Yes
 
 CompileFlags:
-  Add: [-std=c++20, -Iinclude, -I"benchmark/boost/include", -Wall, -Wextra]
+  Add: [-std=c++20, -I"include/epi", -I"benchmark/boost/include", -Wall, -Wextra, -Wpedantic, -Werror]
   Compiler: clang++
+
+Diagnostics:
+  ClangTidy:
+    Add: [modernize*, cppcoreguidelines*, performance*, bugprone*, clang-analyzer*, darwin*, abseil* ]
+    Remove: [
+      modernize-use-trailing-return-type,
+      cppcoreguidelines-avoid-magic-numbers
+    ]
