@@ -1,14 +1,13 @@
-#include "../include/epi/epi.hpp"
-
-#include <cassert>
 #include <iostream>
 #include <string>
+#include <cassert>
 
+#include "../include/epi/epi.hpp"
 #include "small_test.hpp"
 
-typedef epi::whole_number<uint8_t, uint16_t, 64>  uint64_8t;
-typedef epi::whole_number<uint16_t, uint32_t, 64> uint64_16t;
-typedef epi::whole_number<uint32_t, uint64_t, 64> uint64_32t;
+using uint64_8t = epi::whole_number<std::uint8_t, std::uint16_t, 64UL>;
+using uint64_16t = epi::whole_number<std::uint16_t, std::uint32_t, 64UL>;
+using uint64_32t = epi::whole_number<std::uint32_t, std::uint64_t, 64UL>;
 
 int main() {
     smlts::test t;

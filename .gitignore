@@ -42,3 +42,8 @@ benchmark/*.dlrc
 # ignore benchmark libraries
 benchmark/wide-integer
 benchmark/boost
+
+tests/*.cmake
+tests/CMakeFiles
+tests/CMakeCache.txt
+tests/Makefile

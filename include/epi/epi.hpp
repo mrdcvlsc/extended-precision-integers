@@ -11,18 +11,147 @@
 #include <string_view>
 #include <type_traits>
 
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 
-#include "config.hpp"
-#include "constants.hpp"
-#include "meta-functions.hpp"
+// =================================================================================================
+// DETECT THE MAXIMUM WIDTH OF THE LARGEST POD/PRIMITIVE TYPE IN THE SYSTEM
+// =================================================================================================
+
+#if (defined(__SIZEOF_INT128__) || defined(UINT128MAX))
+    // TODO: find way to check if the following instructions are available
+    // `__umodti3` & `__udivti3` #define ENV_64BIT_EXTENDED // temporarily disabled
+    // since some environment does not support `__umodti3` & `__udivti3`
+
+    #define ENV_64_BIT
+#elif (defined(__amd__64__) || defined(__amd_64) || defined(__x86_64__) || defined(__x86_64))
+    #define ENV_64_BIT
+#elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__))
+    #define ENV_32_BIT
+#endif
+
+// dev
+#define _LITTLE_ENDIAN
 
 namespace epi {
 
+    // =================================================================================================
+    // CHECK IF THE COMPILER IS COMPILING FOR C++20
+    // =================================================================================================
+
 #if (__cplusplus < 201703L)
-    #error C++17 is needed
+    #ifndef DONT_CHECK_CXX_VERSION
+        #error C++17 is needed
+    #endif
 #else
+
+    // =================================================================================================
+    // CONSTANTS
+    // =================================================================================================
+
+    static constexpr std::array<unsigned char, 16> HEX_TO_CHAR = {
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
+    };
+
+    static constexpr std::array<unsigned char, 127> CHAR_TO_HEX = {
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+      0x09, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff,
+      0xff, 0xff, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+    };
+
+    enum class base_t
+    {
+        bin,
+        oct,
+        dec,
+        hex,
+        invalid
+    };
+
+    // =================================================================================================
+    // COMPILE-TIME META-FUNCTIONS
+    // =================================================================================================
+
+    /// @brief get the maximum base 10 digits a number with a
+    /// certain bit width/size can hold.
+    template <size_t bits_n>
+    struct base10_digit_capacity {
+        private:
+
+        /// @brief get the maximum number of digits for the whole_number<> if it
+        /// were to be represented in base10 for any arbitrary uint(2^n)
+        /// whole_number<> type.
+        ///
+        /// A replacement for the formula : $\lfloor log_{10}(2^n - 1) \rfloor + 1$,
+        /// since it can't calculate past 2^64 - 1, or the max value of a
+        /// `uint64_t`.
+        static constexpr size_t get_base10_max_digit() {
+            // when we get the maximum digits for each of the number bases
+            // in the series of powers of 2 raised to increasing multiples of 8, we
+            // can get the repeating series below by repeatedly subtracting a
+            // previous maximum digit to its next corresponding maximum digit. we
+            // repeat the same thing for the next maximum then to the next one, if
+            // we do this repeatedly we will see a repeating sequence of ... 2, 3,
+            // 2, 3, 2, ... will emerge.
+            constexpr size_t base10_diff_series[5] = {2, 3, 2, 3, 2};
+
+            /// initial base 2^8 starting max number of digit when represented in
+            /// base 10.
+            size_t base10_max_digits = 3;
+
+            // we then use the repeating sequence to get the maximum possible
+            // numbers of digit that the current whole_number<> class can hold in a
+            // base10 representation.
+            for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
+                base10_max_digits += base10_diff_series[i % 5];
+            }
+
+            return base10_max_digits;
+        }
+
+        public:
+
+        static constexpr size_t value = get_base10_max_digit();
+    };
+
+    /// @brief get the maximum base 8 digits a number with a certain bit width/size
+    /// can hold.
+    template <size_t bits_n>
+    struct base8_digit_capacity {
+        private:
+
+        /// @brief get the maximum number of digits for the whole_number<> if it
+        /// were to be represented in base8 for any arbitrary uint(2^n)
+        /// whole_number<> type.
+        ///
+        /// A replacement for the formula : $\lfloor log_{8}(2^n - 1) \rfloor + 1$,
+        /// since it can't calculate past 2^64 - 1, or the max value of a
+        /// `uint64_t`.
+        static constexpr size_t get_base8_max_digit() {
+            // uses the same technique in `get_base10_max_digit`.
+            constexpr size_t base8_diff_series[3] = {3, 2, 3};
+            size_t           base8_max_digits = 3;
+
+            for (size_t i = 0; ((i + 2) * 8) <= bits_n; ++i) {
+                base8_max_digits += base8_diff_series[i % 3];
+            }
+
+            return base8_max_digits;
+        }
+
+        public:
+
+        static constexpr size_t value = get_base8_max_digit();
+    };
+
+    // =================================================================================================
+    // BIG UNSIGNED INTEGER IMPLEMENTATION
+    // =================================================================================================
 
     /// @brief Template Class for creating any fixed arbitrary sized whole numbers.
     ///
@@ -52,10 +181,10 @@ namespace epi {
         static constexpr size_t BASE2_DIGIT_CAP = LIMB_BITS * limb_n;
 
         /// @brief The maximum base 8 (octadecimal) digit count.
-        static constexpr size_t BASE8_DIGIT_CAP = compile_time::base8_digit_capacity<bits_n>::value;
+        static constexpr size_t BASE8_DIGIT_CAP = base8_digit_capacity<bits_n>::value;
 
         /// @brief The maximum base 10 (decimal) digit count.
-        static constexpr size_t BASE10_DIGIT_CAP = compile_time::base10_digit_capacity<bits_n>::value;
+        static constexpr size_t BASE10_DIGIT_CAP = base10_digit_capacity<bits_n>::value;
 
         /// @brief The maximum base 16 (hexadecimal) digit count.
         static constexpr size_t BASE16_DIGIT_CAP = sizeof(limb_t) * 2 * limb_n;
@@ -99,7 +228,7 @@ namespace epi {
                 throw std::length_error("empty char*/string constructor are not allowed");
             }
 
-            constants::base_t base = constants::base_t::invalid;
+            base_t base = base_t::invalid;
 
             bool is_all_digit = true;
 
@@ -120,7 +249,7 @@ namespace epi {
                 } else if (!valid_base10(num)) {
                     throw std::length_error("invalid digit character detected");
                 }
-                base = constants::base_t::dec;
+                base = base_t::dec;
             } else {
                 if (num.size() >= 3 && num.front() == '0') {
                     if (num[1] == 'b') {
@@ -130,7 +259,7 @@ namespace epi {
                         } else if (!valid_base2(num)) {
                             throw std::length_error("invalid binary character detected");
                         }
-                        base = constants::base_t::bin;
+                        base = base_t::bin;
                     } else if (num[1] == 'o') {
                         constexpr size_t base8_max_digits = BASE8_DIGIT_CAP;
                         if ((num.size() - 2) > base8_max_digits) {
@@ -138,7 +267,7 @@ namespace epi {
                         } else if (!valid_base8(num)) {
                             throw std::length_error("invalid octal character detected");
                         }
-                        base = constants::base_t::oct;
+                        base = base_t::oct;
                     } else if (num[1] == 'x') {
                         constexpr size_t base16_max_digits = limb_n * sizeof(limb_t) * 2;
                         if ((num.size() - 2) > base16_max_digits) {
@@ -146,7 +275,7 @@ namespace epi {
                         } else if (!valid_base16(num)) {
                             throw std::length_error("invalid hex character detected");
                         }
-                        base = constants::base_t::hex;
+                        base = base_t::hex;
                     }
                 }
             }
@@ -156,7 +285,7 @@ namespace epi {
 
             constexpr size_t HEX_BASE = 16;
 
-            if (base == constants::base_t::dec) {
+            if (base == base_t::dec) {
                 constexpr size_t output_len = BASE10_DIGIT_CAP;
                 size_t           offset = output_len - num.size();
 
@@ -182,13 +311,13 @@ namespace epi {
                     limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
                                                     << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
                 }
-            } else if (base == constants::base_t::bin) {
+            } else if (base == base_t::bin) {
                 for (size_t i = 0; i < num.size() - 2; ++i) {
                     limb_t           hex_char = num[num.size() - 1 - i] - '0';
                     constexpr size_t BIN_CHAR_BITS = 1;
                     limbs[i / (LIMB_BITS)] |= (hex_char << (BIN_CHAR_BITS * (i % (LIMB_BITS))));
                 }
-            } else if (base == constants::base_t::oct) {
+            } else if (base == base_t::oct) {
                 constexpr size_t output_len = BASE8_DIGIT_CAP;
                 size_t           offset = output_len - (num.size() - 2);
 
@@ -214,9 +343,9 @@ namespace epi {
                     limbs[i / HEX_CHAR_PER_LIMB] |= ((limb_t) output[output_len - 1 - i])
                                                     << (HEX_CHAR_BITS * (i % HEX_CHAR_PER_LIMB));
                 }
-            } else if (base == constants::base_t::hex) {
+            } else if (base == base_t::hex) {
                 for (size_t i = 0; i < num.size() - 2; ++i) {
-                    limb_t hex_char = constants::CHAR_TO_HEX[static_cast<unsigned char>(num[num.size() - 1 - i])];
+                    limb_t           hex_char = CHAR_TO_HEX[static_cast<unsigned char>(num[num.size() - 1 - i])];
                     constexpr size_t HEX_CHAR_BITS = 4;
                     limbs[i / (sizeof(limb_t) * 2)] |= (hex_char << (HEX_CHAR_BITS * (i % (sizeof(limb_t) * 2))));
                 }
@@ -1072,6 +1201,10 @@ namespace epi {
 #endif
 
 } // namespace epi
+
+// =================================================================================================
+// STD MIN AND MAX SUPPORT
+// =================================================================================================
 
 #if (__cplusplus >= 201703L)
 namespace std {

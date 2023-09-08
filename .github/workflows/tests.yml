@@ -7,6 +7,55 @@ on:
     branches: [ main, gcc-test-windows-executable-fix ]
 
 jobs:
+  build-others:
+    name: ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Windows VS2019, os: windows-2019,  fext: .exe, }
+        - { name: Windows VS2022, os: windows-2022,  fext: .exe, }
+        - { name: MacOS XCode,    os: macos-latest,  }
+        - { name: Linux GCC,      os: ubuntu-latest, }
+        # config:
+        # - { name: Static, flags: -DBUILD_SHARED_LIBS=FALSE }
+        # - { name: Shared, flags: -DBUILD_SHARED_LIBS=TRUE }
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: System Info
+      run: cmake cmake -S tests -B tests -DCMAKE_INSTALL_PREFIX=install ${{matrix.platform.flags}}
+
+    - name: Build
+      run: cmake --build tests --config Release
+
+    - run: "./tests/addition${{matrix.platform.fext}}"
+    - run: "./tests/bitwise-and${{matrix.platform.fext}}"
+    - run: "./tests/bitwise-not${{matrix.platform.fext}}"
+    - run: "./tests/bitwise-or${{matrix.platform.fext}}"
+    - run: "./tests/bitwise-xor${{matrix.platform.fext}}"
+    - run: "./tests/boolean${{matrix.platform.fext}}"
+    - run: "./tests/constructor-initializer-list${{matrix.platform.fext}}"
+    - run: "./tests/constructor-integral${{matrix.platform.fext}}"
+    - run: "./tests/constructor-string-view${{matrix.platform.fext}}"
+    - run: "./tests/decrement${{matrix.platform.fext}}"
+    - run: "./tests/division${{matrix.platform.fext}}"
+    - run: "./tests/increment${{matrix.platform.fext}}"
+    - run: "./tests/modulo${{matrix.platform.fext}}"
+    - run: "./tests/multiplication${{matrix.platform.fext}}"
+    - run: "./tests/relational${{matrix.platform.fext}}"
+    - run: "./tests/shifts${{matrix.platform.fext}}"
+    - run: "./tests/subtraction${{matrix.platform.fext}}"
+    - run: "./tests/template${{matrix.platform.fext}}"
+    - run: "./tests/to-string-base10${{matrix.platform.fext}}"
+    - run: "./tests/to-string-base16${{matrix.platform.fext}}"
+    - run: "./tests/to-string-base2${{matrix.platform.fext}}"
+    - run: "./tests/to-string-base8${{matrix.platform.fext}}"
+
 
   aarch64-gcc:
 
@@ -42,7 +91,7 @@ jobs:
       run: make default CXX=clang++ CC=clang
 
     - name: Build
-      run: make test -j2 CXX=clang++ CC=clang
+      run: make test CXX=clang++ CC=clang
 
   gcc:
 
@@ -59,4 +108,4 @@ jobs:
       run: make default CXX=g++ CC=gcc
 
     - name: Build
-      run: make test -j2 CXX=g++ CC=gcc
+      run: make test CXX=g++ CC=gcc
