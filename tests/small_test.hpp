@@ -84,7 +84,7 @@ namespace smlts {
             file.push_back(file_name);
             line.push_back(file_line);
         }
-        final_verdict |= result;
+        final_verdict |= static_cast<int>(result);
     }
 
     void test::cmp_exp(bool A, bool B, std::string const &file_name, size_t file_line) {
@@ -94,7 +94,7 @@ namespace smlts {
             file.push_back(file_name);
             line.push_back(file_line);
         }
-        final_verdict |= result;
+        final_verdict |= static_cast<int>(result);
     }
 
     void test::assertion(bool expression, std::string const &file_name, size_t file_line) {
@@ -104,7 +104,7 @@ namespace smlts {
             file.push_back(file_name);
             line.push_back(file_line);
         }
-        final_verdict |= result;
+        final_verdict |= static_cast<int>(result);
     }
 
     int test::get_final_verdict(std::string const &test_name = "") {

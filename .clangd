@@ -1,7 +1,7 @@
 InlayHints:
   Designators: No
   Enabled: Yes
-  ParameterNames: Yes
+  ParameterNames: No
   DeducedTypes: Yes
 
 CompileFlags:

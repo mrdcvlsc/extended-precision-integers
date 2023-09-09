@@ -11,27 +11,27 @@ using uint64_32t = epi::whole_number<std::uint32_t, std::uint64_t, 64UL>;
 int main() {
     smlts::test t;
 
-    constexpr uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, v = 0xfffffffffffffff;
-    constexpr uint64_t d = 0xdeadbeef, e = 0xcafebabe, f = 0xdeed, g = 0xdeadcafebeef, h = 0xfeedbabedeadbeef;
+    uint64_t a = 0xffffffffffffffff, b = 0x1, c = 0xffffffff, v = 0xfffffffffffffff;
+    uint64_t d = 0xdeadbeef, e = 0xcafebabe, f = 0xdeed, g = 0xdeadcafebeef, h = 0xfeedbabedeadbeef;
 
-    constexpr uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1},
+    uint64_8t a_8t = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, b_8t = {0x1},
                         c_8t = {0xff, 0xff, 0xff, 0xff}, v_8t = {0xf, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff},
                         d_8t = d, e_8t = e, f_8t = f, g_8t = g, h_8t = h;
 
-    constexpr uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
+    uint64_16t a_16t = {0xffff, 0xffff, 0xffff, 0xffff}, b_16t = {0x1}, c_16t = {0xffff, 0xffff},
                          v_16t = {0xfff, 0xffff, 0xffff, 0xffff}, d_16t = d, e_16t = e, f_16t = f, g_16t = g, h_16t = h;
 
-    constexpr uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
+    uint64_32t a_32t = {0xffffffff, 0xffffffff}, b_32t = {0x1}, c_32t = {0xffffffff},
                          v_32t = {0xfffffff, 0xffffffff}, d_32t = d, e_32t = e, f_32t = f, g_32t = g, h_32t = h;
 
     // operations
-    constexpr uint64_t x = a / b, y = a / c, z = a / a, m = b / c, av = a / v, ad = a / d, ae = a / e, af = a / f,
+    uint64_t x = a / b, y = a / c, z = a / a, m = b / c, av = a / v, ad = a / d, ae = a / e, af = a / f,
                        ag = a / g, ah = a / h, hv = h / v, hd = h / d, he = h / e, hf = h / f, hg = h / g, gv = g / v,
                        gd = g / d, ge = g / e, gf = g / f, gh = g / h, dv = d / v, de = d / e, df = d / f, dg = d / g,
                        dh = d / h, vd = v / d, ve = v / e, vf = v / f, vg = v / g, vh = v / h, ev = e / v, ed = e / d,
                        ef = e / f, eg = e / g, eh = e / h;
 
-    constexpr uint64_8t x_8t = a_8t / b_8t, y_8t = a_8t / c_8t, z_8t = a_8t / a_8t, m_8t = b_8t / c_8t,
+    uint64_8t x_8t = a_8t / b_8t, y_8t = a_8t / c_8t, z_8t = a_8t / a_8t, m_8t = b_8t / c_8t,
                         av_8t = a_8t / v_8t, ad_8t = a_8t / d_8t, ae_8t = a_8t / e_8t, af_8t = a_8t / f_8t,
                         ag_8t = a_8t / g_8t, ah_8t = a_8t / h_8t, hv_8t = h_8t / v_8t, hd_8t = h_8t / d_8t,
                         he_8t = h_8t / e_8t, hf_8t = h_8t / f_8t, hg_8t = h_8t / g_8t, gv_8t = g_8t / v_8t,
@@ -41,7 +41,7 @@ int main() {
                         vg_8t = v_8t / g_8t, vh_8t = v_8t / h_8t, ev_8t = e_8t / v_8t, ed_8t = e_8t / d_8t,
                         ef_8t = e_8t / f_8t, eg_8t = e_8t / g_8t, eh_8t = e_8t / h_8t;
 
-    constexpr uint64_16t x_16t = a_16t / b_16t, y_16t = a_16t / c_16t, z_16t = a_16t / a_16t, m_16t = b_16t / c_16t,
+    uint64_16t x_16t = a_16t / b_16t, y_16t = a_16t / c_16t, z_16t = a_16t / a_16t, m_16t = b_16t / c_16t,
                          av_16t = a_16t / v_16t, ad_16t = a_16t / d_16t, ae_16t = a_16t / e_16t, af_16t = a_16t / f_16t,
                          ag_16t = a_16t / g_16t, ah_16t = a_16t / h_16t, hv_16t = h_16t / v_16t, hd_16t = h_16t / d_16t,
                          he_16t = h_16t / e_16t, hf_16t = h_16t / f_16t, hg_16t = h_16t / g_16t, gv_16t = g_16t / v_16t,
@@ -51,13 +51,17 @@ int main() {
                          vg_16t = v_16t / g_16t, vh_16t = v_16t / h_16t, ev_16t = e_16t / v_16t, ed_16t = e_16t / d_16t,
                          ef_16t = e_16t / f_16t, eg_16t = e_16t / g_16t, eh_16t = e_16t / h_16t;
 
-    constexpr uint64_32t x_32t = a_32t / b_32t, y_32t = a_32t / c_32t, z_32t = a_32t / a_32t, m_32t = b_32t / c_32t,
+    uint64_32t x_32t = a_32t / b_32t, y_32t = a_32t / c_32t, z_32t = a_32t / a_32t, m_32t = b_32t / c_32t,
                          av_32t = a_32t / v_32t, ad_32t = a_32t / d_32t, ae_32t = a_32t / e_32t, af_32t = a_32t / f_32t,
                          ag_32t = a_32t / g_32t, ah_32t = a_32t / h_32t, hv_32t = h_32t / v_32t, hd_32t = h_32t / d_32t,
                          he_32t = h_32t / e_32t, hf_32t = h_32t / f_32t, hg_32t = h_32t / g_32t, gv_32t = g_32t / v_32t,
                          gd_32t = g_32t / d_32t, ge_32t = g_32t / e_32t, gf_32t = g_32t / f_32t, gh_32t = g_32t / h_32t,
                          dv_32t = d_32t / v_32t, de_32t = d_32t / e_32t, df_32t = d_32t / f_32t, dg_32t = d_32t / g_32t,
-                         dh_32t = d_32t / h_32t, vd_32t = v_32t / d_32t, ve_32t = v_32t / e_32t, vf_32t = v_32t / f_32t,
+                         dh_32t = d_32t / h_32t, vd_32t = v_32t / d_32t,
+                         
+                         ve_32t = v_32t / e_32t,
+                         
+                         vf_32t = v_32t / f_32t,
                          vg_32t = v_32t / g_32t, vh_32t = v_32t / h_32t, ev_32t = e_32t / v_32t, ed_32t = e_32t / d_32t,
                          ef_32t = e_32t / f_32t, eg_32t = e_32t / g_32t, eh_32t = e_32t / h_32t;
 
@@ -138,19 +142,75 @@ int main() {
     t.cmp_eq(z_32t, z, 8, __FILE__, __LINE__);
     t.cmp_eq(m_32t, m, 8, __FILE__, __LINE__);
     t.cmp_eq(av_32t, av, 8, __FILE__, __LINE__);
-    t.cmp_eq(ad_32t, ad, 8, __FILE__, __LINE__);
-    t.cmp_eq(ae_32t, ae, 8, __FILE__, __LINE__);
+
+    std::cout << "Line : 140\n";
+    std::cout << "a_32t = " << std::hex << a_32t << '\n';
+    std::cout << "v_32t = " << std::hex << v_32t << '\n';
+    std::cout << std::hex << "av_32t = " << av_32t << '\n';
+    std::cout << std::hex << "av     = " << av << "\n\n" << std::dec;
+
+    t.cmp_eq(ad_32t, ad, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 146\n";
+    std::cout << "a_32t = " << std::hex << a_32t << '\n';
+    std::cout << "d_32t = " << std::hex << d_32t << '\n';
+    std::cout << std::hex << "ad_32t = " << ad_32t << '\n';
+    std::cout << std::hex << "ad     = " << ad << "\n\n" << std::dec;
+
+    t.cmp_eq(ae_32t, ae, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 152\n";
+    std::cout << "a_32t = " << std::hex << a_32t << '\n';
+    std::cout << "e_32t = " << std::hex << e_32t << '\n';
+    std::cout << std::hex << "ae_32t = " << ae_32t << '\n';
+    std::cout << std::hex << "ae     = " << ae << "\n\n" << std::dec;
+
     t.cmp_eq(af_32t, af, 8, __FILE__, __LINE__);
-    t.cmp_eq(ag_32t, ag, 8, __FILE__, __LINE__);
+    t.cmp_eq(ag_32t, ag, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 159\n";
+    std::cout << "a_32t = " << std::hex << a_32t << '\n';
+    std::cout << "g_32t = " << std::hex << g_32t << '\n';
+    std::cout << std::hex << "ag_32t = " << ag_32t << '\n';
+    std::cout << std::hex << "ag     = " << ag << "\n\n" << std::dec;
+
     t.cmp_eq(ah_32t, ah, 8, __FILE__, __LINE__);
     t.cmp_eq(hv_32t, hv, 8, __FILE__, __LINE__);
-    t.cmp_eq(hd_32t, hd, 8, __FILE__, __LINE__);
-    t.cmp_eq(he_32t, he, 8, __FILE__, __LINE__);
+    t.cmp_eq(hd_32t, hd, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 167\n";
+    std::cout << "h_32t = " << std::hex << h_32t << '\n';
+    std::cout << "d_32t = " << std::hex << d_32t << '\n';
+    std::cout << std::hex << "hd_32t = " << hd_32t << '\n';
+    std::cout << std::hex << "hd     = " << hd << "\n\n" << std::dec;
+
+    t.cmp_eq(he_32t, he, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 173\n";
+    std::cout << "h_32t = " << std::hex << h_32t << '\n';
+    std::cout << "e_32t = " << std::hex << e_32t << '\n';
+    std::cout << std::hex << "he_32t = " << he_32t << '\n';
+    std::cout << std::hex << "he     = " << he << "\n\n" << std::dec;
+
     t.cmp_eq(hf_32t, hf, 8, __FILE__, __LINE__);
-    t.cmp_eq(hg_32t, hg, 8, __FILE__, __LINE__);
+    t.cmp_eq(hg_32t, hg, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 180\n";
+    std::cout << "h_32t = " << std::hex << h_32t << '\n';
+    std::cout << "g_32t = " << std::hex << g_32t << '\n';
+    std::cout << std::hex << "hg_32t = " << hg_32t << '\n';
+    std::cout << std::hex << "hg     = " << hg << "\n\n" << std::dec;
+
     t.cmp_eq(gv_32t, gv, 8, __FILE__, __LINE__);
     t.cmp_eq(gd_32t, gd, 8, __FILE__, __LINE__);
-    t.cmp_eq(ge_32t, ge, 8, __FILE__, __LINE__);
+    t.cmp_eq(ge_32t, ge, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 188\n";
+    std::cout << "g_32t = " << std::hex << g_32t << '\n';
+    std::cout << "e_32t = " << std::hex << e_32t << '\n';
+    std::cout << std::hex << "ge_32t = " << ge_32t << '\n';
+    std::cout << std::hex << "ge     = " << ge << "\n\n" << std::dec;
+
     t.cmp_eq(gf_32t, gf, 8, __FILE__, __LINE__);
     t.cmp_eq(gh_32t, gh, 8, __FILE__, __LINE__);
     t.cmp_eq(dv_32t, dv, 8, __FILE__, __LINE__);
@@ -158,8 +218,22 @@ int main() {
     t.cmp_eq(df_32t, df, 8, __FILE__, __LINE__);
     t.cmp_eq(dg_32t, dg, 8, __FILE__, __LINE__);
     t.cmp_eq(dh_32t, dh, 8, __FILE__, __LINE__);
-    t.cmp_eq(vd_32t, vd, 8, __FILE__, __LINE__);
-    t.cmp_eq(ve_32t, ve, 8, __FILE__, __LINE__);
+    t.cmp_eq(vd_32t, vd, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 201\n";
+    std::cout << "v_32t = " << std::hex << v_32t << '\n';
+    std::cout << "d_32t = " << std::hex << d_32t << '\n';
+    std::cout << std::hex << "vd_32t = " << vd_32t << '\n';
+    std::cout << std::hex << "vd     = " << vd << "\n\n" << std::dec;
+
+    t.cmp_eq(ve_32t, ve, 8, __FILE__, __LINE__); //
+
+    std::cout << "Line : 207\n";
+    std::cout << "v_32t = " << std::hex << v_32t << '\n';
+    std::cout << "e_32t = " << std::hex << e_32t << '\n';
+    std::cout << std::hex << "ve_32t = " << ve_32t << '\n';
+    std::cout << std::hex << "ve     = " << ve << "\n\n" << std::dec;
+
     t.cmp_eq(vf_32t, vf, 8, __FILE__, __LINE__);
     t.cmp_eq(vg_32t, vg, 8, __FILE__, __LINE__);
     t.cmp_eq(vh_32t, vh, 8, __FILE__, __LINE__);
