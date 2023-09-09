@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [ main, gcc-test-windows-executable-fix ]
+    branches: [ main, cmake-msvs-compiler-fix ]
   pull_request:
-    branches: [ main, gcc-test-windows-executable-fix ]
+    branches: [ main, cmake-msvs-compiler-fix ]
 
 jobs:
   build-others:
@@ -15,47 +15,43 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: Windows VS2019, os: windows-2019,  fext: .exe, }
-        - { name: Windows VS2022, os: windows-2022,  fext: .exe, }
-        - { name: MacOS XCode,    os: macos-latest,  }
-        - { name: Linux GCC,      os: ubuntu-latest, }
-        # config:
-        # - { name: Static, flags: -DBUILD_SHARED_LIBS=FALSE }
-        # - { name: Shared, flags: -DBUILD_SHARED_LIBS=TRUE }
+        # - { name: Linux Clang,       os: ubuntu-latest,  outpath: './tests/', flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        # - { name: Windows VS2019,    os: windows-2019,   outpath: 'tests\Release\', fext: .exe, }
+        - { name: Windows Latest,    os: windows-latest, outpath: 'tests\Release\', fext: .exe, }
+        - { name: MacOS XCode,       os: macos-latest,   outpath: './tests/' }
+        # - { name: Linux GCC,         os: ubuntu-latest,  outpath: './tests/' }
 
     steps:
     - uses: actions/checkout@v3
 
     - name: System Info
-      run: cmake cmake -S tests -B tests -DCMAKE_INSTALL_PREFIX=install ${{matrix.platform.flags}}
+      run: cmake cmake -S tests -B tests ${{matrix.platform.flags}}
 
     - name: Build
       run: cmake --build tests --config Release
 
-    - run: "./tests/addition${{matrix.platform.fext}}"
-    - run: "./tests/bitwise-and${{matrix.platform.fext}}"
-    - run: "./tests/bitwise-not${{matrix.platform.fext}}"
-    - run: "./tests/bitwise-or${{matrix.platform.fext}}"
-    - run: "./tests/bitwise-xor${{matrix.platform.fext}}"
-    - run: "./tests/boolean${{matrix.platform.fext}}"
-    - run: "./tests/constructor-initializer-list${{matrix.platform.fext}}"
-    - run: "./tests/constructor-integral${{matrix.platform.fext}}"
-    - run: "./tests/constructor-string-view${{matrix.platform.fext}}"
-    - run: "./tests/decrement${{matrix.platform.fext}}"
-    - run: "./tests/division${{matrix.platform.fext}}"
-    - run: "./tests/increment${{matrix.platform.fext}}"
-    - run: "./tests/modulo${{matrix.platform.fext}}"
-    - run: "./tests/multiplication${{matrix.platform.fext}}"
-    - run: "./tests/relational${{matrix.platform.fext}}"
-    - run: "./tests/shifts${{matrix.platform.fext}}"
-    - run: "./tests/subtraction${{matrix.platform.fext}}"
-    - run: "./tests/template${{matrix.platform.fext}}"
-    - run: "./tests/to-string-base10${{matrix.platform.fext}}"
-    - run: "./tests/to-string-base16${{matrix.platform.fext}}"
-    - run: "./tests/to-string-base2${{matrix.platform.fext}}"
-    - run: "./tests/to-string-base8${{matrix.platform.fext}}"
-
+    - run: "${{matrix.platform.outpath}}addition${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}bitwise-and${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}bitwise-not${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}bitwise-or${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}bitwise-xor${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}boolean${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}constructor-initializer-list${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}constructor-integral${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}constructor-string-view${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}decrement${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}division${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}increment${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}modulo${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}multiplication${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}relational${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}shifts${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}subtraction${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}template${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}to-string-base10${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}to-string-base16${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}to-string-base2${{matrix.platform.fext}}"
+    - run: "${{matrix.platform.outpath}}to-string-base8${{matrix.platform.fext}}"
 
   aarch64-gcc:
 

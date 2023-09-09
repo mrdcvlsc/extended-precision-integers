@@ -19,20 +19,34 @@
 // DETECT THE MAXIMUM WIDTH OF THE LARGEST POD/PRIMITIVE TYPE IN THE SYSTEM
 // =================================================================================================
 
-#if (defined(__SIZEOF_INT128__) || defined(UINT128MAX))
+#if (defined(__SIZEOF_INT128__) || defined(UINT128MAX)) && !defined(_MSVC_LANG)
     // TODO: find way to check if the following instructions are available
     // `__umodti3` & `__udivti3` #define ENV_64BIT_EXTENDED // temporarily disabled
     // since some environment does not support `__umodti3` & `__udivti3`
-
     #define ENV_64_BIT
 #elif (defined(__amd__64__) || defined(__amd_64) || defined(__x86_64__) || defined(__x86_64))
     #define ENV_64_BIT
 #elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__))
     #define ENV_32_BIT
+#else
+    #define ENV_16_BIT
+#endif
+
+#if defined(ENV_64BIT_EXTENDED)
+#warning COMPILING_UINT128_T_LARGEST_VALUE
+using LARGEST_AVAILABLE_T = __uint128_t;
+#elif defined(ENV_64_BIT)
+using LARGEST_AVAILABLE_T = std::uint64_t;
+#elif defined(ENV_32_BIT)
+using LARGEST_AVAILABLE_T = std::uint32_t;
+#elif defined(ENV_16_BIT)
+using LARGEST_AVAILABLE_T = std::uint16_t;
+#else
+#error largest value detection failed
 #endif
 
 // dev
-#define _LITTLE_ENDIAN
+// #define _LITTLE_ENDIAN
 
 namespace epi {
 
@@ -40,10 +54,14 @@ namespace epi {
     // CHECK IF THE COMPILER IS COMPILING FOR C++20
     // =================================================================================================
 
-#if (__cplusplus < 201703L)
-    #ifndef DONT_CHECK_CXX_VERSION
-        #error C++17 is needed
-    #endif
+#ifdef _MSVC_LANG
+    #define DETECTED_CXX_STANDARD_VERSION _MSVC_LANG
+#else
+    #define DETECTED_CXX_STANDARD_VERSION __cplusplus
+#endif
+
+#if (DETECTED_CXX_STANDARD_VERSION <= 201703L)
+    #error EPI.HPP REQUIREMENT : C++20 is needed
 #else
 
     // =================================================================================================
@@ -196,7 +214,7 @@ namespace epi {
         /// default constuctor.
         constexpr whole_number() noexcept : limbs{} {
             constexpr bool invalid_limb_t = std::is_unsigned_v<limb_t>;
-            constexpr bool invalid_cast_t = std::is_unsigned_v<cast_t> || std::is_same_v<__uint128_t, cast_t>;
+            constexpr bool invalid_cast_t = std::is_unsigned_v<cast_t> || std::is_same_v<LARGEST_AVAILABLE_T, cast_t>;
             constexpr bool wrong_cast_t_size = sizeof(limb_t) * 2 == sizeof(cast_t);
 
             if constexpr (!invalid_limb_t) {
@@ -1169,15 +1187,17 @@ namespace epi {
         }
     }; // whole_number class : end
 
-    // predefined types
+    // =================================================================================================
+    // CREATE PRE-DEFINED TYPES FOR USERS
+    // =================================================================================================
     #if defined(ENV_64BIT_EXTENDED)
 
-    using uint128_t = whole_number<uint64_t, __uint128_t, 128>;
-    using uint192_t = whole_number<uint64_t, __uint128_t, 192>;
-    using uint256_t = whole_number<uint64_t, __uint128_t, 256>;
-    using uint320_t = whole_number<uint64_t, __uint128_t, 320>;
-    using uint512_t = whole_number<uint64_t, __uint128_t, 512>;
-    using uint1024_t = whole_number<uint64_t, __uint128_t, 1024>;
+    using uint128_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 128>;
+    using uint192_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 192>;
+    using uint256_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 256>;
+    using uint320_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 320>;
+    using uint512_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 512>;
+    using uint1024_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 1024>;
 
     #elif defined(ENV_64_BIT)
 

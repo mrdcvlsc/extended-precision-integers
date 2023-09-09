@@ -1,6 +1,6 @@
+#include <cassert>
 #include <iostream>
 #include <string>
-#include <cassert>
 
 #include "../include/epi/epi.hpp"
 #include "small_test.hpp"
@@ -76,8 +76,12 @@ int main() {
         constexpr epi::whole_number<uint8_t, uint16_t, 512>  num1("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
         constexpr epi::whole_number<uint16_t, uint32_t, 512> num2("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
         constexpr epi::whole_number<uint32_t, uint64_t, 512> num3("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
-        // constexpr epi::whole_number<uint64_t, __uint128_t, 512>
-        // num4("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
+
+#ifdef ENV_64BIT_EXTENDED
+        constexpr epi::whole_number<uint64_t, __uint128_t, 512> num4(
+          "0xdead0cafe0feed0beef01234567890deed00aabbccddeeff"
+        );
+#endif
 
         t.assertion(
           num1.to_string_base16() == std::string("dead0cafe0feed0beef01234567890deed00aabbccddeeff"), __FILE__, __LINE__
@@ -88,8 +92,12 @@ int main() {
         t.assertion(
           num3.to_string_base16() == std::string("dead0cafe0feed0beef01234567890deed00aabbccddeeff"), __FILE__, __LINE__
         );
-        // t.assertion(num4.to_string_base16() == std::string("dead0cafe0feed0beef01234567890deed00aabbccddeeff"),
-        // __FILE__, __LINE__);
+
+#ifdef ENV_64BIT_EXTENDED
+        t.assertion(
+          num4.to_string_base16() == std::string("dead0cafe0feed0beef01234567890deed00aabbccddeeff"), __FILE__, __LINE__
+        );
+#endif
     }
 
     return t.get_final_verdict("TO STRING BASE 16");

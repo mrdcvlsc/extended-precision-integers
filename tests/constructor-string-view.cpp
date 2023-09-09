@@ -8,37 +8,50 @@ using uint64_8t = epi::whole_number<std::uint8_t, std::uint16_t, 64UL>;
 using uint64_16t = epi::whole_number<std::uint16_t, std::uint32_t, 64UL>;
 using uint64_32t = epi::whole_number<std::uint32_t, std::uint64_t, 64UL>;
 
+using uint128_8t = epi::whole_number<std::uint8_t, std::uint16_t, 128UL>;
+using uint128_16t = epi::whole_number<std::uint16_t, std::uint32_t, 128UL>;
+using uint128_32t = epi::whole_number<std::uint32_t, std::uint64_t, 128UL>;
+
+#ifndef ENV_64BIT_EXTENDED
+// using uint128_64t = epi::whole_number<std::uint64_t, __uint128_t, 128UL>;
+using uint128_64t = epi::whole_number<std::uint32_t, std::uint64_t, 128UL>;
+#else
+using uint128_64t = epi::whole_number<std::uint32_t, std::uint64_t, 128UL>;
+#endif
+
 int main() {
     smlts::test t;
 
     {
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num1("5634002666979036418341388015");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num2("5634002666979036418341388015");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num3("5634002666979036418341388015");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num4("5634002666979036418341388015");
+        constexpr uint128_8t  num1("5634002666979036418341388015");
+        constexpr uint128_16t num2("5634002666979036418341388015");
+        constexpr uint128_32t num3("5634002666979036418341388015");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128> num5(
+        constexpr uint128_64t num4("5634002666979036418341388015");
+
+        constexpr uint128_8t num5(
           "0b100100011010001010110011110001001000011111110111011010000110111101010110100001011111011101111"
         );
-        constexpr epi::whole_number<uint16_t, uint32_t, 128> num6(
+        constexpr uint128_16t num6(
           "0b100100011010001010110011110001001000011111110111011010000110111101010110100001011111011101111"
         );
-        constexpr epi::whole_number<uint32_t, uint64_t, 128> num7(
-          "0b100100011010001010110011110001001000011111110111011010000110111101010110100001011111011101111"
-        );
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num8(
+        constexpr uint128_32t num7(
           "0b100100011010001010110011110001001000011111110111011010000110111101010110100001011111011101111"
         );
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num9("0o4432126361103767320675264137357");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num10("0o4432126361103767320675264137357");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num11("0o4432126361103767320675264137357");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num12("0o4432126361103767320675264137357");
+        constexpr uint128_64t num8(
+          "0b100100011010001010110011110001001000011111110111011010000110111101010110100001011111011101111"
+        );
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num13("0x1234567890feed0dead0beef");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num14("0x1234567890feed0dead0beef");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num15("0x1234567890feed0dead0beef");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num16("0x1234567890feed0dead0beef");
+        constexpr uint128_8t  num9("0o4432126361103767320675264137357");
+        constexpr uint128_16t num10("0o4432126361103767320675264137357");
+        constexpr uint128_32t num11("0o4432126361103767320675264137357");
+        constexpr uint128_64t num12("0o4432126361103767320675264137357");
+
+        constexpr uint128_8t  num13("0x1234567890feed0dead0beef");
+        constexpr uint128_16t num14("0x1234567890feed0dead0beef");
+        constexpr uint128_32t num15("0x1234567890feed0dead0beef");
+        constexpr uint128_64t num16("0x1234567890feed0dead0beef");
 
         t.cmp_eq(num1, num2, 128 / 8, __FILE__, __LINE__);
         t.cmp_eq(num2, num3, 128 / 8, __FILE__, __LINE__);
@@ -58,27 +71,21 @@ int main() {
 
         const uint64_t int0 = 15059734848003423983ULL;
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int1("15059734848003423983");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int2("15059734848003423983");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int3("15059734848003423983");
+        constexpr uint64_8t  int1("15059734848003423983");
+        constexpr uint64_16t int2("15059734848003423983");
+        constexpr uint64_32t int3("15059734848003423983");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64> int4(
-          "0b1101000011111110111011010000110111101010110100001011111011101111"
-        );
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int5(
-          "0b1101000011111110111011010000110111101010110100001011111011101111"
-        );
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int6(
-          "0b1101000011111110111011010000110111101010110100001011111011101111"
-        );
+        constexpr uint64_8t  int4("0b1101000011111110111011010000110111101010110100001011111011101111");
+        constexpr uint64_16t int5("0b1101000011111110111011010000110111101010110100001011111011101111");
+        constexpr uint64_32t int6("0b1101000011111110111011010000110111101010110100001011111011101111");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int7("0o1503767320675264137357");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int8("0o1503767320675264137357");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int9("0o1503767320675264137357");
+        constexpr uint64_8t  int7("0o1503767320675264137357");
+        constexpr uint64_16t int8("0o1503767320675264137357");
+        constexpr uint64_32t int9("0o1503767320675264137357");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int10("0xd0feed0dead0beef");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int11("0xd0feed0dead0beef");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int12("0xd0feed0dead0beef");
+        constexpr uint64_8t  int10("0xd0feed0dead0beef");
+        constexpr uint64_16t int11("0xd0feed0dead0beef");
+        constexpr uint64_32t int12("0xd0feed0dead0beef");
 
         t.cmp_eq(int0, int1, 8, __FILE__, __LINE__);
         t.cmp_eq(int1, int2, 8, __FILE__, __LINE__);
@@ -95,25 +102,25 @@ int main() {
     }
 
     {
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num1("2");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num2("2");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num3("2");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num4("2");
+        constexpr uint128_8t  num1("2");
+        constexpr uint128_16t num2("2");
+        constexpr uint128_32t num3("2");
+        constexpr uint128_64t num4("2");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num5("0b10");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num6("0b10");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num7("0b10");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num8("0b10");
+        constexpr uint128_8t  num5("0b10");
+        constexpr uint128_16t num6("0b10");
+        constexpr uint128_32t num7("0b10");
+        constexpr uint128_64t num8("0b10");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num9("0o2");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num10("0o2");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num11("0o2");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num12("0o2");
+        constexpr uint128_8t  num9("0o2");
+        constexpr uint128_16t num10("0o2");
+        constexpr uint128_32t num11("0o2");
+        constexpr uint128_64t num12("0o2");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 128>     num13("0x2");
-        constexpr epi::whole_number<uint16_t, uint32_t, 128>    num14("0x2");
-        constexpr epi::whole_number<uint32_t, uint64_t, 128>    num15("0x2");
-        constexpr epi::whole_number<uint64_t, __uint128_t, 128> num16("0x2");
+        constexpr uint128_8t  num13("0x2");
+        constexpr uint128_16t num14("0x2");
+        constexpr uint128_32t num15("0x2");
+        constexpr uint128_64t num16("0x2");
 
         t.cmp_eq(num1, num2, 128 / 8, __FILE__, __LINE__);
         t.cmp_eq(num2, num3, 128 / 8, __FILE__, __LINE__);
@@ -133,21 +140,21 @@ int main() {
 
         const uint64_t int0 = 255ULL;
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int1("255");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int2("255");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int3("255");
+        constexpr uint64_8t  int1("255");
+        constexpr uint64_16t int2("255");
+        constexpr uint64_32t int3("255");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int4("0b11111111");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int5("0b11111111");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int6("0b11111111");
+        constexpr uint64_8t  int4("0b11111111");
+        constexpr uint64_16t int5("0b11111111");
+        constexpr uint64_32t int6("0b11111111");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int7("0o377");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int8("0o377");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int9("0o377");
+        constexpr uint64_8t  int7("0o377");
+        constexpr uint64_16t int8("0o377");
+        constexpr uint64_32t int9("0o377");
 
-        constexpr epi::whole_number<uint8_t, uint16_t, 64>  int10("0xff");
-        constexpr epi::whole_number<uint16_t, uint32_t, 64> int11("0xff");
-        constexpr epi::whole_number<uint32_t, uint64_t, 64> int12("0xff");
+        constexpr uint64_8t  int10("0xff");
+        constexpr uint64_16t int11("0xff");
+        constexpr uint64_32t int12("0xff");
 
         t.cmp_eq(int0, int1, 8, __FILE__, __LINE__);
         t.cmp_eq(int1, int2, 8, __FILE__, __LINE__);

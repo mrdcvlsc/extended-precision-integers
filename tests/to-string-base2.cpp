@@ -1,6 +1,6 @@
+#include <cassert>
 #include <iostream>
 #include <string>
-#include <cassert>
 
 #include "../include/epi/epi.hpp"
 #include "small_test.hpp"
@@ -8,6 +8,7 @@
 using uint64_8t = epi::whole_number<std::uint8_t, std::uint16_t, 64UL>;
 using uint64_16t = epi::whole_number<std::uint16_t, std::uint32_t, 64UL>;
 using uint64_32t = epi::whole_number<std::uint32_t, std::uint64_t, 64UL>;
+
 int main() {
     smlts::test t;
 
@@ -84,8 +85,12 @@ int main() {
         constexpr epi::whole_number<uint8_t, uint16_t, 512>  num1("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
         constexpr epi::whole_number<uint16_t, uint32_t, 512> num2("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
         constexpr epi::whole_number<uint32_t, uint64_t, 512> num3("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
-        // constexpr epi::whole_number<uint64_t, __uint128_t, 512>
-        // num4("0xdead0cafe0feed0beef01234567890deed00aabbccddeeff");
+
+#ifdef ENV_64BIT_EXTENDED
+        constexpr epi::whole_number<uint64_t, __uint128_t, 512> num4(
+          "0xdead0cafe0feed0beef01234567890deed00aabbccddeeff"
+        );
+#endif
 
         t.assertion(
           num1.to_string_base2() ==
@@ -111,9 +116,17 @@ int main() {
             ),
           __FILE__, __LINE__
         );
-        // t.assertion(num4.to_string_base2() ==
-        // std::string("110111101010110100001100101011111110000011111110111011010000101111101110111100000001001000110100010101100111100010010000110111101110110100000000101010101011101111001100110111011110111011111111"),
-        // __FILE__, __LINE__);
+
+#ifdef ENV_64BIT_EXTENDED
+        t.assertion(
+          num4.to_string_base2() ==
+            std::string(
+              "11011110101011010000110010101111111000001111111011101101000010111110111011110000000100100011010001010110"
+              "0111100010010000110111101110110100000000101010101011101111001100110111011110111011111111"
+            ),
+          __FILE__, __LINE__
+        );
+#endif
     }
 
     return t.get_final_verdict("TO STRING BASE 2");
