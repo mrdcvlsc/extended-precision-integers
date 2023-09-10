@@ -33,7 +33,7 @@
 #endif
 
 #if defined(ENV_64BIT_EXTENDED)
-#warning COMPILING_UINT128_T_LARGEST_VALUE
+    #warning COMPILING_UINT128_T_LARGEST_VALUE
 using LARGEST_AVAILABLE_T = __uint128_t;
 #elif defined(ENV_64_BIT)
 using LARGEST_AVAILABLE_T = std::uint64_t;
@@ -42,7 +42,7 @@ using LARGEST_AVAILABLE_T = std::uint32_t;
 #elif defined(ENV_16_BIT)
 using LARGEST_AVAILABLE_T = std::uint16_t;
 #else
-#error largest value detection failed
+    #error largest value detection failed
 #endif
 
 // dev
@@ -215,14 +215,14 @@ namespace epi {
         constexpr whole_number() noexcept : limbs{} {
             constexpr bool invalid_limb_t = std::is_unsigned_v<limb_t>;
             constexpr bool invalid_cast_t = std::is_unsigned_v<cast_t> || std::is_same_v<LARGEST_AVAILABLE_T, cast_t>;
-            constexpr bool wrong_cast_t_size = sizeof(limb_t) * 2 == sizeof(cast_t);
+            constexpr bool wrong_cast_t_size = (sizeof(limb_t) * 2) == sizeof(cast_t);
 
             if constexpr (!invalid_limb_t) {
                 static_assert(invalid_limb_t, "limb_t should be an unsigned integral type");
             } else if constexpr (!invalid_cast_t) {
                 static_assert(invalid_cast_t, "cast_t should be an unsigned integral type");
             } else if constexpr (!wrong_cast_t_size) {
-                static_assert(wrong_cast_t_size, "sizeof(cast_t) should be exactly 2x the sizeof(limb_t)");
+                static_assert(wrong_cast_t_size, "sizeof(cast_t) should be exactly two times (2x) the sizeof(limb_t)");
             }
         }
 
@@ -378,7 +378,7 @@ namespace epi {
 
             if constexpr (static_cast<bool>(partition)) {
                 for (size_t i = 0; i < partition; ++i) {
-                    limbs[i] = num >> (i * LIMB_BITS);
+                    limbs[i] = static_cast<limb_t>(num >> (i * LIMB_BITS));
                 }
             } else if constexpr (!static_cast<bool>(partition)) {
                 limbs[0] = num;
@@ -440,8 +440,9 @@ namespace epi {
             limb_t       carry = 0;
 
             for (size_t i = 0; i < limb_n; ++i) {
-                cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
-                sum.limbs[i] = index_sum;
+                cast_t index_sum =
+                  static_cast<cast_t>(limbs[i]) + static_cast<cast_t>(add.limbs[i]) + static_cast<cast_t>(carry);
+                sum.limbs[i] = static_cast<int>(index_sum);
                 carry = index_sum >> LIMB_BITS;
             }
 
@@ -452,8 +453,9 @@ namespace epi {
             limb_t carry = 0;
 
             for (size_t i = 0; i < limb_n; ++i) {
-                cast_t index_sum = (cast_t) limbs[i] + add.limbs[i] + carry;
-                limbs[i] = index_sum;
+                cast_t index_sum =
+                  static_cast<cast_t>(limbs[i]) + static_cast<cast_t>(add.limbs[i]) + static_cast<cast_t>(carry);
+                limbs[i] = static_cast<int>(index_sum);
                 carry = index_sum >> LIMB_BITS;
             }
 
@@ -466,7 +468,7 @@ namespace epi {
 
             for (size_t i = 0; i < limb_n; ++i) {
                 cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
-                diff.limbs[i] = index_diff;
+                diff.limbs[i] = static_cast<limb_t>(index_diff);
                 carry = (index_diff >> LIMB_BITS) & 0x1;
             }
 
@@ -478,7 +480,7 @@ namespace epi {
 
             for (size_t i = 0; i < limb_n; ++i) {
                 cast_t index_diff = (cast_t) limbs[i] - sub.limbs[i] - carry;
-                limbs[i] = index_diff;
+                limbs[i] = static_cast<limb_t>(index_diff);
                 carry = (index_diff >> LIMB_BITS) & 0x1;
             }
 
@@ -487,12 +489,12 @@ namespace epi {
 
         // pre-fix increment/decrement
         constexpr whole_number &operator++() noexcept {
-            constexpr whole_number CONSTEXPR_ONE = {0x01};
+            constexpr whole_number CONSTEXPR_ONE = static_cast<size_t>(1);
             return *this += CONSTEXPR_ONE;
         }
 
         constexpr whole_number &operator--() noexcept {
-            constexpr whole_number CONSTEXPR_ONE = {0x01};
+            constexpr whole_number CONSTEXPR_ONE = static_cast<size_t>(1);
             return *this -= CONSTEXPR_ONE;
         }
 
@@ -515,7 +517,7 @@ namespace epi {
 
             for (size_t i = 0; i < limb_n; ++i) {
                 cast_t index_prod = (cast_t) limbs[i] * mul.limbs[0] + carry;
-                prod.limbs[i] = index_prod;
+                prod.limbs[i] = static_cast<limb_t>(index_prod);
                 carry = index_prod >> LIMB_BITS;
             }
 
@@ -523,7 +525,7 @@ namespace epi {
                 carry = 0;
                 for (size_t j = 0; j < limb_n - i; ++j) {
                     cast_t index_prod = (cast_t) limbs[j] * mul.limbs[i] + prod.limbs[i + j] + carry;
-                    prod.limbs[i + j] = index_prod;
+                    prod.limbs[i + j] = static_cast<limb_t>(index_prod);
                     carry = (index_prod >> LIMB_BITS);
                 }
             }
@@ -541,8 +543,8 @@ namespace epi {
                 throw std::domain_error("detected whole_number - division by zero");
             }
 
-            constexpr whole_number CONSTEXPR_ONE = {1};
-            constexpr whole_number CONSTEXPR_ZERO = {0};
+            constexpr whole_number CONSTEXPR_ONE = static_cast<size_t>(1UL);
+            constexpr whole_number CONSTEXPR_ZERO;
 
             int limb_used = div.is_one_limb();
             int cmp_case = compare(*this, div);
@@ -607,7 +609,7 @@ namespace epi {
                 throw std::domain_error("detected whole_number - mod by zero");
             }
 
-            constexpr whole_number CONSTEXPR_ZERO = {0};
+            constexpr whole_number CONSTEXPR_ZERO;
 
             int mod_case = mod.is_one_limb();
             int cmp_case = compare(*this, mod);
@@ -831,14 +833,14 @@ namespace epi {
 
             for (; index < limb_n - 1 - limb_shifts; ++index) {
                 // memcpy alternative
-                shifted_index = limbs[index + 1];
+                shifted_index = static_cast<cast_t>(limbs[index + 1]);
                 shifted_index <<= LIMB_BITS;
-                shifted_index |= limbs[index];
+                shifted_index |= static_cast<cast_t>(limbs[index]);
 
                 // apply shifts
                 shifted_index <<= bit_shifts;
-                result.limbs[index + limb_shifts] |= shifted_index;
-                result.limbs[index + limb_shifts + 1] = (shifted_index >> LIMB_BITS);
+                result.limbs[index + limb_shifts] |= static_cast<limb_t>(shifted_index);
+                result.limbs[index + limb_shifts + 1] = static_cast<limb_t>(shifted_index >> LIMB_BITS);
             }
 
             limb_t last_shifted_limb = limbs[index];
@@ -864,14 +866,14 @@ namespace epi {
 
             for (; index < limb_n - 1 - limb_shifts; ++index) {
                 // memcpy alternative
-                shifted_index = limbs[limb_n - 1 - index];
+                shifted_index = static_cast<cast_t>(limbs[limb_n - 1 - index]);
                 shifted_index <<= LIMB_BITS;
-                shifted_index |= limbs[limb_n - 2 - index];
+                shifted_index |= static_cast<cast_t>(limbs[limb_n - 2 - index]);
 
                 // apply shifts
                 shifted_index >>= bit_shifts;
-                result.limbs[limb_n - 2 - index - limb_shifts] = shifted_index;
-                result.limbs[limb_n - 1 - index - limb_shifts] |= (shifted_index >> LIMB_BITS);
+                result.limbs[limb_n - 2 - index - limb_shifts] = static_cast<limb_t>(shifted_index);
+                result.limbs[limb_n - 1 - index - limb_shifts] |= static_cast<limb_t>(shifted_index >> LIMB_BITS);
             }
 
             limb_t last_shifted_limb = limbs[limb_n - 1 - index];
@@ -1034,9 +1036,9 @@ namespace epi {
         // divs
 
         constexpr whole_number bit_long_div(whole_number const &divisor) const noexcept {
-            constexpr size_t MS_LIMB = limb_n - 1;
-            whole_number     quotient = {0};
-            whole_number     remainder = {0};
+            constexpr size_t MS_LIMB = limb_n - 1UL;
+            whole_number     quotient;
+            whole_number     remainder;
             limb_t           remainder_bit = 0;
             limb_t           one_bit = 1;
             size_t           index = 0;
@@ -1046,15 +1048,15 @@ namespace epi {
                 index = MS_LIMB - i / LIMB_BITS;
                 shift_value = i % LIMB_BITS;
 
-                remainder = remainder << 1;
+                remainder = remainder << 1UL;
                 remainder_bit = limbs[index] << shift_value;
-                remainder_bit >>= LIMB_BITS - 1;
+                remainder_bit >>= (LIMB_BITS - 1UL);
 
                 remainder.limbs[0] |= remainder_bit;
 
                 if (remainder >= divisor) {
                     remainder -= divisor;
-                    quotient.limbs[index] |= (one_bit << ((LIMB_BITS - 1) - shift_value));
+                    quotient.limbs[index] |= (one_bit << ((LIMB_BITS - 1UL) - shift_value));
                 }
             }
 
@@ -1062,8 +1064,8 @@ namespace epi {
         }
 
         constexpr whole_number &self_bit_long_div(whole_number const &divisor) noexcept {
-            constexpr size_t MS_LIMB = limb_n - 1;
-            whole_number     remainder = {0};
+            constexpr size_t MS_LIMB = limb_n - 1UL;
+            whole_number     remainder;
             limb_t           remainder_bit = 0;
             limb_t           one_bit = 1;
             size_t           index = 0;
@@ -1108,9 +1110,9 @@ namespace epi {
             quotient.limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
 
             for (size_t i = 1; i < limb_n; ++i) {
-                remainder |= limbs[limb_n - 1 - i];
-                quotient.limbs[limb_n - 1 - i] = remainder / divisor;
-                remainder = (remainder % divisor) << LIMB_BITS;
+                remainder |= static_cast<cast_t>(limbs[limb_n - 1 - i]);
+                quotient.limbs[limb_n - 1 - i] = static_cast<limb_t>(remainder / static_cast<cast_t>(divisor));
+                remainder = (remainder % static_cast<cast_t>(divisor)) << LIMB_BITS;
             }
 
             return quotient;
@@ -1124,9 +1126,9 @@ namespace epi {
             limbs[limb_n - 1] = limbs[limb_n - 1] / divisor;
 
             for (size_t i = 1; i < limb_n; ++i) {
-                remainder |= limbs[limb_n - 1 - i];
-                limbs[limb_n - 1 - i] = remainder / divisor;
-                remainder = (remainder % divisor) << LIMB_BITS;
+                remainder |= static_cast<cast_t>(limbs[limb_n - 1 - i]);
+                limbs[limb_n - 1 - i] = static_cast<limb_t>(remainder / static_cast<cast_t>(divisor));
+                remainder = (remainder % static_cast<cast_t>(divisor)) << LIMB_BITS;
             }
 
             return *this;
@@ -1135,30 +1137,30 @@ namespace epi {
         static constexpr void self_div_and_mod_by_1limb(
           whole_number &quotient, limb_t divisor, whole_number &remainder
         ) noexcept {
-            cast_t remainder_single_limb = 0;
+            cast_t remainder_limb = 0;
 
-            remainder_single_limb = quotient.limbs[limb_n - 1] % divisor;
-            remainder_single_limb <<= LIMB_BITS;
+            remainder_limb = quotient.limbs[limb_n - 1] % divisor;
+            remainder_limb <<= LIMB_BITS;
             quotient.limbs[limb_n - 1] = quotient.limbs[limb_n - 1] / divisor;
 
             for (size_t i = 1; i < limb_n; ++i) {
-                remainder_single_limb |= quotient.limbs[limb_n - 1 - i];
-                quotient.limbs[limb_n - 1 - i] = remainder_single_limb / divisor;
-                remainder_single_limb = (remainder_single_limb % divisor) << LIMB_BITS;
+                remainder_limb |= static_cast<cast_t>(quotient.limbs[limb_n - 1 - i]);
+                quotient.limbs[limb_n - 1 - i] = static_cast<limb_t>(remainder_limb / static_cast<cast_t>(divisor));
+                remainder_limb = (remainder_limb % static_cast<cast_t>(divisor)) << LIMB_BITS;
             }
 
-            remainder = remainder_single_limb >> LIMB_BITS;
+            remainder = remainder_limb >> LIMB_BITS;
         }
 
         // mods
 
         constexpr whole_number bit_long_mod(whole_number const &divisor) const noexcept {
             constexpr size_t MS_LIMB = limb_n - 1;
-            whole_number     remainder = {0};
+            whole_number     remainder;
             limb_t           remainder_bit = 0;
 
             for (size_t i = 0; i < bits_n; ++i) {
-                remainder = remainder << 1;
+                remainder = remainder << 1UL;
                 remainder_bit = limbs[MS_LIMB - i / LIMB_BITS] << i % LIMB_BITS;
                 remainder_bit >>= LIMB_BITS - 1;
 
@@ -1179,8 +1181,8 @@ namespace epi {
             remainder <<= LIMB_BITS;
 
             for (size_t i = 1; i < limb_n; ++i) {
-                remainder |= limbs[limb_n - 1 - i];
-                remainder = (remainder % divisor) << LIMB_BITS;
+                remainder |= static_cast<cast_t>(limbs[limb_n - 1 - i]);
+                remainder = (remainder % static_cast<cast_t>(divisor)) << LIMB_BITS;
             }
 
             return remainder >> LIMB_BITS;

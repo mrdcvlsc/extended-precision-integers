@@ -2,9 +2,9 @@ name: tests
 
 on:
   push:
-    branches: [ main, cmake-msvs-compiler-fix ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, cmake-msvs-compiler-fix ]
+    branches: [ main ]
 
 jobs:
   build-others:
@@ -15,11 +15,11 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        # - { name: Linux Clang,       os: ubuntu-latest,  outpath: './tests/', flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        # - { name: Windows VS2019,    os: windows-2019,   outpath: 'tests\Release\', fext: .exe, }
-        - { name: Windows Latest,    os: windows-latest, outpath: 'tests\Release\', fext: .exe, }
-        - { name: MacOS XCode,       os: macos-latest,   outpath: './tests/' }
-        # - { name: Linux GCC,         os: ubuntu-latest,  outpath: './tests/' }
+        # - { name: Linux Clang,    os: ubuntu-latest,  outpath: './tests/', flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Windows VS2019, os: windows-2019, outpath: 'tests\Release\', fext: .exe, }
+        - { name: Windows VS2022, os: windows-2022, outpath: 'tests\Release\', fext: .exe, }
+        - { name: MacOS XCode,    os: macos-latest, outpath: './tests/' }
+        # - { name: Linux GCC,      os: ubuntu-latest,  outpath: './tests/' }
 
     steps:
     - uses: actions/checkout@v3
