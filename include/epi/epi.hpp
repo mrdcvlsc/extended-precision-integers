@@ -833,14 +833,14 @@ namespace epi {
 
             for (; index < limb_n - 1 - limb_shifts; ++index) {
                 // memcpy alternative
-                shifted_index = limbs[index + 1];
+                shifted_index = static_cast<cast_t>(limbs[index + 1]);
                 shifted_index <<= LIMB_BITS;
-                shifted_index |= limbs[index];
+                shifted_index |= static_cast<cast_t>(limbs[index]);
 
                 // apply shifts
                 shifted_index <<= bit_shifts;
-                result.limbs[index + limb_shifts] |= shifted_index;
-                result.limbs[index + limb_shifts + 1] = (shifted_index >> LIMB_BITS);
+                result.limbs[index + limb_shifts] |= static_cast<limb_t>(shifted_index);
+                result.limbs[index + limb_shifts + 1] = static_cast<limb_t>(shifted_index >> LIMB_BITS);
             }
 
             limb_t last_shifted_limb = limbs[index];
@@ -866,14 +866,14 @@ namespace epi {
 
             for (; index < limb_n - 1 - limb_shifts; ++index) {
                 // memcpy alternative
-                shifted_index = limbs[limb_n - 1 - index];
+                shifted_index = static_cast<cast_t>(limbs[limb_n - 1 - index]);
                 shifted_index <<= LIMB_BITS;
-                shifted_index |= limbs[limb_n - 2 - index];
+                shifted_index |= static_cast<cast_t>(limbs[limb_n - 2 - index]);
 
                 // apply shifts
                 shifted_index >>= bit_shifts;
                 result.limbs[limb_n - 2 - index - limb_shifts] = static_cast<limb_t>(shifted_index);
-                result.limbs[limb_n - 1 - index - limb_shifts] |= (shifted_index >> LIMB_BITS);
+                result.limbs[limb_n - 1 - index - limb_shifts] |= static_cast<limb_t>(shifted_index >> LIMB_BITS);
             }
 
             limb_t last_shifted_limb = limbs[limb_n - 1 - index];

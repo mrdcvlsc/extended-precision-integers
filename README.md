@@ -28,6 +28,9 @@ int main() {
 }
 ```
 
+> [!NOTE]  
+> To see all the implemented types and operations for each types, click and see the **TO-DO** list below.
+
 ## **Assigning a Large Value**
 
 While assigning to the types provided by the library using literal integer types is generally acceptable, there are cases where the compiler might generate an error due to exceeding the maximum width of built-in POD/primitive types. For example:
@@ -86,6 +89,9 @@ The maximum values are calculated using the formula $2^{\text{bit-width}} - 1$.
 
 For instance, the `unsigned int` type is 32 bits wide, so its maximum value is $2^{32}-1$, and the `unsigned short int` type is 16 bits wide, so its maximum value is $2^{16}-1$.
 
+> [!NOTE]  
+> For smaller integer types that has a width of the probably around **800** bits and below, most operations are as fast, or if not just a tiny-tiny bit slower than other optimized or heavily optimized libraries (except for division & modulo operations), to give you an idea you can look a this [micro-benchmark](https://github.com/mrdcvlsc/extended-precision-integers/blob/benchmarks/benchmark/benchmark-and-comparison-Linux-clang%2B%2B.md) (this was run on github action runners for the sake of comparison only). 
+
 ## **Creating A New Extended Precision Type**
 
 To create a custom extended precision integer type, let's say a **2048**-bit wide integer, you need to specify the desired type by providing an appropriate **unsigned integer** type to the template arguments of the `epi::whole_number<limb_t, cast_t, bit_width>` class. Here's an example:
@@ -113,11 +119,18 @@ The requirement is that the `cast_t` parameter should have a bit width exactly 2
 typedef epi::whole_number<epi::uint128_t, epi::uint256_t, 2048> uint2048_t;
 ```
 
-> This is not recommended since its performance will be slow.
+> [!IMPORTANT]  
+> Using another `whole_number` type, or other user defined types, is not recommended since it will affect the performance, it is much better to use your systems available primitive/POD types to get the maximum performance out of the `whole_number` class or any related `epi` classes.
 
 ## **Compile Time Support (`constexpr`)**
 
 This library also supports compile-time calculations using the `constexpr` keyword.
+
+> [!IMPORTANT]  
+>
+> For very large value computations with `constexpr`, consider adjusting the `-fconstexpr-steps` to a higher value.
+>
+> MSVC 2019 might not support some `constexpr` operations.
 
 ```c++
 constexpr epi::uint512_t factorial(size_t N) {
@@ -140,19 +153,15 @@ int main() {
 ```
 
 > [!WARNING]  
-> However, be aware that large calculations at compile time could significantly increase compilation duration and resource usage, possibly leading to errors. For extremely large calculations, it's recommended not to use `constexpr`.
-
-> [!IMPORTANT]  
->
-> Avoid using shifted bits beyond the width of a `whole_number<>`.
->
-> For very large value computations with `constexpr`, consider adjusting the `-fconstexpr-steps` to a higher value.
+> Be aware that **large/long calculations** at **compile time** could significantly **increase compilation duration** and **resource usage**, possibly leading to errors. So for extremely large calculations, it's recommended not to use `constexpr`.
 
 ## **TO-DO**
 
-- [X] - [Extended Unsigned Integers](TODO/extended-unsigned-integers.md)
-- [ ] - [Extended Signed Integers [N/A]](TODO/extended-signed-integers.md)
-- [ ] - [Extended Floating Point [N/A]](TODO/extended-floating-point.md)
+Click the links below to view what has already been implemented in the library. Additionally, there are numerous completed implementations that have not yet received optimization efforts and still require further work.
+
+- [X] - [Extended Unsigned Integers Operations](TODO/extended-unsigned-integers.md)
+- [ ] - [Extended Signed Integers Operations [N/A]](TODO/extended-signed-integers.md)
+- [ ] - [Extended Floating Point Operations [N/A]](TODO/extended-floating-point.md)
 
 ## **Requirements**
 - Little Endian System
