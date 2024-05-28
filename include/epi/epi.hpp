@@ -24,9 +24,9 @@
     // `__umodti3` & `__udivti3` #define ENV_64BIT_EXTENDED // temporarily disabled
     // since some environment does not support `__umodti3` & `__udivti3`
     #define ENV_64_BIT
-#elif (defined(__amd__64__) || defined(__amd_64) || defined(__x86_64__) || defined(__x86_64))
+#elif (defined(__amd__64__) || defined(__amd_64) || defined(__amd64__) || defined(__aarch64__) || defined(__x86_64__) || defined(__x86_64) || defined(_WIN64))
     #define ENV_64_BIT
-#elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__))
+#elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__) || defined(_WIN32))
     #define ENV_32_BIT
 #else
     #define ENV_16_BIT
