@@ -1,0 +1,39 @@
+name: ctests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-others:
+    name: ${{ matrix.platform.name }}-C++${{matrix.config.cxx_version}}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { name: Windows VS2019, os: windows-2019}
+        - { name: Windows VS2022, os: windows-2022}
+        - { name: Windows Clang,  os: windows-2022,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++}
+        - { name: Windows GCC,    os: windows-2022,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++}
+        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Linux,          os: ubuntu-latest}
+        - { name: MacOS XCode,    os: macos-latest}
+        config:
+        - { cxx_version: 20 }
+        - { cxx_version: 23 }
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: System Info
+      run: cmake -S tests -B tests ${{matrix.platform.flags}} -DCMAKE_CXX_STANDARD=${{matrix.config.cxx_version}}
+
+    - name: Build
+      run: cmake --build tests --config Debug -j2
+
+    - name: Tests
+      run: ctest --test-dir tests

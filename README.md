@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ![tests](https://github.com/mrdcvlsc/extended-precision-integers/actions/workflows/tests.yml/badge.svg)
+![ctests](https://github.com/mrdcvlsc/extended-precision-integers/actions/workflows/ctests.yml/badge.svg)
 
 This is a C++ header-only library that offers extended precision data types, which are number types with **fixed sizes** capable of holding larger values than traditional **Plain Old Data** types (PODs) like `int`, `uint8_t`, `unsigned long`, etc.
 

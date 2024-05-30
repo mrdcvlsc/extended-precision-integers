@@ -1,29 +1,22 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
-project(extended_precision_integers VERSION 1.0.0)
+file(GLOB SOURCES "*.cpp")
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable("addition" "addition.cpp")
-add_executable("bitwise-and" "bitwise-and.cpp")
-add_executable("bitwise-not" "bitwise-not.cpp")
-add_executable("bitwise-or" "bitwise-or.cpp")
-add_executable("bitwise-xor" "bitwise-xor.cpp")
-add_executable("boolean" "boolean.cpp")
-add_executable("constructor-initializer-list" "constructor-initializer-list.cpp")
-add_executable("constructor-integral" "constructor-integral.cpp")
-add_executable("constructor-string-view" "constructor-string-view.cpp")
-add_executable("decrement" "decrement.cpp")
-add_executable("division" "division.cpp")
-add_executable("increment" "increment.cpp")
-add_executable("modulo" "modulo.cpp")
-add_executable("multiplication" "multiplication.cpp")
-add_executable("relational" "relational.cpp")
-add_executable("shifts" "shifts.cpp")
-add_executable("subtraction" "subtraction.cpp")
-add_executable("template" "template.cpp")
-add_executable("to-string-base10" "to-string-base10.cpp")
-add_executable("to-string-base16" "to-string-base16.cpp")
-add_executable("to-string-base2" "to-string-base2.cpp")
-add_executable("to-string-base8" "to-string-base8.cpp")
+# add_compile_definitions(USER_DEFINITION)
+
+enable_testing()
+
+foreach(test_src_code ${SOURCES})
+    get_filename_component(test_exec_name ${test_src_code} NAME_WE)
+    add_executable(${test_exec_name} ${test_src_code})
+    # target_compile_features(${test_exec_name} PRIVATE cxx_std_11)
+    target_compile_options(${test_exec_name} PRIVATE -fsanitize=address)
+    target_link_options(${test_exec_name} PRIVATE -fsanitize=address)
+    add_test(
+        NAME ${test_exec_name}
+        COMMAND $<TARGET_FILE:${test_exec_name}>
+    )
+endforeach(test_src_code ${SOURCES})
