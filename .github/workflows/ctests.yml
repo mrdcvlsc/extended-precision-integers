@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main, ctest-fix ]
   pull_request:
-    branches: [ main, ctest-fix ]
+    branches: [ main ]
 
 jobs:
   build-others:
-    name: ${{ matrix.platform.name }}-C++${{matrix.config.cxx_version}}
+    name: ${{ matrix.platform.name }} C++${{matrix.config.cxx_version}} ${{matrix.architecture}}
     runs-on: ${{ matrix.platform.os }}
 
     strategy:
@@ -20,11 +20,13 @@ jobs:
         - { name: Windows Clang,  ls: dir, os: windows-2022,  flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
         - { name: Windows GCC,    ls: dir, os: windows-2022,  flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ }
         - { name: Linux Clang,    ls: ls,  os: ubuntu-latest, flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: Linux,          ls: ls,  os: ubuntu-latest, flags: -DCMAKE_BUILD_TYPE=Debug }
+        - { name: Linux GCC,      ls: ls,  os: ubuntu-latest, flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ }
         - { name: MacOS XCode,    ls: ls,  os: macos-latest,  flags: -DCMAKE_BUILD_TYPE=Debug }
+        - { name: MacOS Clang,    ls: ls,  os: macos-latest,  flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
         config:
         - { cxx_version: 20 }
         - { cxx_version: 23 }
+        architecture: [x64, x86]
 
     steps:
     - uses: actions/checkout@v3
