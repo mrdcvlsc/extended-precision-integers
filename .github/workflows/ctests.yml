@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows VS2019, ls: dir, os: windows-2019}
-        - { name: Windows VS2022, ls: dir, os: windows-2022}
-        - { name: Windows Clang,  ls: dir, os: windows-2022,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++}
-        - { name: Windows GCC,    ls: dir, os: windows-2022,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++}
-        - { name: Linux Clang,    ls: ls,  os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: Linux,          ls: ls,  os: ubuntu-latest}
-        - { name: MacOS XCode,    ls: ls,  os: macos-latest}
+        - { name: Windows VS2019, ls: dir, os: windows-2019,  flags: -DCMAKE_BUILD_TYPE=Debug }
+        - { name: Windows VS2022, ls: dir, os: windows-2022,  flags: -DCMAKE_BUILD_TYPE=Debug }
+        - { name: Windows Clang,  ls: dir, os: windows-2022,  flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Windows GCC,    ls: dir, os: windows-2022,  flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ }
+        - { name: Linux Clang,    ls: ls,  os: ubuntu-latest, flags: -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Linux,          ls: ls,  os: ubuntu-latest, flags: -DCMAKE_BUILD_TYPE=Debug }
+        - { name: MacOS XCode,    ls: ls,  os: macos-latest,  flags: -DCMAKE_BUILD_TYPE=Debug }
         config:
         - { cxx_version: 20 }
         - { cxx_version: 23 }
@@ -35,5 +35,8 @@ jobs:
     - name: Build
       run: cmake --build tests --config Debug
 
+    - name: View Test Executables
+      run: cd tests && ${{matrix.platform.ls}} && cd ..
+
     - name: Tests
-      run: ${{matrix.platform.ls}} tests && ctest --test-dir tests
+      run: ctest --test-dir tests --build-config Debug
