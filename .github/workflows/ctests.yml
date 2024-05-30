@@ -33,7 +33,7 @@ jobs:
       run: cmake -S tests -B tests ${{matrix.platform.flags}} -DCMAKE_CXX_STANDARD=${{matrix.config.cxx_version}}
 
     - name: Build
-      run: cmake -j2 --build tests --config Debug
+      run: cmake --build tests --config Debug
 
     - name: Tests
       run: ${{matrix.platform.ls}} tests && ctest --test-dir tests

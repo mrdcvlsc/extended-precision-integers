@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 file(GLOB SOURCES "*.cpp")
 
-set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # add_compile_definitions(USER_DEFINITION)
