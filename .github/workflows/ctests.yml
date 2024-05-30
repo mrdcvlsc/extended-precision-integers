@@ -39,4 +39,4 @@ jobs:
       run: cd tests && ${{matrix.platform.ls}} && cd ..
 
     - name: Tests
-      run: ctest --test-dir tests --build-config Debug
+      run: ctest --test-dir tests --build-config Debug --output-on-failure

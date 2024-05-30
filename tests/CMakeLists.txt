@@ -9,8 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # add_compile_definitions(USER_DEFINITION)
 
 if(WIN32)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /fsanitize=address")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fsanitize=address")
+    # disable windows asan for now since I don't know how to make it work
+    # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /fsanitize=address")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fsanitize=address")
 else()
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
