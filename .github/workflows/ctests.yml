@@ -2,9 +2,9 @@ name: ctests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, ctest-fix ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, ctest-fix ]
 
 jobs:
   build-others:
@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-        - { name: Windows VS2019, os: windows-2019}
-        - { name: Windows VS2022, os: windows-2022}
-        - { name: Windows Clang,  os: windows-2022,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++}
-        - { name: Windows GCC,    os: windows-2022,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++}
-        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: Linux,          os: ubuntu-latest}
-        - { name: MacOS XCode,    os: macos-latest}
+        - { name: Windows VS2019, ls: dir, os: windows-2019}
+        - { name: Windows VS2022, ls: dir, os: windows-2022}
+        - { name: Windows Clang,  ls: dir, os: windows-2022,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++}
+        - { name: Windows GCC,    ls: dir, os: windows-2022,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++}
+        - { name: Linux Clang,    ls: ls,  os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Linux,          ls: ls,  os: ubuntu-latest}
+        - { name: MacOS XCode,    ls: ls,  os: macos-latest}
         config:
         - { cxx_version: 20 }
         - { cxx_version: 23 }
@@ -33,7 +33,7 @@ jobs:
       run: cmake -S tests -B tests ${{matrix.platform.flags}} -DCMAKE_CXX_STANDARD=${{matrix.config.cxx_version}}
 
     - name: Build
-      run: cmake --build tests --config Debug -j2
+      run: cmake -j2 --build tests --config Debug
 
     - name: Tests
-      run: ctest --test-dir tests
+      run: ${{matrix.platform.ls}} tests && ctest --test-dir tests
