@@ -817,36 +817,51 @@ namespace epi {
 
         // shift operators : start
 
+        /// code improved/refactored times: 1x
         constexpr whole_number &operator<<=(size_t lshift) noexcept {
-            return (*this = *this << lshift);
+            size_t lshift_internal = lshift % bits_n;
+            size_t limb_shifts = lshift_internal / LIMB_BITS;
+            size_t bit_shifts = lshift_internal % LIMB_BITS;
+
+            cast_t shifted_bits = 0;
+
+            limbs[limb_n - 1] = limbs[limb_n - 1 - limb_shifts] << bit_shifts;
+
+            for (size_t i = limb_n - 2; i >= limb_shifts && i < limb_n; i--) {
+                shifted_bits = static_cast<cast_t>(limbs[i - limb_shifts]) << bit_shifts;
+                limbs[i] = static_cast<limb_t>(shifted_bits);
+                limbs[i + 1] |= static_cast<limb_t>(shifted_bits >> LIMB_BITS);
+            }
+
+            for (size_t i = 0; i < limb_shifts; i++) {
+                limbs[i] = 0;
+            }
+            
+            return *this;
         }
 
+        /// code improved/refactored times: 1x
         constexpr whole_number operator<<(size_t lshift) const noexcept {
             whole_number result;
 
             size_t lshift_internal = lshift % bits_n;
             size_t limb_shifts = lshift_internal / LIMB_BITS;
             size_t bit_shifts = lshift_internal % LIMB_BITS;
-            size_t index = 0;
 
-            cast_t shifted_index = 0;
+            cast_t shifted_bits = 0;
 
-            for (; index < limb_n - 1 - limb_shifts; ++index) {
-                // memcpy alternative
-                shifted_index = static_cast<cast_t>(limbs[index + 1]);
-                shifted_index <<= LIMB_BITS;
-                shifted_index |= static_cast<cast_t>(limbs[index]);
+            result.limbs[limb_n - 1] = limbs[limb_n - 1 - limb_shifts] << bit_shifts;
 
-                // apply shifts
-                shifted_index <<= bit_shifts;
-                result.limbs[index + limb_shifts] |= static_cast<limb_t>(shifted_index);
-                result.limbs[index + limb_shifts + 1] = static_cast<limb_t>(shifted_index >> LIMB_BITS);
+            for (size_t i = limb_n - 2; i >= limb_shifts && i < limb_n; i--) {
+                shifted_bits = static_cast<cast_t>(limbs[i - limb_shifts]) << bit_shifts;
+                result.limbs[i] = static_cast<limb_t>(shifted_bits);
+                result.limbs[i + 1] |= static_cast<limb_t>(shifted_bits >> LIMB_BITS);
             }
 
-            limb_t last_shifted_limb = limbs[index];
-            last_shifted_limb <<= bit_shifts;
-            result.limbs[index + limb_shifts] |= last_shifted_limb;
-
+            for (size_t i = 0; i < limb_shifts; i++) {
+                result.limbs[i] = 0;
+            }
+            
             return result;
         }
 
