@@ -35,12 +35,16 @@
 #if defined(ENV_64BIT_EXTENDED)
     #warning COMPILING_UINT128_T_LARGEST_VALUE
 using LARGEST_AVAILABLE_T = __uint128_t;
+using signed_size_t = std::int64_t;
 #elif defined(ENV_64_BIT)
 using LARGEST_AVAILABLE_T = std::uint64_t;
+using signed_size_t = std::int64_t;
 #elif defined(ENV_32_BIT)
 using LARGEST_AVAILABLE_T = std::uint32_t;
+using signed_size_t = std::int32_t;
 #elif defined(ENV_16_BIT)
 using LARGEST_AVAILABLE_T = std::uint16_t;
+using signed_size_t = std::int16_t;
 #else
     #error largest value detection failed
 #endif
@@ -827,7 +831,7 @@ namespace epi {
 
             limbs[limb_n - 1] = limbs[limb_n - 1 - limb_shifts] << bit_shifts;
 
-            for (size_t i = limb_n - 2; i >= limb_shifts && i < limb_n; i--) {
+            for (signed_size_t i = static_cast<signed_size_t>(limb_n) - 2; i >= static_cast<signed_size_t>(limb_shifts); i--) {
                 shifted_bits = static_cast<cast_t>(limbs[i - limb_shifts]) << bit_shifts;
                 limbs[i] = static_cast<limb_t>(shifted_bits);
                 limbs[i + 1] |= static_cast<limb_t>(shifted_bits >> LIMB_BITS);
