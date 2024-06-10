@@ -187,6 +187,8 @@ namespace epi {
     /// @tparam bits_n number of bits of the whole number.
     template <typename limb_t, typename cast_t, size_t bits_n>
     class whole_number {
+        #warning access modifier is set to public here for debugging only, set to private when done developing branch
+        public:
 
         /// @brief number of bits in a limb, or the number base of a limb.
         static constexpr size_t LIMB_BITS = sizeof(limb_t) * 8;
@@ -1061,6 +1063,20 @@ namespace epi {
 
         // divs
 
+        constexpr whole_number limb_long_div(whole_number const &divisor) const noexcept {
+            constexpr size_t MS_LIMB = limb_n - 1UL;
+
+            size_t dvn_ld_zero_limbs = cnt_ld_zlimbs();
+            size_t dvr_ld_zero_limbs = divisor.cnt_ld_zlimbs();
+
+            whole_number current_quotient = 0;
+            for (size_t i = 0; i < limb_n - dvr_ld_zero_limbs; i++) {
+                current_quotient.limbs[limb_n - 1 - dvr_ld_zero_limbs - i] = limbs[limb_n - 1 - dvn_ld_zero_limbs - i];
+            }
+
+            return current_quotient;
+        }
+
         constexpr whole_number bit_long_div(whole_number const &divisor) const noexcept {
             constexpr size_t MS_LIMB = limb_n - 1UL;
             whole_number     quotient;
@@ -1212,6 +1228,22 @@ namespace epi {
             }
 
             return remainder >> LIMB_BITS;
+        }
+
+        public:
+        /// ONLY USE INSIDE THE DIVISION ALGORITHMS, if this returns a
+        /// number equal to `limb_n` that means that the whole_number<> is zero.
+        [[nodiscard]] constexpr size_t cnt_ld_zlimbs() const noexcept {
+            size_t leading_zeroes = 0;
+            for (size_t i = 0; i < limb_n; i++) {
+                if (limbs[limb_n - 1 - i]) {
+                    break;
+                } else {
+                    leading_zeroes++;
+                }
+            }
+
+            return leading_zeroes;
         }
     }; // whole_number class : end
 
