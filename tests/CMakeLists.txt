@@ -5,8 +5,15 @@ file(GLOB SOURCES "*.cpp")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(FORCE_LIMB_WIDENESS "" CACHE STRING "Choose an AES Implementation")
 
-# add_compile_definitions(USER_DEFINITION)
+if("${FORCE_LIMB_WIDENESS}" STREQUAL "32")
+    add_compile_definitions(FORCE_32_BIT_LIMBS)
+elseif("${FORCE_LIMB_WIDENESS}" STREQUAL "16")
+    add_compile_definitions(FORCE_16_BIT_LIMBS)
+endif()
+
+message(FORCE_LIMB_WIDENESS="${FORCE_LIMB_WIDENESS}")
 
 if(WIN32)
     # disable windows asan for now since I don't know how to make it work

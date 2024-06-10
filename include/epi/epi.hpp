@@ -19,26 +19,34 @@
 // DETECT THE MAXIMUM WIDTH OF THE LARGEST POD/PRIMITIVE TYPE IN THE SYSTEM
 // =================================================================================================
 
-#if (defined(__SIZEOF_INT128__) || defined(UINT128MAX)) && !defined(_MSVC_LANG)
-    // TODO: find way to check if the following instructions are available
-    // `__umodti3` & `__udivti3` #define ENV_64BIT_EXTENDED // temporarily disabled
-    // since some environment does not support `__umodti3` & `__udivti3`
+#if (defined(__amd__64__) || defined(__amd_64) || defined(__amd64__) || defined(__aarch64__) || defined(__x86_64__) || defined(__x86_64) || defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64))
     #define ENV_64_BIT
-#elif (defined(__amd__64__) || defined(__amd_64) || defined(__amd64__) || defined(__aarch64__) || defined(__x86_64__) || defined(__x86_64) || defined(_WIN64))
-    #define ENV_64_BIT
-#elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__) || defined(_WIN32))
+    #if ((defined(__SIZEOF_INT128__) || defined(UINT128MAX)) && (!defined(_MSVC_LANG) && !defined(_MSC_VER)))
+        // TODO: find way to check if the following instructions are available
+        // `__umodti3` & `__udivti3` #define ENV_64_BIT_EXTENDED // temporarily disabled
+        // since some environment does not support `__umodti3` & `__udivti3`
+        #undef ENV_64_BIT
+        #define ENV_64_BIT_EXTENDED
+    #endif
+#elif (defined(__INTEL__) || defined(__i386__) || defined(_M_IX86) || defined(__arm__) || defined(_ARM) || defined(_M_ARM) || defined(M_ARMT) || defined(__ARM_ARCH_6__) || defined(__ARM_ARCH_5__) || defined(__ARM_ARCH_3__) || defined()__ARM_ARCH_2__ || defined(__ARM_ARCH_4T__) || defined(_WIN32) || defined(_M_X86) || defined(_M_IX86_FP))
     #define ENV_32_BIT
+    #if defined(UINT64_MAX)
+        #undef ENV_32_BIT
+        #define ENV_32_BIT_EXTENDED
+    #endif
 #else
-    #define ENV_16_BIT
+    #error this architecture is not supported
 #endif
 
-#if defined(ENV_64BIT_EXTENDED)
-    #warning COMPILING_UINT128_T_LARGEST_VALUE
+#if defined(ENV_64_BIT_EXTENDED)
 using LARGEST_AVAILABLE_T = __uint128_t;
 using signed_size_t = std::int64_t;
 #elif defined(ENV_64_BIT)
 using LARGEST_AVAILABLE_T = std::uint64_t;
 using signed_size_t = std::int64_t;
+#elif defined(ENV_32_BIT_EXTENDED)
+using LARGEST_AVAILABLE_T = std::uint64_t;
+using signed_size_t = std::int32_t;
 #elif defined(ENV_32_BIT)
 using LARGEST_AVAILABLE_T = std::uint32_t;
 using signed_size_t = std::int32_t;
@@ -46,11 +54,22 @@ using signed_size_t = std::int32_t;
 using LARGEST_AVAILABLE_T = std::uint16_t;
 using signed_size_t = std::int16_t;
 #else
-    #error largest value detection failed
+    #error unsupported environment
 #endif
 
-// dev
-// #define _LITTLE_ENDIAN
+#if defined(FORCE_32_BIT_LIMBS)
+    #undef ENV_64_BIT_EXTENDED
+    #define ENV_64_BIT
+    #undef ENV_32_BIT_EXTENDED
+    #undef ENV_32_BIT
+    #undef ENV_16_BIT
+#elif defined(FORCE_16_BIT_LIMBS)
+    #undef ENV_64_BIT_EXTENDED
+    #undef ENV_64_BIT
+    #undef ENV_32_BIT_EXTENDED
+    #define ENV_32_BIT
+    #undef ENV_16_BIT
+#endif
 
 namespace epi {
 
@@ -1218,7 +1237,8 @@ namespace epi {
     // =================================================================================================
     // CREATE PRE-DEFINED TYPES FOR USERS
     // =================================================================================================
-    #if defined(ENV_64BIT_EXTENDED)
+
+    #if defined(ENV_64_BIT_EXTENDED)
 
     using uint128_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 128>;
     using uint192_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 192>;
@@ -1227,7 +1247,7 @@ namespace epi {
     using uint512_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 512>;
     using uint1024_t = whole_number<uint64_t, LARGEST_AVAILABLE_T, 1024>;
 
-    #elif defined(ENV_64_BIT)
+    #elif (defined(ENV_64_BIT) || defined(ENV_32_BIT_EXTENDED))
 
     using uint128_t = whole_number<uint32_t, uint64_t, 128>;
     using uint192_t = whole_number<uint32_t, uint64_t, 192>;
@@ -1246,6 +1266,26 @@ namespace epi {
     using uint1024_t = whole_number<uint16_t, uint32_t, 1024>;
 
     #endif
+
+    // =================================================================================================
+    // COMPILE INFORMATION LIMB WIDENESS INDICATORS
+
+    #if defined(ENV_64_BIT_EXTENDED)
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 1;
+    #elif defined(ENV_64_BIT)
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 2;
+    #elif defined(ENV_32_BIT_EXTENDED)
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 3;
+    #elif defined(ENV_32_BIT)
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 4;
+    #elif defined(ENV_16_BIT)
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 5;
+    #else
+        static constexpr size_t LIMB_WIDENESS_COMP_INFO = 6;
+    #endif
+
+    // =================================================================================================
+
 #endif
 
 } // namespace epi

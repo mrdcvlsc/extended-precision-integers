@@ -109,15 +109,15 @@ namespace smlts {
 
     int test::get_final_verdict(std::string const &test_name = "") {
         if (!final_verdict) {
-            std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : PASSED\n";
+            // std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : PASSED\n";
             return 0;
         }
 
-        std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : FAILED\n\n";
-        std::cout << "Failed on test cases :\n";
+        // std::cout << "\nFINAL VERDICT [" << test_name << "] TEST : FAILED\n\n";
+        // std::cout << "Failed on test cases :\n";
 
         for (size_t i = 0; i < file.size(); ++i) {
-            std::cout << "\tfile : " << file[i] << " | line : " << line[i] << "\n";
+            // std::cout << "\tfile : " << file[i] << " | line : " << line[i] << "\n";
         }
 
         return 1;
