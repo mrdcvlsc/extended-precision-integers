@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: update and upgrade env
       run: sudo apt-get update && sudo apt-get upgrade
@@ -33,7 +33,11 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Update Clang on Windows
+      continue-on-error: true
+      run: choco upgrade llvm
 
     - name: System Info
       run: make default CXX=clang++ CC=clang
@@ -50,7 +54,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: System Info
       run: make default CXX=g++ CC=gcc
